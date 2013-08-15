@@ -16,6 +16,7 @@ import org.jclouds.blobstore.util.BlobUtils;
 import org.jclouds.domain.Location;
 import org.jclouds.orion.OrionApi;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 
@@ -25,8 +26,8 @@ public class OrionBlobStore extends BaseBlobStore {
 	
 	
 	@Inject
-	protected OrionBlobStore(BlobStoreContext context, BlobUtils blobUtils, Supplier<Location> defaultLocation, Supplier<Set<? extends Location>> locations, OrionApi api) {
-		super(context, blobUtils, defaultLocation, locations);
+	protected OrionBlobStore(BlobStoreContext context, BlobUtils blobUtils, OrionApi api) {
+		super(context, blobUtils, (Supplier<Location>) Optional.absent(), (Supplier<Set<? extends Location>>) Optional.absent());
 		this.api = api;
 	}
 	

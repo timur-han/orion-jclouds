@@ -25,6 +25,7 @@ import org.jclouds.http.annotation.ServerError;
 import org.jclouds.json.config.GsonModule.DateAdapter;
 import org.jclouds.json.config.GsonModule.Iso8601DateAdapter;
 import org.jclouds.orion.OrionApi;
+import org.jclouds.orion.blobstore.OrionAsyncBlobStore;
 import org.jclouds.orion.features.KeyApi;
 import org.jclouds.orion.features.KeyAsyncApi;
 import org.jclouds.orion.handlers.OrionErrorHandler;
@@ -52,6 +53,7 @@ public class OrionHttpApiModule extends HttpApiModule<OrionApi> {
 	protected void configure() {
 		this.bind(DateAdapter.class).to(Iso8601DateAdapter.class);
 		super.configure();
+		super.install(new OrionBlobStoreModule());
 	}
 	
 	@Override
