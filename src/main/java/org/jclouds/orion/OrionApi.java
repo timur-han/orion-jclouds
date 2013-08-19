@@ -18,10 +18,12 @@ package org.jclouds.orion;
 
 import java.io.Closeable;
 
+import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
@@ -32,6 +34,8 @@ import org.jclouds.Fallbacks.VoidOnNotFoundOr404;
 import org.jclouds.http.filters.BasicAuthentication;
 import org.jclouds.rest.annotations.Delegate;
 import org.jclouds.rest.annotations.Fallback;
+import org.jclouds.rest.annotations.ParamValidators;
+import org.jclouds.rest.annotations.QueryParams;
 import org.jclouds.rest.annotations.RequestFilters;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -80,8 +84,11 @@ public interface OrionApi extends Closeable {
 	@Fallback(VoidOnNotFoundOr404.class)
 	ListenableFuture<Void> delete(@PathParam("itemId") long id);
 	
-	@POST
-	@Path("/items/{itemId}")
-	@Fallback(VoidOnNotFoundOr404.class)
-	boolean createContainer(String container);
+	
+	   @Named("CreateContainer")
+	   @PUT
+	   @Path("{container}")
+	   @Fallback(VoidOnNotFoundOr404.class)
+	   Boolean createContainer(@PathParam("container")  String container);
+	
 }
