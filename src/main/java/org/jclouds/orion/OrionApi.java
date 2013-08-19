@@ -50,7 +50,7 @@ public interface OrionApi extends Closeable {
 	public static final String API_VERSION = "0.0.1";
 	
 	
-	@Delegate
+	//@Delegate
 	/*
 	 * TODO: define interface methods for Orion 
 	 */

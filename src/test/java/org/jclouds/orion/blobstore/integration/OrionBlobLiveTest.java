@@ -17,7 +17,7 @@
 package org.jclouds.orion.blobstore.integration;
 
 import org.jclouds.blobstore.integration.internal.BaseBlobLiveTest;
-import org.jclouds.orion.OrionProviderMetada;
+import org.jclouds.orion.OrionProviderMetadata;
 import org.jclouds.providers.ProviderMetadata;
 import org.testng.annotations.Test;
 
@@ -30,6 +30,6 @@ public class OrionBlobLiveTest extends BaseBlobLiveTest {
 	
 	@Override
 	protected ProviderMetadata createProviderMetadata() {
-		return new OrionProviderMetada();
+		return new OrionProviderMetadata();
 	}
 }

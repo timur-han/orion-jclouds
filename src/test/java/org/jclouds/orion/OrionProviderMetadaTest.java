@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class OrionProviderMetadaTest extends BaseProviderMetadataTest {
 	
 	public OrionProviderMetadaTest() {
-		super(new OrionProviderMetada(), new OrionApiMetadata());
+		super(new OrionProviderMetadata(), new OrionApiMetadata());
 	}
 	
 }

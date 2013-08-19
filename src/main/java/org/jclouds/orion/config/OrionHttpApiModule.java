@@ -16,8 +16,6 @@
  */
 package org.jclouds.orion.config;
 
-import java.util.Map;
-
 import org.jclouds.http.HttpErrorHandler;
 import org.jclouds.http.annotation.ClientError;
 import org.jclouds.http.annotation.Redirection;
@@ -25,14 +23,9 @@ import org.jclouds.http.annotation.ServerError;
 import org.jclouds.json.config.GsonModule.DateAdapter;
 import org.jclouds.json.config.GsonModule.Iso8601DateAdapter;
 import org.jclouds.orion.OrionApi;
-import org.jclouds.orion.blobstore.OrionAsyncBlobStore;
-import org.jclouds.orion.features.KeyApi;
-import org.jclouds.orion.features.KeyAsyncApi;
 import org.jclouds.orion.handlers.OrionErrorHandler;
 import org.jclouds.rest.ConfiguresHttpApi;
 import org.jclouds.rest.config.HttpApiModule;
-
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Configures the Orion connection.
@@ -41,26 +34,28 @@ import com.google.common.collect.ImmutableMap;
  */
 @ConfiguresHttpApi
 public class OrionHttpApiModule extends HttpApiModule<OrionApi> {
-	
-	public static final Map<Class<?>, Class<?>> DELEGATE_MAP = ImmutableMap.<Class<?>, Class<?>> builder().put(KeyApi.class, KeyAsyncApi.class).build();
-	
-	
+
+	//public static final Map<Class<?>, Class<?>> DELEGATE_MAP = ImmutableMap.<Class<?>, Class<?>> builder().put(KeyApi.class, KeyAsyncApi.class).build();
+
+
 	public OrionHttpApiModule() {
-		super(OrionApi.class);
+		//bind(LocationsSupplier.class).to(LocationsProvider.class).in(Scopes.SINGLETON);
 	}
-	
-	@Override
-	protected void configure() {
-		this.bind(DateAdapter.class).to(Iso8601DateAdapter.class);
-		super.configure();
-		super.install(new OrionBlobStoreModule());
-	}
-	
+
 	@Override
 	protected void bindErrorHandlers() {
 		this.bind(HttpErrorHandler.class).annotatedWith(Redirection.class).to(OrionErrorHandler.class);
 		this.bind(HttpErrorHandler.class).annotatedWith(ClientError.class).to(OrionErrorHandler.class);
 		this.bind(HttpErrorHandler.class).annotatedWith(ServerError.class).to(OrionErrorHandler.class);
 	}
+
+	@Override
+	protected void configure() {
+		this.bind(DateAdapter.class).to(Iso8601DateAdapter.class);
+		super.configure();
+
+	}
 	
+	
+
 }

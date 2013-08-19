@@ -13,6 +13,7 @@ import org.jclouds.blobstore.options.GetOptions;
 import org.jclouds.blobstore.options.ListContainerOptions;
 import org.jclouds.blobstore.options.PutOptions;
 import org.jclouds.blobstore.util.BlobUtils;
+import org.jclouds.collect.Memoized;
 import org.jclouds.domain.Location;
 import org.jclouds.orion.OrionApi;
 
@@ -26,8 +27,8 @@ public class OrionBlobStore extends BaseBlobStore {
 	
 	
 	@Inject
-	protected OrionBlobStore(BlobStoreContext context, BlobUtils blobUtils, OrionApi api) {
-		super(context, blobUtils, (Supplier<Location>) Optional.absent(), (Supplier<Set<? extends Location>>) Optional.absent());
+	protected OrionBlobStore(BlobStoreContext context, BlobUtils blobUtils, OrionApi api, Supplier<Location> defaultLocation,@Memoized  Supplier<Set<? extends Location>> locations) {
+		super(context, blobUtils, defaultLocation, locations);
 		this.api = api;
 	}
 	

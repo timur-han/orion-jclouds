@@ -24,7 +24,8 @@ import java.util.Properties;
 import org.jclouds.Constants;
 import org.jclouds.apis.ApiMetadata;
 import org.jclouds.blobstore.BlobStoreContext;
-import org.jclouds.orion.config.OrionBlobStoreModule;
+import org.jclouds.orion.blobstore.config.OrionBlobStoreModule;
+import org.jclouds.orion.config.OrionConstants;
 import org.jclouds.orion.config.OrionHttpApiModule;
 import org.jclouds.reflect.Reflection2;
 import org.jclouds.rest.internal.BaseHttpApiMetadata;
@@ -38,51 +39,62 @@ import com.google.inject.Module;
  * @author Timur Sungur
  */
 public class OrionApiMetadata extends BaseHttpApiMetadata<OrionApi> {
-	
-	@Override
-	public Builder toBuilder() {
-		return new Builder().fromApiMetadata(this);
-	}
-	
-	public OrionApiMetadata() {
-		this(new Builder());
-	}
-	
-	protected OrionApiMetadata(Builder builder) {
-		super(builder);
-	}
-	
-	public static Properties defaultProperties() {
-		Properties properties = BaseHttpApiMetadata.defaultProperties();
-		properties.setProperty(Constants.PROPERTY_TIMEOUTS_PREFIX + "default", SECONDS.toMillis(30) + "");
-		return properties;
-	}
-	
-	
+
 	public static class Builder extends BaseHttpApiMetadata.Builder<OrionApi, Builder> {
-		
+
 		protected Builder() {
-			super(OrionApi.class);
-			this.id("orion").name("Orion API").defaultIdentity("username").identityName("Username").defaultCredential("Password").credentialName("Password").documentation(URI.create("http://wiki.eclipse.org/Orion/Server_API")).version("1.0").defaultEndpoint("https://orionhub.org/").defaultProperties(OrionApiMetadata.defaultProperties()).view(Reflection2.typeToken(BlobStoreContext.class)).defaultModules(ImmutableSet.<Class<? extends Module>> of(OrionHttpApiModule.class, OrionBlobStoreModule.class));
+			//super(OrionApi.class);
+			this.id(OrionConstants.ORION_ID).
+			name("Orion API").
+			defaultIdentity("Username").
+			identityName("Username").
+			defaultCredential("Password").
+			credentialName("Password").
+			documentation(URI.create("http://wiki.eclipse.org/Orion/Server_API")).
+			version("1.0").
+			defaultEndpoint(OrionConstants.END_POINT).
+			defaultProperties(OrionApiMetadata.defaultProperties()).
+			view(Reflection2.typeToken(BlobStoreContext.class)).
+			defaultModules(ImmutableSet.<Class<? extends Module>> of(OrionHttpApiModule.class, OrionBlobStoreModule.class));
 			
 		}
-		
+
 		@Override
 		public OrionApiMetadata build() {
 			return new OrionApiMetadata(this);
 		}
-		
+
 		@Override
 		public Builder fromApiMetadata(ApiMetadata in) {
 			super.fromApiMetadata(in);
 			return this;
 		}
-		
+
 		@Override
 		protected Builder self() {
 			return this;
 		}
-		
+
 	}
-	
+
+	public static Properties defaultProperties() {
+		Properties properties = BaseHttpApiMetadata.defaultProperties();
+		properties.setProperty(Constants.PROPERTY_TIMEOUTS_PREFIX + "default", SECONDS.toMillis(30) + "");
+		return properties;
+	}
+
+	public OrionApiMetadata() {
+		this(new Builder());
+	}
+
+	protected OrionApiMetadata(Builder builder) {
+		super(builder);
+	}
+
+
+	@Override
+	public Builder toBuilder() {
+		return new Builder().fromApiMetadata(this);
+	}
+
 }
