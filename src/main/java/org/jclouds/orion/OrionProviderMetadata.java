@@ -4,7 +4,7 @@ package org.jclouds.orion;
 
 import java.util.Properties;
 
-import org.jclouds.orion.config.OrionConstants;
+import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.providers.ProviderMetadata;
 import org.jclouds.providers.internal.BaseProviderMetadata;
 
@@ -13,12 +13,12 @@ public class OrionProviderMetadata extends BaseProviderMetadata {
 	static class Builder extends BaseProviderMetadata.Builder {
 
 		Builder() {
-			id(OrionConstants.ORION_ID).
+			id(OrionConstantValues.ORION_ID).
 			name("Orion Service").
 			defaultProperties(new Properties()).
 			linkedService("bloborion").
 			apiMetadata(new OrionApiMetadata()).
-			endpoint(OrionConstants.END_POINT).
+			endpoint(OrionConstantValues.END_POINT).
 			iso3166Code("");
 		}
 

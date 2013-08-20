@@ -34,8 +34,7 @@ public class OrionBlobStore extends BaseBlobStore {
 	
 	@Override
 	public boolean createContainerInLocation(Location location, String container) {
-		String result = this.api.createWorkspace(container);
-		return true;
+		return this.api.createWorkspace(container);
 	}
 	
 	@Override
