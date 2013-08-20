@@ -22,10 +22,12 @@ import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.jclouds.Fallbacks.EmptySetOnNotFoundOr404;
@@ -37,7 +39,9 @@ import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.ParamValidators;
 import org.jclouds.rest.annotations.QueryParams;
 import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.rest.annotations.ResponseParser;
 
+import com.google.common.net.HttpHeaders;
 import com.google.common.util.concurrent.ListenableFuture;
 
 /**
@@ -85,10 +89,18 @@ public interface OrionApi extends Closeable {
 	ListenableFuture<Void> delete(@PathParam("itemId") long id);
 	
 	
-	   @Named("CreateContainer")
-	   @PUT
-	   @Path("{container}")
-	   @Fallback(VoidOnNotFoundOr404.class)
-	   Boolean createContainer(@PathParam("container")  String container);
+	@Named("CreateWorkspace")
+    @POST
+    @Path("site/")
+	@Consumes(MediaType.APPLICATION_XML)
+    @Fallback(VoidOnNotFoundOr404.class)
+    String createWorkspace(@HeaderParam("workspace")  String containerName);
+
+	
+    @Named("CreateSite")
+    @POST
+    @Path("site/")
+    @Fallback(VoidOnNotFoundOr404.class)
+    Boolean createSite(@QueryParam("workspaceID")  String workspaceId, @QueryParam("Slung")  String containerName);
 	
 }

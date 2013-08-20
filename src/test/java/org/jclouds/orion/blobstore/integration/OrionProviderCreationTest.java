@@ -14,7 +14,7 @@ public class OrionProviderCreationTest {
 
   @BeforeSuite
   protected void setUp() throws Exception {
-      BlobStoreContext context = ContextBuilder.newBuilder("orionblob").credentials("timur77", "123456!").build(BlobStoreContext.class);
+      BlobStoreContext context = ContextBuilder.newBuilder("orionblob").credentials("t", "1").build(BlobStoreContext.class);
       // create a container in the default location
       blobStore = context.getBlobStore();
   }

@@ -1,3 +1,53 @@
+/.classpath
+/.project
+/.settings/org.eclipse.jdt.core.prefs
+/target/.plxarc
+/target/classes/.gitignore
+/target/classes/META-INF/DEPENDENCIES
+/target/classes/META-INF/LICENSE
+/target/classes/META-INF/LICENSE.txt
+/target/classes/META-INF/NOTICE
+/target/classes/META-INF/NOTICE.txt
+/target/maven-shared-archive-resources/META-INF/DEPENDENCIES
+/target/maven-shared-archive-resources/META-INF/LICENSE
+/target/maven-shared-archive-resources/META-INF/LICENSE.txt
+/target/maven-shared-archive-resources/META-INF/NOTICE
+/target/maven-shared-archive-resources/META-INF/NOTICE.txt
+/target/test-classes/.gitignore
+/test-output/Default suite/Default test.html
+/test-output/Default suite/Default test.xml
+/test-output/Default suite/testng-failed.xml
+/test-output/bullet_point.png
+/test-output/collapseall.gif
+/test-output/emailable-report.html
+/test-output/failed.png
+/test-output/index.html
+/test-output/jquery-1.7.1.min.js
+/test-output/junitreports/TEST-org.jclouds.orion.OrionApiMetadataTest.xml
+/test-output/junitreports/TEST-org.jclouds.orion.OrionProviderMetadaTest.xml
+/test-output/junitreports/TEST-org.jclouds.orion.blobstore.integration.NewTest.xml
+/test-output/junitreports/TEST-org.jclouds.orion.blobstore.integration.OrionBlobLiveTest.xml
+/test-output/junitreports/TEST-org.jclouds.orion.blobstore.integration.OrionProviderCreationTest.xml
+/test-output/navigator-bullet.png
+/test-output/old/Default suite/Default test.properties
+/test-output/old/Default suite/classes.html
+/test-output/old/Default suite/groups.html
+/test-output/old/Default suite/index.html
+/test-output/old/Default suite/main.html
+/test-output/old/Default suite/methods-alphabetical.html
+/test-output/old/Default suite/methods-not-run.html
+/test-output/old/Default suite/methods.html
+/test-output/old/Default suite/reporter-output.html
+/test-output/old/Default suite/testng.xml.html
+/test-output/old/Default suite/toc.html
+/test-output/old/index.html
+/test-output/passed.png
+/test-output/skipped.png
+/test-output/testng-failed.xml
+/test-output/testng-reports.css
+/test-output/testng-reports.js
+/test-output/testng-results.xml
+/test-output/testng.css
 target/classes/META-INF/MANIFEST.MF
 target/classes/META-INF/maven/org.jclouds/orion/pom.properties
 target/classes/META-INF/maven/org.jclouds/orion/pom.xml
