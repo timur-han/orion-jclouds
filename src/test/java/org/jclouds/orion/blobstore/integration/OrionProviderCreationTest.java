@@ -1,5 +1,7 @@
 package org.jclouds.orion.blobstore.integration;
 
+import java.util.Calendar;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.jclouds.ContextBuilder;
@@ -14,13 +16,13 @@ public class OrionProviderCreationTest {
 
   @BeforeSuite
   protected void setUp() throws Exception {
-      BlobStoreContext context = ContextBuilder.newBuilder("orionblob").credentials("t", "1").build(BlobStoreContext.class);
+      BlobStoreContext context = ContextBuilder.newBuilder("orionblob").credentials("timur87", "123456!").build(BlobStoreContext.class);
       // create a container in the default location
       blobStore = context.getBlobStore();
   }
   
   @Test
   protected void createContainer() throws Exception{
-	  blobStore.createContainerInLocation(null, "test");
+	  blobStore.createContainerInLocation(null, "Container+" + Calendar.getInstance().getTimeInMillis());
   }
 }

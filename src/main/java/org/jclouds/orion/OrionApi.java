@@ -58,49 +58,15 @@ public interface OrionApi extends Closeable {
 	public static final String API_VERSION = "0.0.1";
 	
 	
-	//@Delegate
-	/*
-	 * TODO: define interface methods for Orion 
-	 */
+	
 	/**
 	 * @see OrionClient#list()
 	 */
-	@GET
-	@Path("/items")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Fallback(EmptySetOnNotFoundOr404.class)
-	ListenableFuture<String> list();
-	
-	/**
-	 * @see OrionClient#get(long)
-	 */
-	@GET
-	@Fallback(NullOnNotFoundOr404.class)
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Path("/items/{itemId}")
-	ListenableFuture<String> get(@PathParam("itemId") long id);
-	
-	/**
-	 * @see OrionClient#delete
-	 */
-	@DELETE
-	@Path("/items/{itemId}")
-	@Fallback(VoidOnNotFoundOr404.class)
-	ListenableFuture<Void> delete(@PathParam("itemId") long id);
-	
-	
-	@Named("CreateWorkspace")
-    @POST
-    @Path("site/")
-	@Consumes(MediaType.APPLICATION_XML)
-    @Fallback(VoidOnNotFoundOr404.class)
-    String createWorkspace(@HeaderParam("workspace")  String containerName);
 
-	
-    @Named("CreateSite")
+    @Named("CreateContainerFolder")
     @POST
-    @Path("site/")
+    @Path("file/")
     @Fallback(VoidOnNotFoundOr404.class)
-    Boolean createSite(@QueryParam("workspaceID")  String workspaceId, @QueryParam("Slung")  String containerName);
+    Boolean createContainerAsAFolder(@HeaderParam("Slug")  String containerName);
 	
 }
