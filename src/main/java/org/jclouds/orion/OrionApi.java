@@ -19,32 +19,20 @@ package org.jclouds.orion;
 import java.io.Closeable;
 
 import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 
-import org.jclouds.Fallbacks.EmptySetOnNotFoundOr404;
-import org.jclouds.Fallbacks.NullOnNotFoundOr404;
-import org.jclouds.Fallbacks.VoidOnNotFoundOr404;
-import org.jclouds.http.filters.BasicAuthentication;
+import org.jclouds.http.HttpResponse;
+import org.jclouds.orion.config.constans.OrionConstantValues;
+import org.jclouds.orion.config.constans.OrionHttpFields;
 import org.jclouds.orion.http.filters.FormAuthentication;
-import org.jclouds.orion.http.filters.OrionCustomFields;
-import org.jclouds.rest.annotations.Delegate;
-import org.jclouds.rest.annotations.Fallback;
-import org.jclouds.rest.annotations.ParamValidators;
-import org.jclouds.rest.annotations.QueryParams;
+import org.jclouds.orion.http.filters.OrionAdditionalHttpFields;
+import org.jclouds.rest.annotations.Headers;
 import org.jclouds.rest.annotations.RequestFilters;
-import org.jclouds.rest.annotations.ResponseParser;
-
-import com.google.common.net.HttpHeaders;
-import com.google.common.util.concurrent.ListenableFuture;
 
 /**
  * Provides asynchronous access to Orion via their REST API.
@@ -54,16 +42,34 @@ import com.google.common.util.concurrent.ListenableFuture;
  * @see <a href="TODO: insert URL of provider documentation" />
  * @author Timur Sungur
  */
-@RequestFilters({BasicAuthentication.class, OrionCustomFields.class, FormAuthentication.class})
+@RequestFilters({ OrionAdditionalHttpFields.class, FormAuthentication.class })
 public interface OrionApi extends Closeable {
-	
-	public static final String API_VERSION = "0.0.1";
-	
-	 * @see OrionClient#list()
-	 */
 
+    public static final String API_VERSION = "0.0.1";
+
+    @HEAD
+    @Named("CheckKeyValidity")
+    @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userName}/")
+    @Headers(keys = { OrionHttpFields.IGNORE_AUTHENTICATION,
+	    OrionHttpFields.ORION_VERSION_FIELD }, values = { "",
+	    OrionConstantValues.ORION_VERSION })
+    HttpResponse checkKeyValidity(@PathParam(value = "userName") String userName);
+
+    @POST
     @Named("CreateContainerFolder")
-    @Path("file/")
-    Boolean createContainerAsAFolder(@HeaderParam("Slug")  String containerName);
-	
+    @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/")
+    Boolean createContainerAsAProject(
+	    @PathParam("userWorkspace") String userWorkspace,
+	    @HeaderParam("Slug") String projectName);
+
+    @POST
+    @Named("FormAuthentication")
+    @Path(OrionConstantValues.ORION_AUTH_PATH)
+    @Headers(keys = { OrionHttpFields.IGNORE_AUTHENTICATION,
+	    OrionHttpFields.ORION_VERSION_FIELD }, values = { "",
+	    OrionConstantValues.ORION_VERSION })
+    HttpResponse formLogin(
+	    @FormParam(value = OrionHttpFields.USERNAME) String userName,
+	    @FormParam(value = OrionHttpFields.PASSWORD) String pass);
+
 }

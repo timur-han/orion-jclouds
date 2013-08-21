@@ -6,7 +6,7 @@ import org.jclouds.http.HttpRequestFilter;
 import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.orion.config.constans.OrionHttpFields;
 
-public class OrionCustomFields implements HttpRequestFilter{
+public class OrionAdditionalHttpFields implements HttpRequestFilter{
 
 	@Override
 	public HttpRequest filter(HttpRequest req) throws HttpException {

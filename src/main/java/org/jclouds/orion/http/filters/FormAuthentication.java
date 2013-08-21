@@ -1,95 +1,110 @@
 package org.jclouds.orion.http.filters;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.jclouds.domain.Credentials;
 import org.jclouds.http.HttpException;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpRequestFilter;
 import org.jclouds.location.Provider;
+import org.jclouds.orion.OrionApi;
 import org.jclouds.orion.config.constans.OrionHttpFields;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.net.HttpHeaders;
 
 /**
- * A costly hack to resolve form based authentication problem.
- * Needs to be replaced with a cleaner approach.
+ * A costly hack to resolve form based authentication problem. Needs to be
+ * replaced with a cleaner approach.
+ * 
  * @author Timur
- *
+ * 
  */
-public class FormAuthentication implements HttpRequestFilter{
+public class FormAuthentication implements HttpRequestFilter {
 
-	private final Supplier<Credentials> creds;
-	DefaultHttpClient httpclient = new DefaultHttpClient();
-	
-   	@Inject
-   	public FormAuthentication(@Provider Supplier<Credentials> creds) {
-	   this.creds = checkNotNull(creds, "creds");
-    }
-	
+    class SessionKeyRequester implements Callable<Collection<String>> {
+
 	@Override
-	public HttpRequest filter(HttpRequest request) throws HttpException {
-		Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
-		try{
-			HttpHead httphead= new HttpHead(request.getEndpoint());
-			for(String key : request.getHeaders().keySet()){
-				httphead.addHeader(key, request.getHeaders().get(key).toString());
-			}
-			
-	        HttpResponse response = httpclient.execute(httphead);
-	        HttpEntity entity = response.getEntity();
-	        System.out.println("Login form get: " + response.getStatusLine());
-	        EntityUtils.consume(entity);
-	        
-	        List<Cookie> cookies = httpclient.getCookieStore().getCookies();
-
-	
-	        HttpPost httpost = new HttpPost("http://localhost:8080/mixloginstatic/LoginWindow.html?redirect=http%3A%2F%2Flocalhost%3A8080%2F&key=FORMOpenIdUser");
-	
-	        List <NameValuePair> nvps = new ArrayList <NameValuePair>();
-	        nvps.add(new BasicNameValuePair(creds.get().identity, "username"));
-	        nvps.add(new BasicNameValuePair(creds.get().credential, "password"));
-	        httpost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
-	
-	        response = httpclient.execute(httpost);
-	        entity = response.getEntity();
-	
-	        System.out.println("Login form get: " + response.getStatusLine());
-	        EntityUtils.consume(entity);
-	
-	        System.out.println("Post logon cookies:");
-	        cookies = httpclient.getCookieStore().getCookies();
-	        if (cookies.isEmpty()) {
-	            System.out.println("None");
-	        } else {
-	            for (int i = 0; i < cookies.size(); i++) {
-	                System.out.println("- " + cookies.get(i).toString());
-	            }
-	        }
-		}
-		catch(Exception e)
-		{
-			System.err.println(e);
-		}
-		return request;
+	public Collection<String> call() throws Exception {
+	    return getApi()
+		    .formLogin(getCreds().identity, getCreds().credential)
+		    .getHeaders().get(HttpHeaders.SET_COOKIE);
 	}
 
+    }
+
+    private static Cache<String, Collection<String>> getKeycache() {
+	return FormAuthentication.keyCache;
+    }
+
+    private final Credentials creds;
+
+    private final OrionApi api;
+
+    // This class holds a cache for keys
+    // username:sesionsId pairs are used
+    final static private Cache<String, Collection<String>> keyCache = CacheBuilder
+	    .newBuilder().maximumSize(1000).build();
+
+    @Inject
+    public FormAuthentication(@Provider Supplier<Credentials> creds,
+	    OrionApi api) {
+	Preconditions.checkNotNull(creds, "creds");
+	this.creds = creds.get();
+	this.api = Preconditions.checkNotNull(api, "creds");
+    }
+
+    @Override
+    public HttpRequest filter(HttpRequest request) throws HttpException {
+	boolean ignoreAuthentication = false;
+	// The requests with the header ignoreauthentication will not be
+	// validated
+
+	if (request.getHeaders().containsKey(
+		OrionHttpFields.IGNORE_AUTHENTICATION)) {
+	    request = request.toBuilder()
+		    .removeHeader(OrionHttpFields.IGNORE_AUTHENTICATION)
+		    .build();
+	    ignoreAuthentication = true;
+
+	}
+	Collection<String> cachedKey = null;
+	try {
+	    if (!ignoreAuthentication) {
+		cachedKey = FormAuthentication.getKeycache().get(
+			getCreds().identity, new SessionKeyRequester());
+		FormAuthentication.getKeycache().put(getCreds().credential,
+			new SessionKeyRequester().call());
+		request = request
+			.toBuilder()
+			.replaceHeader(HttpHeaders.COOKIE,
+				cachedKey.toArray(new String[cachedKey.size()]))
+			.build();
+	    }
+	} catch (ExecutionException e) {
+	    // TODO
+	    e.printStackTrace();
+	    throw new HttpException(e.getMessage());
+	} catch (Exception e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+
+	return request;
+    }
+
+    private OrionApi getApi() {
+	return api;
+    }
+
+    private Credentials getCreds() {
+	return creds;
+    }
 }
