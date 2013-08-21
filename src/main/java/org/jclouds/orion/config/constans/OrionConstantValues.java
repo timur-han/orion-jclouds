@@ -11,4 +11,9 @@ public class OrionConstantValues {
     public final static String ORION_WORKSPACE_PATH = "workspace/";
     public final static String ORION_FILE_PATH = "file/";
 
+    // JSON Constants
+    public final static String WORKSPACE_CHILDREN = "children";
+    // general identifier field name
+    public final static String RESOURCE_IDENTIFIER = "name";
+
 }

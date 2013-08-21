@@ -51,8 +51,7 @@ public class OrionBlobStore extends BaseBlobStore {
 
     @Override
     public boolean containerExists(String container) {
-	// TODO Auto-generated method stub
-	throw new IllegalStateException("Not yet implemented.");
+	return api.containerExists(getUserLocation(), workspaceName);
     }
 
     @Override

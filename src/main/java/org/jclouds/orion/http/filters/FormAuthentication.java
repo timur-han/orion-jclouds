@@ -21,8 +21,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.net.HttpHeaders;
 
 /**
- * A costly hack to resolve form based authentication problem. Needs to be
- * replaced with a cleaner approach.
+ * In case the key expires an exception will be thrown and neither
+ * authentication nor replay is done This needs to be fixed.
  * 
  * @author Timur
  * 

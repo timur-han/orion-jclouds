@@ -19,12 +19,15 @@ package org.jclouds.orion;
 import java.io.Closeable;
 
 import javax.inject.Named;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
 
 import org.jclouds.http.HttpResponse;
 import org.jclouds.orion.config.constans.OrionConstantValues;
@@ -55,6 +58,21 @@ public interface OrionApi extends Closeable {
 	    OrionConstantValues.ORION_VERSION })
     HttpResponse checkKeyValidity(@PathParam(value = "userName") String userName);
 
+    @GET
+    @Named("CreateContainerFolder")
+    @Path(OrionConstantValues.ORION_WORKSPACE_PATH
+	    + "{userWorkspace}/container")
+    @Consumes(MediaType.APPLICATION_JSON)
+    Boolean containerExists(@PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("container") String container);
+
+    /**
+     * Creates the container as a project in orion
+     * 
+     * @param userWorkspace
+     * @param projectName
+     * @return
+     */
     @POST
     @Named("CreateContainerFolder")
     @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/")
