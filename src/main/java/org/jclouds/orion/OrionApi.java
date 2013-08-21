@@ -34,6 +34,8 @@ import org.jclouds.Fallbacks.EmptySetOnNotFoundOr404;
 import org.jclouds.Fallbacks.NullOnNotFoundOr404;
 import org.jclouds.Fallbacks.VoidOnNotFoundOr404;
 import org.jclouds.http.filters.BasicAuthentication;
+import org.jclouds.orion.http.filters.FormAuthentication;
+import org.jclouds.orion.http.filters.OrionCustomFields;
 import org.jclouds.rest.annotations.Delegate;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.ParamValidators;
@@ -52,21 +54,16 @@ import com.google.common.util.concurrent.ListenableFuture;
  * @see <a href="TODO: insert URL of provider documentation" />
  * @author Timur Sungur
  */
-@RequestFilters(BasicAuthentication.class)
+@RequestFilters({BasicAuthentication.class, OrionCustomFields.class, FormAuthentication.class})
 public interface OrionApi extends Closeable {
 	
 	public static final String API_VERSION = "0.0.1";
 	
-	
-	
-	/**
 	 * @see OrionClient#list()
 	 */
 
     @Named("CreateContainerFolder")
-    @POST
     @Path("file/")
-    @Fallback(VoidOnNotFoundOr404.class)
     Boolean createContainerAsAFolder(@HeaderParam("Slug")  String containerName);
 	
 }

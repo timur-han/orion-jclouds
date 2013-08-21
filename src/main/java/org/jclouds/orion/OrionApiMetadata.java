@@ -25,8 +25,8 @@ import org.jclouds.Constants;
 import org.jclouds.apis.ApiMetadata;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.orion.blobstore.config.OrionBlobStoreModule;
-import org.jclouds.orion.config.OrionConstants;
 import org.jclouds.orion.config.OrionHttpApiModule;
+import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.reflect.Reflection2;
 import org.jclouds.rest.internal.BaseHttpApiMetadata;
 
@@ -44,7 +44,7 @@ public class OrionApiMetadata extends BaseHttpApiMetadata<OrionApi> {
 
 		protected Builder() {
 			//super(OrionApi.class);
-			this.id(OrionConstants.ORION_ID).
+			this.id(OrionConstantValues.ORION_ID).
 			name("Orion API").
 			defaultIdentity("Username").
 			identityName("Username").
@@ -52,7 +52,7 @@ public class OrionApiMetadata extends BaseHttpApiMetadata<OrionApi> {
 			credentialName("Password").
 			documentation(URI.create("http://wiki.eclipse.org/Orion/Server_API")).
 			version("1.0").
-			defaultEndpoint(OrionConstants.END_POINT).
+			defaultEndpoint(OrionConstantValues.END_POINT).
 			defaultProperties(OrionApiMetadata.defaultProperties()).
 			view(Reflection2.typeToken(BlobStoreContext.class)).
 			defaultModules(ImmutableSet.<Class<? extends Module>> of(OrionHttpApiModule.class, OrionBlobStoreModule.class));
