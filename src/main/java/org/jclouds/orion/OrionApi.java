@@ -18,8 +18,7 @@ package org.jclouds.orion;
 
 import java.io.Closeable;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
@@ -27,15 +26,25 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.http.HttpResponse;
+import org.jclouds.orion.blobstore.functions.FileDoesNotExistResponseParser;
+import org.jclouds.orion.blobstore.functions.FolderMetadataResponseParser;
+import org.jclouds.orion.blobstore.functions.OrionBlobParser;
 import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.orion.config.constans.OrionHttpFields;
+import org.jclouds.orion.http.filters.FolderCreationFilter;
 import org.jclouds.orion.http.filters.FormAuthentication;
-import org.jclouds.orion.http.filters.OrionAdditionalHttpFields;
+import org.jclouds.rest.annotations.FormParams;
 import org.jclouds.rest.annotations.Headers;
+import org.jclouds.rest.annotations.ParamParser;
 import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.rest.annotations.ResponseParser;
+
+import com.google.gson.JsonObject;
 
 /**
  * Provides asynchronous access to Orion via their REST API.
@@ -45,24 +54,23 @@ import org.jclouds.rest.annotations.RequestFilters;
  * @see <a href="TODO: insert URL of provider documentation" />
  * @author Timur Sungur
  */
-@RequestFilters({ OrionAdditionalHttpFields.class, FormAuthentication.class })
+@RequestFilters({ FormAuthentication.class })
 public interface OrionApi extends Closeable {
 
     public static final String API_VERSION = "0.0.1";
 
     @HEAD
-    @Named("CheckKeyValidity")
-    @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userName}/")
+    @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/")
     @Headers(keys = { OrionHttpFields.IGNORE_AUTHENTICATION,
 	    OrionHttpFields.ORION_VERSION_FIELD }, values = { "",
 	    OrionConstantValues.ORION_VERSION })
-    HttpResponse checkKeyValidity(@PathParam(value = "userName") String userName);
+    HttpResponse checkKeyValidity(
+	    @PathParam(value = "userWorkspace") String userName);
 
     @GET
-    @Named("CreateContainerFolder")
-    @Path(OrionConstantValues.ORION_WORKSPACE_PATH
-	    + "{userWorkspace}/container")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/"
+	    + OrionConstantValues.ORION_FILE_PATH + "{container}")
+    @ResponseParser(FileDoesNotExistResponseParser.class)
     Boolean containerExists(@PathParam("userWorkspace") String userWorkspace,
 	    @PathParam("container") String container);
 
@@ -74,14 +82,27 @@ public interface OrionApi extends Closeable {
      * @return
      */
     @POST
-    @Named("CreateContainerFolder")
     @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/")
     Boolean createContainerAsAProject(
 	    @PathParam("userWorkspace") String userWorkspace,
 	    @HeaderParam("Slug") String projectName);
 
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{containerName/}")
+    @FormParams(keys = { "depth" }, values = { "1" })
+    JsonObject listContainerContents(
+	    @PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("containerName") String containerName);
+
+    @DELETE
+    @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/"
+	    + OrionConstantValues.ORION_FILE_PATH + "{container}")
+    @ResponseParser(FileDoesNotExistResponseParser.class)
+    Boolean deleteContainer(@PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("container") String container);
+
     @POST
-    @Named("FormAuthentication")
     @Path(OrionConstantValues.ORION_AUTH_PATH)
     @Headers(keys = { OrionHttpFields.IGNORE_AUTHENTICATION,
 	    OrionHttpFields.ORION_VERSION_FIELD }, values = { "",
@@ -89,5 +110,41 @@ public interface OrionApi extends Closeable {
     HttpResponse formLogin(
 	    @FormParam(value = OrionHttpFields.USERNAME) String userName,
 	    @FormParam(value = OrionHttpFields.PASSWORD) String pass);
+
+    @DELETE
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{pathToFile}")
+    @ResponseParser(FileDoesNotExistResponseParser.class)
+    void removeFile(@PathParam("pathToFile") String pathToFile,
+	    @HeaderParam(value = "Slug") String fileName);
+
+    @POST
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{pathToFile}")
+    @ResponseParser(FileDoesNotExistResponseParser.class)
+    @R
+    void putFile(
+	    @PathParam("pathToFile") String userWorkspace,
+	    String container,
+	    @HeaderParam(value = "Slug") @ParamParser(OrionBlobParser.class) Blob blob);
+
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{pathToFile}")
+    @ResponseParser(FolderMetadataResponseParser.class)
+    @FormParams(keys = { "type" }, values = { "meta" })
+    boolean doesFolderExist(@PathParam("userWorkspace") String container,
+	    @PathParam("container") String userLocation,
+	    @PathParam("pathToFile") String firstPath);
+
+    @POST
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userName}/{container}/{pathToFile}")
+    @RequestFilters(FolderCreationFilter.class)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    void createFolder(@PathParam("userName") String userName,
+	    @PathParam("container") String container, String parentPath,
+	    @HeaderParam("Slag") String name);
 
 }

@@ -21,7 +21,7 @@ public class OrionBlobStoreTests {
 	blobStore.createContainerInLocation(null, container);
 	Assert.assertTrue(blobStore.containerExists(container),
 		"Container SHOULD exist");
-	Assert.assertTrue(blobStore.containerExists(String.valueOf(Calendar
+	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
 		.getInstance().getTimeInMillis())),
 		"Container SHOULD NOT exist");
     }
@@ -30,6 +30,31 @@ public class OrionBlobStoreTests {
     protected void createContainer() throws Exception {
 	blobStore.createContainerInLocation(null, "Container+"
 		+ Calendar.getInstance().getTimeInMillis());
+    }
+
+    @Test
+    protected void deleteContainer() throws Exception {
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.deleteContainer(container);
+	blobStore.createContainerInLocation(null, container);
+	Assert.assertTrue(blobStore.containerExists(container),
+		"Container SHOULD exist");
+	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+		.getInstance().getTimeInMillis())),
+		"Container SHOULD NOT exist");
+    }
+
+    @Test
+    protected void clearContainer() throws Exception {
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.createContainerInLocation(null, container);
+	Assert.assertTrue(blobStore.containerExists(container),
+		"Container SHOULD exist");
+	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+		.getInstance().getTimeInMillis())),
+		"Container SHOULD NOT exist");
     }
 
     @BeforeSuite

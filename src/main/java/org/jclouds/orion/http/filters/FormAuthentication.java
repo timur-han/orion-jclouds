@@ -21,8 +21,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.net.HttpHeaders;
 
 /**
- * In case the key expires an exception will be thrown and neither
- * authentication nor replay is done This needs to be fixed.
+ * 
  * 
  * @author Timur
  * 
@@ -52,6 +51,15 @@ public class FormAuthentication implements HttpRequestFilter {
     // username:sesionsId pairs are used
     final static private Cache<String, Collection<String>> keyCache = CacheBuilder
 	    .newBuilder().maximumSize(1000).build();
+
+    public static boolean hasKey(String identity) {
+
+	return FormAuthentication.getKeycache().asMap().containsKey(identity);
+    }
+
+    public static void removeKey(String identity) {
+	FormAuthentication.getKeycache().invalidate(identity);
+    }
 
     @Inject
     public FormAuthentication(@Provider Supplier<Credentials> creds,

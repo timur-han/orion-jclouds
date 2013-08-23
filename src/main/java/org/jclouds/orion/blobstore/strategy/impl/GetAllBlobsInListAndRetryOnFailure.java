@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.blobstore.strategy;
+package org.jclouds.orion.blobstore.strategy.impl;
 
 import static org.jclouds.concurrent.FutureIterables.transformParallel;
 

@@ -1,5 +1,6 @@
 package org.jclouds.orion.blobstore;
 
+import java.util.List;
 import java.util.Set;
 
 import org.jclouds.blobstore.BlobStoreContext;
@@ -51,7 +52,12 @@ public class OrionBlobStore extends BaseBlobStore {
 
     @Override
     public boolean containerExists(String container) {
-	return api.containerExists(getUserLocation(), workspaceName);
+	return api.containerExists(getUserLocation(), container);
+    }
+
+    @Override
+    public void deleteContainer(String container) {
+	api.deleteContainer(getUserLocation(), container);
     }
 
     @Override
@@ -67,9 +73,8 @@ public class OrionBlobStore extends BaseBlobStore {
     }
 
     @Override
-    protected boolean deleteAndVerifyContainerGone(String arg0) {
-	// TODO Auto-generated method stub
-	throw new IllegalStateException("Not yet implemented.");
+    protected boolean deleteAndVerifyContainerGone(String container) {
+	return api.deleteContainer(getUserLocation(), container);
     }
 
     @Override
@@ -96,9 +101,31 @@ public class OrionBlobStore extends BaseBlobStore {
     }
 
     @Override
-    public String putBlob(String arg0, Blob arg1) {
-	// TODO Auto-generated method stub
-	throw new IllegalStateException("Not yet implemented.");
+    public String putBlob(String container, Blob blob) {
+
+	api.putFile(getUserLocation(), container, blob);
+	return null;
+    }
+
+    private String createPathRecursively(String container,
+	    List<String> differentPaths) {
+
+	String currentPath = "";
+	int startIndex = 0;
+	for (String path : differentPaths) {
+	    if (!api.doesFolderExist(getUserLocation(), container, path)) {
+		break;
+	    }
+	    startIndex++;
+	    currentPath = currentPath + path;
+	}
+	for (; startIndex < (differentPaths.size()); startIndex++) {
+	    api.createFolder(getUserLocation(), container, currentPath,
+		    differentPaths.get(startIndex));
+	    currentPath = currentPath + differentPaths.get(startIndex);
+	}
+	return currentPath;
+
     }
 
     @Override
