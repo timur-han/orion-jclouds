@@ -14,13 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.blobstore.strategy.impl;
+package org.jclouds.orion.blobstore.strategy.internal;
 
-import static com.google.common.base.Throwables.propagate;
-import static org.jclouds.concurrent.FutureIterables.awaitCompletion;
-
-import java.util.Map;
-import java.util.concurrent.TimeoutException;
+import static org.jclouds.concurrent.FutureIterables.transformParallel;
 
 import javax.annotation.Resource;
 import javax.inject.Named;
@@ -30,25 +26,32 @@ import org.jclouds.Constants;
 import org.jclouds.blobstore.AsyncBlobStore;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.domain.Blob;
-import org.jclouds.blobstore.internal.BlobRuntimeException;
+import org.jclouds.blobstore.domain.BlobMetadata;
+import org.jclouds.blobstore.options.ListContainerOptions;
 import org.jclouds.blobstore.reference.BlobStoreConstants;
-import org.jclouds.blobstore.strategy.PutBlobsStrategy;
+import org.jclouds.blobstore.strategy.GetBlobsInListStrategy;
+import org.jclouds.blobstore.strategy.ListBlobsInContainer;
+import org.jclouds.http.handlers.BackoffLimitedRetryHandler;
 import org.jclouds.logging.Logger;
 
-import com.google.common.collect.Maps;
+import com.google.common.base.Function;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 
 /**
+ * Retrieves all blobs in the blobstore under the current path, by the most efficient means
+ * possible.
  * 
  * @author Adrian Cole
  */
 @Singleton
-public class PutBlobsStrategyImpl implements PutBlobsStrategy {
+public class GetAllBlobsInListAndRetryOnFailure implements GetBlobsInListStrategy {
 
-   private final BlobStore blobstore;
-   private final ListeningExecutorService userExecutor;
+   protected final ListBlobsInContainer getAllBlobMetadata;
+   protected final BackoffLimitedRetryHandler retryHandler;
+   protected final BlobStore blobstore;
+   protected final ListeningExecutorService userExecutor;
    @Resource
    @Named(BlobStoreConstants.BLOBSTORE_LOGGER)
    protected Logger logger = Logger.NULL;
@@ -60,20 +63,16 @@ public class PutBlobsStrategyImpl implements PutBlobsStrategy {
    protected Long maxTime;
 
    @Inject
-   PutBlobsStrategyImpl(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
-            BlobStore blobstore) {
+   GetAllBlobsInListAndRetryOnFailure(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
+            ListBlobsInContainer getAllBlobMetadata, BlobStore blobstore, BackoffLimitedRetryHandler retryHandler) {
       this.userExecutor = userExecutor;
       this.blobstore = blobstore;
+      this.getAllBlobMetadata = getAllBlobMetadata;
+      this.retryHandler = retryHandler;
    }
 
-   @Override
-   public void execute(String containerName, Iterable<? extends Blob> blobs) {
-     
-      for (Blob blob : blobs) {
-         blobstore.putBlob(containerName, blob);
-      }
-
-     
+   public Iterable<Blob> execute(final String container, ListContainerOptions options) {
+      Iterable<? extends BlobMetadata> list = getAllBlobMetadata.execute(container, options);
+      return null;
    }
-
 }

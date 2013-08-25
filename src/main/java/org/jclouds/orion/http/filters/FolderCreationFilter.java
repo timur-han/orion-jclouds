@@ -9,11 +9,12 @@ import com.google.gson.JsonPrimitive;
 
 public class FolderCreationFilter implements HttpRequestFilter {
 
-    @Override
-    public HttpRequest filter(HttpRequest request) throws HttpException {
-	JsonObject dirObj = new JsonObject();
-	dirObj.add("Directory", new JsonPrimitive("true"));
-	return request;
-    }
+	@Override
+	public HttpRequest filter(HttpRequest request) throws HttpException {
+		JsonObject dirObj = new JsonObject();
+		dirObj.add("Directory", new JsonPrimitive("true"));
+		request.setPayload(dirObj.toString());
+		return request;
+	}
 
 }

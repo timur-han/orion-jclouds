@@ -1,4 +1,4 @@
-package org.jclouds.orion.blobstore.strategy.impl;
+package org.jclouds.orion.blobstore.strategy.internal;
 
 import org.jclouds.blobstore.strategy.ClearContainerStrategy;
 import org.jclouds.domain.Credentials;

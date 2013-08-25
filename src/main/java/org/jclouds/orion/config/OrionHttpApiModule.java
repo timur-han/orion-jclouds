@@ -35,27 +35,30 @@ import org.jclouds.rest.config.HttpApiModule;
 @ConfiguresHttpApi
 public class OrionHttpApiModule extends HttpApiModule<OrionApi> {
 
-	//public static final Map<Class<?>, Class<?>> DELEGATE_MAP = ImmutableMap.<Class<?>, Class<?>> builder().put(KeyApi.class, KeyAsyncApi.class).build();
-
+	// public static final Map<Class<?>, Class<?>> DELEGATE_MAP =
+	// ImmutableMap.<Class<?>, Class<?>> builder().put(KeyApi.class,
+	// KeyAsyncApi.class).build();
 
 	public OrionHttpApiModule() {
-		//bind(LocationsSupplier.class).to(LocationsProvider.class).in(Scopes.SINGLETON);
+
 	}
 
 	@Override
 	protected void bindErrorHandlers() {
-		this.bind(HttpErrorHandler.class).annotatedWith(Redirection.class).to(OrionErrorHandler.class);
-		this.bind(HttpErrorHandler.class).annotatedWith(ClientError.class).to(OrionErrorHandler.class);
-		this.bind(HttpErrorHandler.class).annotatedWith(ServerError.class).to(OrionErrorHandler.class);
+		this.bind(HttpErrorHandler.class).annotatedWith(Redirection.class)
+				.to(OrionErrorHandler.class);
+		this.bind(HttpErrorHandler.class).annotatedWith(ClientError.class)
+				.to(OrionErrorHandler.class);
+		this.bind(HttpErrorHandler.class).annotatedWith(ServerError.class)
+				.to(OrionErrorHandler.class);
 	}
 
 	@Override
 	protected void configure() {
+		install(new OrionBlobModule());
 		this.bind(DateAdapter.class).to(Iso8601DateAdapter.class);
 		super.configure();
 
 	}
-	
-	
 
 }
