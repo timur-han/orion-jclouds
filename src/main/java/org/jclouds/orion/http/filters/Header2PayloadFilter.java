@@ -19,12 +19,11 @@ public class Header2PayloadFilter implements HttpRequestFilter {
 	@Override
 	public HttpRequest filter(HttpRequest request) throws HttpException {
 		JsonObject dirObj = new JsonObject();
+		dirObj.add(OrionHttpFields.ORION_ATTRIBUTES, new JsonObject());
 		for (String headerKey : request.getHeaders().keySet()) {
-			if (headerKey.startsWith(OrionHttpFields.HEADER_TO_PAYLOAD_PREFIX)) {
-
-			}
+			// TODO move headers to json payload including attributes
 		}
+
 		return request;
 	}
-
 }

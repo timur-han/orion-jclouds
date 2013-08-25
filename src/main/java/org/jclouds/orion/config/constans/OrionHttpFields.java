@@ -18,6 +18,20 @@ public class OrionHttpFields {
 
 	// http header prefixes for the headers which will be converted to json
 	// payload by Header2PayloadFilter
-	public final static String HEADER_TO_PAYLOAD_PREFIX = "orion-specific-constant-";
+	public final static String HEADER_TO_JSON_PREFIX = "orion-specific-constant-";
+	public final static String HEADER_TO_JSONATTR_PREFIX = "orion-specific-attr-";
+
+	// Orion Specific Fields
+
+	public final static String ORION_NAME = "Name";
+	public final static String ORION_DIRECTORY = "Directory";
+	public final static String ORION_ATTRIBUTES = "Attributes";
+	public final static String ORION_CONTENT_TYPE = "ContentType";
+
+	public final static String ORION_ATTRIBUTE_READONLY = "ContentType";
+	public final static String ORION_ATTRIBUTE_EXECUTABLE = "Executable";
+	public final static String ORION_ATTRIBUTE_HIDDEN = "Hidden";
+	public final static String ORION_ATTRIBUTE_ARCHIVE = "Archive";
+	public final static String ORION_ATTRIBUTE_SYMLINK = "SymbolicLink";
 
 }

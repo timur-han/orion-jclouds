@@ -18,6 +18,7 @@ import org.jclouds.domain.Credentials;
 import org.jclouds.domain.Location;
 import org.jclouds.location.Provider;
 import org.jclouds.orion.OrionApi;
+import org.jclouds.orion.OrionUtils;
 import org.jclouds.orion.blobstore.functions.BlobToOrionBlob;
 import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.orion.domain.OrionBlob;

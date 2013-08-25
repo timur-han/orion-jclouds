@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 
 import org.jclouds.blobstore.domain.BlobMetadata;
 import org.jclouds.http.HttpUtils;
-import org.jclouds.orion.blobstore.OrionUtils;
+import org.jclouds.orion.OrionUtils;
 import org.jclouds.orion.domain.MutableBlobProperties;
 import org.jclouds.orion.domain.internal.MutableBlobPropertiesImpl;
 

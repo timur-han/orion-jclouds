@@ -18,6 +18,7 @@ package org.jclouds.orion;
 
 import java.io.Closeable;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -37,9 +38,11 @@ import org.jclouds.orion.blobstore.functions.CreationResponseParser;
 import org.jclouds.orion.blobstore.functions.FileDoesNotExistResponseParser;
 import org.jclouds.orion.blobstore.functions.FolderMetadataResponseParser;
 import org.jclouds.orion.blobstore.functions.HiddenFileFilter;
+import org.jclouds.orion.blobstore.functions.MetadataParser;
 import org.jclouds.orion.blobstore.validators.ContainerNameValidator;
 import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.orion.config.constans.OrionHttpFields;
+import org.jclouds.orion.domain.MutableBlobProperties;
 import org.jclouds.orion.domain.OrionBlob;
 import org.jclouds.orion.http.filters.FolderCreationFilter;
 import org.jclouds.orion.http.filters.FormAuthentication;
@@ -212,10 +215,11 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{container}/{parentPath}"
 			+ OrionConstantValues.ORION_METADATA_PATH + "{fileName}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ResponseParser(CreationResponseParser.class)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ResponseParser(MetadataParser.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	boolean getMetadata(
+	@FormParams(keys = { "parts" }, values = { "meta" })
+	MutableBlobProperties getMetadata(
 			@PathParam("userWorkspace") String userName,
 			@PathParam("container") String container,
 			@PathParam("parentPath") String parentPath,

@@ -1,4 +1,4 @@
-package org.jclouds.orion.blobstore;
+package org.jclouds.orion;
 
 import org.jclouds.orion.config.constans.OrionConstantValues;
 
