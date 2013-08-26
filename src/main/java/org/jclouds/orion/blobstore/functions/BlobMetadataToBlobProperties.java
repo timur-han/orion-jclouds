@@ -29,33 +29,33 @@ import org.jclouds.orion.domain.internal.MutableBlobPropertiesImpl;
 import com.google.common.base.Function;
 
 /**
- * @author Adrian Cole
+ * @author Adrian Cole, Timur Sungur
  */
 @Singleton
 public class BlobMetadataToBlobProperties implements
-		Function<BlobMetadata, MutableBlobProperties> {
+	Function<BlobMetadata, MutableBlobProperties> {
 
-	@Override
-	public MutableBlobProperties apply(BlobMetadata from) {
-		if (from == null) {
-			return null;
-		}
-		MutableBlobProperties to = new MutableBlobPropertiesImpl();
-		HttpUtils.copy(from.getContentMetadata(), to.getContentMetadata());
-		to.setParentPath(OrionUtils.fetchParentPath(from.getName()));
-		to.setETag(from.getETag());
-		String[] tempList = from.getName().split(to.getParentPath());
-		to.setName(tempList[tempList.length - 1]);
-		to.setUrl(from.getUri());
-		to.setLastModified(from.getLastModified());
-
-		if (from.getUserMetadata() != null) {
-			for (Entry<String, String> entry : from.getUserMetadata()
-					.entrySet()) {
-				to.getMetadata().put(entry.getKey().toLowerCase(),
-						entry.getValue());
-			}
-		}
-		return to;
+    @Override
+    public MutableBlobProperties apply(BlobMetadata from) {
+	if (from == null) {
+	    return null;
 	}
+	MutableBlobProperties to = new MutableBlobPropertiesImpl();
+	HttpUtils.copy(from.getContentMetadata(), to.getContentMetadata());
+	to.setParentPath(OrionUtils.fetchParentPath(from.getName()));
+	to.setETag(from.getETag());
+	String[] tempList = from.getName().split(to.getParentPath());
+	to.setName(tempList[tempList.length - 1]);
+	to.setUrl(from.getUri());
+	to.setLastModified(from.getLastModified());
+
+	if (from.getUserMetadata() != null) {
+	    for (Entry<String, String> entry : from.getUserMetadata()
+		    .entrySet()) {
+		to.getMetadata().put(entry.getKey().toLowerCase(),
+			entry.getValue());
+	    }
+	}
+	return to;
+    }
 }

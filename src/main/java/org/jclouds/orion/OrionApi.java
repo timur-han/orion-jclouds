@@ -38,7 +38,7 @@ import org.jclouds.orion.blobstore.functions.CreationResponseParser;
 import org.jclouds.orion.blobstore.functions.FileDoesNotExistResponseParser;
 import org.jclouds.orion.blobstore.functions.FolderMetadataResponseParser;
 import org.jclouds.orion.blobstore.functions.HiddenFileFilter;
-import org.jclouds.orion.blobstore.functions.MetadataParser;
+import org.jclouds.orion.blobstore.functions.MetadataResponseParser;
 import org.jclouds.orion.blobstore.validators.ContainerNameValidator;
 import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.orion.config.constans.OrionHttpFields;
@@ -67,162 +67,161 @@ import com.google.gson.JsonObject;
 @RequestFilters({ FormAuthentication.class })
 public interface OrionApi extends Closeable {
 
-	public static final String API_VERSION = "0.0.1";
+    public static final String API_VERSION = "0.0.1";
 
-	@GET
-	@Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/{container}")
-	@ResponseParser(FileDoesNotExistResponseParser.class)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	Boolean containerExists(@PathParam("userWorkspace") String userWorkspace,
-			@PathParam("container") String container);
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/{container}")
+    @ResponseParser(FileDoesNotExistResponseParser.class)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    Boolean containerExists(@PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("container") String container);
 
-	/**
-	 * Creates the container as a project in orion
-	 * 
-	 * @param userWorkspace
-	 * @param projectName
-	 * @return
-	 */
-	@POST
-	@Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/")
-	Boolean createContainerAsAProject(
-			@PathParam("userWorkspace") String userWorkspace,
-			@HeaderParam("Slug") @ParamValidators(ContainerNameValidator.class) String projectName);
+    /**
+     * Creates the container as a project in orion
+     * 
+     * @param userWorkspace
+     * @param projectName
+     * @return
+     */
+    @POST
+    @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/")
+    Boolean createContainerAsAProject(
+	    @PathParam("userWorkspace") String userWorkspace,
+	    @HeaderParam("Slug") @ParamValidators(ContainerNameValidator.class) String projectName);
 
-	@GET
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{containerName/}")
-	@FormParams(keys = { "depth" }, values = { "1" })
-	JsonObject listContainerContents(
-			@PathParam("userWorkspace") String userWorkspace,
-			@PathParam("containerName") String containerName);
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{containerName/}")
+    @FormParams(keys = { "depth" }, values = { "1" })
+    JsonObject listContainerContents(
+	    @PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("containerName") String containerName);
 
-	@DELETE
-	@Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/"
-			+ OrionConstantValues.ORION_FILE_PATH + "{container}")
-	@ResponseParser(FileDoesNotExistResponseParser.class)
-	Boolean deleteContainer(@PathParam("userWorkspace") String userWorkspace,
-			@PathParam("container") String container);
+    @DELETE
+    @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/"
+	    + OrionConstantValues.ORION_FILE_PATH + "{container}")
+    @ResponseParser(FileDoesNotExistResponseParser.class)
+    Boolean deleteContainer(@PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("container") String container);
 
-	@POST
-	@Path(OrionConstantValues.ORION_AUTH_PATH)
-	@Headers(keys = { OrionHttpFields.IGNORE_AUTHENTICATION,
-			OrionHttpFields.ORION_VERSION_FIELD }, values = { "",
-			OrionConstantValues.ORION_VERSION })
-	HttpResponse formLogin(
-			@FormParam(value = OrionHttpFields.USERNAME) String userName,
-			@FormParam(value = OrionHttpFields.PASSWORD) String pass);
+    @POST
+    @Path(OrionConstantValues.ORION_AUTH_PATH)
+    @Headers(keys = { OrionHttpFields.IGNORE_AUTHENTICATION,
+	    OrionHttpFields.ORION_VERSION_FIELD }, values = { "",
+	    OrionConstantValues.ORION_VERSION })
+    HttpResponse formLogin(
+	    @FormParam(value = OrionHttpFields.USERNAME) String userName,
+	    @FormParam(value = OrionHttpFields.PASSWORD) String pass);
 
-	@DELETE
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{pathToFile}")
-	@ResponseParser(FileDoesNotExistResponseParser.class)
-	void removeBlob(@PathParam("pathToFile") String pathToFile,
-			@HeaderParam(value = OrionHttpFields.HEADER_SLUG) String fileName);
+    @DELETE
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{pathToFile}")
+    @ResponseParser(FileDoesNotExistResponseParser.class)
+    void removeBlob(@PathParam("pathToFile") String pathToFile,
+	    @HeaderParam(value = OrionHttpFields.HEADER_SLUG) String fileName);
 
-	@POST
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{parentPath}")
-	@ResponseParser(CreationResponseParser.class)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	boolean createBlob(@PathParam("userWorkspace") String userWorkspace,
-			@PathParam("container") String container,
-			@PathParam("parentPath") String parentPath,
-			@HeaderParam(OrionHttpFields.HEADER_SLUG) String fileName);
+    @POST
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}")
+    @ResponseParser(CreationResponseParser.class)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    boolean createBlob(@PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath,
+	    @HeaderParam(OrionHttpFields.HEADER_SLUG) String fileName);
 
-	@PUT
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{parentPath}/{blobName}")
-	@ResponseParser(FileDoesNotExistResponseParser.class)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	boolean putBlob(@PathParam("userWorkspace") String userWorkspace,
-			@PathParam("container") String container,
-			@PathParam("parentPath") String parentPath,
-			@PathParam("blobName") @ParamParser(BlobName.class) OrionBlob blob);
+    @PUT
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}/{blobName}")
+    @ResponseParser(FileDoesNotExistResponseParser.class)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    boolean putBlob(@PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath,
+	    @PathParam("blobName") @ParamParser(BlobName.class) OrionBlob blob);
 
-	@GET
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{pathToFile}")
-	@ResponseParser(FolderMetadataResponseParser.class)
-	@FormParams(keys = { "type" }, values = { "meta" })
-	boolean folderExists(@PathParam("userWorkspace") String container,
-			@PathParam("container") String userLocation,
-			@PathParam("pathToFile") String firstPath);
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{pathToFile}")
+    @ResponseParser(FolderMetadataResponseParser.class)
+    @FormParams(keys = { "type" }, values = { "meta" })
+    boolean folderExists(@PathParam("userWorkspace") String container,
+	    @PathParam("container") String userLocation,
+	    @PathParam("pathToFile") String firstPath);
 
-	@POST
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{parentPath}")
-	@RequestFilters(FolderCreationFilter.class)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	@ResponseParser(CreationResponseParser.class)
-	void createFolder(@PathParam("userWorkspace") String userName,
-			@PathParam("container") String container,
-			@PathParam("parentPath") String parentPath,
-			@HeaderParam(OrionHttpFields.HEADER_SLUG) String name);
+    @POST
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}")
+    @RequestFilters(FolderCreationFilter.class)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    @ResponseParser(CreationResponseParser.class)
+    void createFolder(@PathParam("userWorkspace") String userName,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath,
+	    @HeaderParam(OrionHttpFields.HEADER_SLUG) String name);
 
-	@POST
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{parentPath}")
-	@RequestFilters(FolderCreationFilter.class)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Headers(keys = { OrionHttpFields.HEADER_SLUG,
-			OrionHttpFields.ORION_VERSION_FIELD }, values = {
-			OrionConstantValues.ORION_METADATA_PATH,
-			OrionConstantValues.ORION_VERSION })
-	@ResponseParser(CreationResponseParser.class)
-	boolean createMetadataFolder(@PathParam("userWorkspace") String userName,
-			@PathParam("container") String container,
-			@PathParam("parentPath") String parentPath);
+    @POST
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}")
+    @RequestFilters(FolderCreationFilter.class)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Headers(keys = { OrionHttpFields.HEADER_SLUG,
+	    OrionHttpFields.ORION_VERSION_FIELD }, values = {
+	    OrionConstantValues.ORION_METADATA_PATH,
+	    OrionConstantValues.ORION_VERSION })
+    @ResponseParser(CreationResponseParser.class)
+    boolean createMetadataFolder(@PathParam("userWorkspace") String userName,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath);
 
-	@GET
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{parentPath}"
-			+ OrionConstantValues.ORION_METADATA_PATH)
-	@ResponseParser(FolderMetadataResponseParser.class)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	boolean metadaFolderExits(@PathParam("userWorkspace") String userName,
-			@PathParam("container") String container,
-			@PathParam("parentPath") String parentPath);
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}"
+	    + OrionConstantValues.ORION_METADATA_PATH)
+    @ResponseParser(FolderMetadataResponseParser.class)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    boolean metadaFolderExits(@PathParam("userWorkspace") String userName,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath);
 
-	@POST
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{parentPath}"
-			+ OrionConstantValues.ORION_METADATA_PATH)
-	@Produces(MediaType.APPLICATION_JSON)
-	@ResponseParser(CreationResponseParser.class)
-	@RequestFilters(HiddenFileFilter.class)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	boolean createMetadata(@PathParam("userWorkspace") String userName,
-			@PathParam("container") String container,
-			@PathParam("parentPath") String parentPath,
-			@HeaderParam(OrionHttpFields.HEADER_SLUG) String fileName);
+    @POST
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}"
+	    + OrionConstantValues.ORION_METADATA_PATH)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ResponseParser(CreationResponseParser.class)
+    @RequestFilters(HiddenFileFilter.class)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    boolean createMetadata(@PathParam("userWorkspace") String userName,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath,
+	    @HeaderParam(OrionHttpFields.HEADER_SLUG) String fileName);
 
-	@PUT
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{parentPath}"
-			+ OrionConstantValues.ORION_METADATA_PATH + "{fileName}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ResponseParser(CreationResponseParser.class)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	boolean putMetadata(
-			@PathParam("userWorkspace") String userName,
-			@PathParam("container") String container,
-			@PathParam("parentPath") String parentPath,
-			@PathParam("fileName") @ParamParser(BlobMetadataName.class) @BinderParam(OrionMetadataBinder.class) OrionBlob blob);
+    @PUT
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}"
+	    + OrionConstantValues.ORION_METADATA_PATH + "{fileName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ResponseParser(CreationResponseParser.class)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    boolean putMetadata(
+	    @PathParam("userWorkspace") String userName,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath,
+	    @PathParam("fileName") @ParamParser(BlobMetadataName.class) @BinderParam(OrionMetadataBinder.class) OrionBlob blob);
 
-	@GET
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{container}/{parentPath}"
-			+ OrionConstantValues.ORION_METADATA_PATH + "{fileName}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ResponseParser(MetadataParser.class)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	@FormParams(keys = { "parts" }, values = { "meta" })
-	MutableBlobProperties getMetadata(
-			@PathParam("userWorkspace") String userName,
-			@PathParam("container") String container,
-			@PathParam("parentPath") String parentPath,
-			@PathParam("fileName") @ParamParser(BlobMetadataName.class) @BinderParam(OrionMetadataBinder.class) OrionBlob blob);
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}"
+	    + OrionConstantValues.ORION_METADATA_PATH + "{fileName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ResponseParser(MetadataResponseParser.class)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    MutableBlobProperties getMetadata(
+	    @PathParam("userWorkspace") String userName,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath,
+	    @PathParam("fileName") String blob);
 
 }

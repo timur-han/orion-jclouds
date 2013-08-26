@@ -20,24 +20,24 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
 
 public enum BlobType {
-	FOLDER_BLOB, PROJECT_BLOB, UNRECOGNIZED, FILE_BLOB;
+    FOLDER_BLOB, PROJECT_BLOB, UNRECOGNIZED, FILE_BLOB;
 
-	public String value() {
-		return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name());
-	}
+    public String value() {
+	return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name());
+    }
 
-	@Override
-	public String toString() {
-		return value();
-	}
+    @Override
+    public String toString() {
+	return value();
+    }
 
-	public static BlobType fromValue(String type) {
-		try {
-			return BlobType.valueOf(CaseFormat.UPPER_CAMEL.to(
-					CaseFormat.UPPER_UNDERSCORE,
-					Preconditions.checkNotNull(type, "type")));
-		} catch (IllegalArgumentException e) {
-			return UNRECOGNIZED;
-		}
+    public static BlobType fromValue(String type) {
+	try {
+	    return BlobType.valueOf(CaseFormat.UPPER_CAMEL.to(
+		    CaseFormat.UPPER_UNDERSCORE,
+		    Preconditions.checkNotNull(type, "type")));
+	} catch (IllegalArgumentException e) {
+	    return UNRECOGNIZED;
 	}
+    }
 }

@@ -25,45 +25,50 @@ import org.jclouds.orion.domain.internal.MutableBlobPropertiesImpl;
 
 import com.google.inject.ImplementedBy;
 
+/**
+ * 
+ * @author Adrian Cole, Timur Sungur
+ * 
+ */
 @ImplementedBy(MutableBlobPropertiesImpl.class)
 public interface MutableBlobProperties extends BlobProperties {
-	/**
-	 * @see ListableContainerProperties#getUrl
-	 */
-	void setUrl(URI url);
+    /**
+     * @see ListableContainerProperties#getUrl
+     */
+    void setUrl(URI url);
 
-	/**
-	 * @see ListableContainerProperties#getName
-	 */
-	void setName(String name);
+    /**
+     * @see ListableContainerProperties#getName
+     */
+    void setName(String name);
 
-	/**
-	 * @see ListableContainerProperties#getContainer
-	 */
-	void setContainer(String container);
+    /**
+     * @see ListableContainerProperties#getContainer
+     */
+    void setContainer(String container);
 
-	/**
-	 * @see ListableContainerProperties#getLastModified
-	 */
-	void setLastModified(Date lastModified);
+    /**
+     * @see ListableContainerProperties#getLastModified
+     */
+    void setLastModified(Date lastModified);
 
-	/**
-	 * @see ListableContainerProperties#getETag
-	 */
-	void setETag(String eTag);
+    /**
+     * @see ListableContainerProperties#getETag
+     */
+    void setETag(String eTag);
 
-	@Override
-	MutableContentMetadata getContentMetadata();
+    @Override
+    MutableContentMetadata getContentMetadata();
 
-	void setContentMetadata(MutableContentMetadata md);
+    void setContentMetadata(MutableContentMetadata md);
 
-	/**
-	 * @see ListableContainerProperties#getMetadata
-	 */
-	void setMetadata(Map<String, String> metadata);
+    /**
+     * @see ListableContainerProperties#getMetadata
+     */
+    void setMetadata(Map<String, String> metadata);
 
-	void setParentPath(String parentPath);
+    void setParentPath(String parentPath);
 
-	String getParentPath();
+    String getParentPath();
 
 }

@@ -32,40 +32,39 @@ import com.google.common.base.Preconditions;
 /**
  * @author Adrian Cole
  */
+
 @Singleton
 public class BlobPropertiesToBlobMetadata implements
-		Function<BlobProperties, MutableBlobMetadata> {
-	private final IfDirectoryReturnNameStrategy ifDirectoryReturnName;
+	Function<BlobProperties, MutableBlobMetadata> {
+    private final IfDirectoryReturnNameStrategy ifDirectoryReturnName;
 
-	@Inject
-	public BlobPropertiesToBlobMetadata(
-			IfDirectoryReturnNameStrategy ifDirectoryReturnName) {
-		this.ifDirectoryReturnName = Preconditions.checkNotNull(
-				ifDirectoryReturnName, "ifDirectoryReturnName");
+    @Inject
+    public BlobPropertiesToBlobMetadata(
+	    IfDirectoryReturnNameStrategy ifDirectoryReturnName) {
+	this.ifDirectoryReturnName = Preconditions.checkNotNull(
+		ifDirectoryReturnName, "ifDirectoryReturnName");
 
+    }
+
+    @Override
+    public MutableBlobMetadata apply(BlobProperties from) {
+	if (from == null) {
+	    return null;
 	}
+	MutableBlobMetadata to = new MutableBlobMetadataImpl();
+	HttpUtils.copy(from.getContentMetadata(), to.getContentMetadata());
+	to.setUserMetadata(from.getMetadata());
+	to.setETag(from.getETag());
+	to.setLastModified(from.getLastModified());
+	to.setName(from.getName());
+	to.setContainer(from.getContainer());
+	to.setUri(from.getUrl());
 
-	@Override
-	public MutableBlobMetadata apply(BlobProperties from) {
-		if (from == null) {
-			return null;
-		}
-		MutableBlobMetadata to = new MutableBlobMetadataImpl();
-		HttpUtils.copy(from.getContentMetadata(), to.getContentMetadata());
-		to.setUserMetadata(from.getMetadata());
-		to.setETag(from.getETag());
-		to.setLastModified(from.getLastModified());
-		to.setName(from.getName());
-		to.setContainer(from.getContainer());
-		to.setUri(from.getUrl());
-
-		String directoryName = ifDirectoryReturnName.execute(to);
-		if (directoryName != null) {
-			to.setName(directoryName);
-			to.setType(StorageType.RELATIVE_PATH);
-		} else {
-			to.setType(StorageType.BLOB);
-		}
-		return to;
+	if (from.getType() != org.jclouds.orion.domain.BlobType.FILE_BLOB) {
+	    to.setType(StorageType.RELATIVE_PATH);
+	} else {
+	    to.setType(StorageType.BLOB);
 	}
+	return to;
+    }
 }

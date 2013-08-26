@@ -9,32 +9,26 @@ import org.jclouds.orion.domain.OrionBlob;
 import org.jclouds.orion.domain.internal.OrionBlobImpl;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import com.google.inject.Scopes;
 
 public class OrionBlobModule extends AbstractModule {
+    @Override
+    protected void configure() {
+	install(new BlobStoreObjectModule());
+	bind(OrionBlob.Factory.class).to(OrionBlobFactory.class).in(
+		Scopes.SINGLETON);
+
+    }
+
+    private static class OrionBlobFactory implements OrionBlob.Factory {
+	@Inject
+	Provider<MutableBlobProperties> metadataProvider;
+
 	@Override
-	protected void configure() {
-		install(new BlobStoreObjectModule());
-		bind(OrionBlob.Factory.class).to(OrionBlobFactory.class).in(
-				Scopes.SINGLETON);
-
+	public OrionBlob create(MutableBlobProperties metadata) {
+	    return new OrionBlobImpl(metadata != null ? metadata
+		    : metadataProvider.get());
 	}
-
-	private static class OrionBlobFactory implements OrionBlob.Factory {
-		@Inject
-		Provider<MutableBlobProperties> metadataProvider;
-
-		@Override
-		public OrionBlob create(MutableBlobProperties metadata) {
-			return new OrionBlobImpl(metadata != null ? metadata
-					: metadataProvider.get());
-		}
-	}
-
-	@Provides
-	OrionBlob provideOrionBlob(OrionBlob.Factory factory) {
-		return factory.create(null);
-	}
+    }
 
 }
