@@ -7,16 +7,16 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.jclouds.http.HttpException;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpRequestFilter;
-import org.jclouds.orion.domain.OrionSpecificFileMetadata;
+import org.jclouds.orion.domain.internal.OrionSpecificFileMetadataImpl;
 
 import com.google.inject.Inject;
 
 public class CreateReadonlyFileFilter implements HttpRequestFilter {
 
-    private OrionSpecificFileMetadata metadata;
+    private OrionSpecificFileMetadataImpl metadata;
 
     @Inject
-    public CreateReadonlyFileFilter(OrionSpecificFileMetadata metadata) {
+    public CreateReadonlyFileFilter(OrionSpecificFileMetadataImpl metadata) {
 	this.metadata = metadata;
     }
 

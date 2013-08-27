@@ -7,7 +7,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.jclouds.http.HttpException;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpRequestFilter;
-import org.jclouds.orion.domain.OrionSpecificFileMetadata;
+import org.jclouds.orion.domain.internal.OrionSpecificFileMetadataImpl;
 
 import com.google.inject.Inject;
 
@@ -19,10 +19,10 @@ import com.google.inject.Inject;
  */
 public class EmptyRequestFilter implements HttpRequestFilter {
 
-    private final OrionSpecificFileMetadata metadata;
+    private final OrionSpecificFileMetadataImpl metadata;
 
     @Inject
-    public EmptyRequestFilter(OrionSpecificFileMetadata metadata) {
+    public EmptyRequestFilter(OrionSpecificFileMetadataImpl metadata) {
 	this.metadata = metadata;
     }
 

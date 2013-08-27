@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.domain;
+package org.jclouds.orion.domain.internal;
 
 import java.io.IOException;
 
@@ -24,16 +24,15 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jclouds.orion.domain.OrionSpecificFileMetadata;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * @author timur
  * 
  */
-public class OrionSpecificFileMetadata implements
-	Provider<OrionSpecificFileMetadata> {
+public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata {
 
     @JsonProperty("Name")
     private String name;
@@ -48,7 +47,7 @@ public class OrionSpecificFileMetadata implements
     @JsonProperty("ChildrenLocation")
     private String childrenLocation;
     @JsonProperty("Attributes")
-    private Attributes attributes = new Attributes();
+    private Attributes attributes = new AttributesImpl();
     @JsonProperty("CharSet")
     private String charSet;
     @JsonProperty("ContentType")
@@ -58,13 +57,14 @@ public class OrionSpecificFileMetadata implements
     private final ObjectMapper mapper;
 
     @Inject
-    public OrionSpecificFileMetadata(ObjectMapper mapper) {
+    public OrionSpecificFileMetadataImpl(ObjectMapper mapper) {
 	this.mapper = mapper;
     }
 
     /**
      * @return the name
      */
+    @Override
     public String getName() {
 	return name;
     }
@@ -73,6 +73,7 @@ public class OrionSpecificFileMetadata implements
      * @param name
      *            the name to set
      */
+    @Override
     public void setName(String name) {
 	this.name = name;
     }
@@ -80,6 +81,7 @@ public class OrionSpecificFileMetadata implements
     /**
      * @return the directory
      */
+    @Override
     public Boolean getDirectory() {
 	return directory;
     }
@@ -88,6 +90,7 @@ public class OrionSpecificFileMetadata implements
      * @param directory
      *            the directory to set
      */
+    @Override
     public void setDirectory(Boolean directory) {
 	this.directory = directory;
     }
@@ -95,6 +98,7 @@ public class OrionSpecificFileMetadata implements
     /**
      * @return the eTag
      */
+    @Override
     public String geteTag() {
 	return eTag;
     }
@@ -103,6 +107,7 @@ public class OrionSpecificFileMetadata implements
      * @param eTag
      *            the eTag to set
      */
+    @Override
     public void seteTag(String eTag) {
 	this.eTag = eTag;
     }
@@ -110,6 +115,7 @@ public class OrionSpecificFileMetadata implements
     /**
      * @return the localTimeStamp
      */
+    @Override
     public Long getLocalTimeStamp() {
 	return localTimeStamp;
     }
@@ -118,6 +124,7 @@ public class OrionSpecificFileMetadata implements
      * @param localTimeStamp
      *            the localTimeStamp to set
      */
+    @Override
     public void setLocalTimeStamp(Long localTimeStamp) {
 	this.localTimeStamp = localTimeStamp;
     }
@@ -125,6 +132,7 @@ public class OrionSpecificFileMetadata implements
     /**
      * @return the location
      */
+    @Override
     public String getLocation() {
 	return location;
     }
@@ -133,6 +141,7 @@ public class OrionSpecificFileMetadata implements
      * @param location
      *            the location to set
      */
+    @Override
     public void setLocation(String location) {
 	this.location = location;
     }
@@ -140,6 +149,7 @@ public class OrionSpecificFileMetadata implements
     /**
      * @return the childrenLocation
      */
+    @Override
     public String getChildrenLocation() {
 	return childrenLocation;
     }
@@ -148,6 +158,7 @@ public class OrionSpecificFileMetadata implements
      * @param childrenLocation
      *            the childrenLocation to set
      */
+    @Override
     public void setChildrenLocation(String childrenLocation) {
 	this.childrenLocation = childrenLocation;
     }
@@ -155,6 +166,7 @@ public class OrionSpecificFileMetadata implements
     /**
      * @return the attributes
      */
+    @Override
     public Attributes getAttributes() {
 	return attributes;
     }
@@ -163,6 +175,7 @@ public class OrionSpecificFileMetadata implements
      * @param attributes
      *            the attributes to set
      */
+    @Override
     public void setAttributes(Attributes attributes) {
 	this.attributes = attributes;
     }
@@ -170,6 +183,7 @@ public class OrionSpecificFileMetadata implements
     /**
      * @return the charSet
      */
+    @Override
     public String getCharSet() {
 	return charSet;
     }
@@ -178,6 +192,7 @@ public class OrionSpecificFileMetadata implements
      * @param charSet
      *            the charSet to set
      */
+    @Override
     public void setCharSet(String charSet) {
 	this.charSet = charSet;
     }
@@ -185,6 +200,7 @@ public class OrionSpecificFileMetadata implements
     /**
      * @return the contentType
      */
+    @Override
     public String getContentType() {
 	return contentType;
     }
@@ -193,6 +209,7 @@ public class OrionSpecificFileMetadata implements
      * @param contentType
      *            the contentType to set
      */
+    @Override
     public void setContentType(String contentType) {
 	this.contentType = contentType;
     }
@@ -200,6 +217,7 @@ public class OrionSpecificFileMetadata implements
     /**
      * @return the contentLegth
      */
+    @Override
     public Long getContentLegth() {
 	return contentLegth;
     }
@@ -208,11 +226,12 @@ public class OrionSpecificFileMetadata implements
      * @param contentLegth
      *            the contentLegth to set
      */
+    @Override
     public void setContentLegth(Long contentLegth) {
 	this.contentLegth = contentLegth;
     }
 
-    public class Attributes {
+    public class AttributesImpl implements Attributes {
 	@JsonProperty("ReadOnly")
 	Boolean readOnly = false;
 	@JsonProperty("Exectuable")
@@ -227,6 +246,7 @@ public class OrionSpecificFileMetadata implements
 	/**
 	 * @return the readOnly
 	 */
+	@Override
 	public Boolean getReadOnly() {
 	    return readOnly;
 	}
@@ -235,6 +255,7 @@ public class OrionSpecificFileMetadata implements
 	 * @param readOnly
 	 *            the readOnly to set
 	 */
+	@Override
 	public void setReadOnly(Boolean readOnly) {
 	    this.readOnly = readOnly;
 	}
@@ -242,6 +263,7 @@ public class OrionSpecificFileMetadata implements
 	/**
 	 * @return the executable
 	 */
+	@Override
 	public Boolean getExecutable() {
 	    return executable;
 	}
@@ -250,6 +272,7 @@ public class OrionSpecificFileMetadata implements
 	 * @param executable
 	 *            the executable to set
 	 */
+	@Override
 	public void setExecutable(Boolean executable) {
 	    this.executable = executable;
 	}
@@ -257,6 +280,7 @@ public class OrionSpecificFileMetadata implements
 	/**
 	 * @return the hidden
 	 */
+	@Override
 	public Boolean getHidden() {
 	    return hidden;
 	}
@@ -265,6 +289,7 @@ public class OrionSpecificFileMetadata implements
 	 * @param hidden
 	 *            the hidden to set
 	 */
+	@Override
 	public void setHidden(Boolean hidden) {
 	    this.hidden = hidden;
 	}
@@ -272,6 +297,7 @@ public class OrionSpecificFileMetadata implements
 	/**
 	 * @return the archive
 	 */
+	@Override
 	public Boolean getArchive() {
 	    return archive;
 	}
@@ -280,6 +306,7 @@ public class OrionSpecificFileMetadata implements
 	 * @param archive
 	 *            the archive to set
 	 */
+	@Override
 	public void setArchive(Boolean archive) {
 	    this.archive = archive;
 	}
@@ -287,6 +314,7 @@ public class OrionSpecificFileMetadata implements
 	/**
 	 * @return the symbolicLink
 	 */
+	@Override
 	public Boolean getSymbolicLink() {
 	    return symbolicLink;
 	}
@@ -295,40 +323,32 @@ public class OrionSpecificFileMetadata implements
 	 * @param symbolicLink
 	 *            the symbolicLink to set
 	 */
+	@Override
 	public void setSymbolicLink(Boolean symbolicLink) {
 	    this.symbolicLink = symbolicLink;
 	}
 
     }
 
+    @Override
     @JsonIgnore
     public String getJSONString() throws JsonGenerationException,
 	    JsonMappingException, IOException {
 	return mapper.writeValueAsString(this);
     }
 
-    @JsonIgnore
-    public OrionSpecificFileMetadata parseObject(String string)
-	    throws JsonGenerationException, JsonMappingException, IOException {
-	return mapper.readValue(string, OrionSpecificFileMetadata.class);
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.Provider#get()
-     */
     @Override
     @JsonIgnore
-    public OrionSpecificFileMetadata get() {
+    public OrionSpecificFileMetadataImpl parseObject(String string)
+	    throws JsonGenerationException, JsonMappingException, IOException {
+	return mapper.readValue(string, OrionSpecificFileMetadataImpl.class);
 
-	return this;
     }
 
+    @Override
     @JsonCreator
-    OrionSpecificFileMetadata getInstance() {
-	return new OrionSpecificFileMetadata(mapper);
+    public OrionSpecificFileMetadataImpl getInstance() {
+	return new OrionSpecificFileMetadataImpl(mapper);
     }
 
 }
