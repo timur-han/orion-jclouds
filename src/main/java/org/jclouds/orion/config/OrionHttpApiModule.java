@@ -56,6 +56,7 @@ public class OrionHttpApiModule extends HttpApiModule<OrionApi> {
 	@Override
 	protected void configure() {
 		install(new OrionBlobModule());
+		install(new OrionCustomModule());
 		this.bind(DateAdapter.class).to(Iso8601DateAdapter.class);
 		super.configure();
 

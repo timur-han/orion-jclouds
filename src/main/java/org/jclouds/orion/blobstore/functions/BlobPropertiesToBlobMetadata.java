@@ -16,18 +16,15 @@
  */
 package org.jclouds.orion.blobstore.functions;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jclouds.blobstore.domain.MutableBlobMetadata;
 import org.jclouds.blobstore.domain.StorageType;
 import org.jclouds.blobstore.domain.internal.MutableBlobMetadataImpl;
-import org.jclouds.blobstore.strategy.IfDirectoryReturnNameStrategy;
 import org.jclouds.http.HttpUtils;
 import org.jclouds.orion.domain.BlobProperties;
 
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 
 /**
  * @author Adrian Cole
@@ -35,36 +32,31 @@ import com.google.common.base.Preconditions;
 
 @Singleton
 public class BlobPropertiesToBlobMetadata implements
-	Function<BlobProperties, MutableBlobMetadata> {
-    private final IfDirectoryReturnNameStrategy ifDirectoryReturnName;
+		Function<BlobProperties, MutableBlobMetadata> {
 
-    @Inject
-    public BlobPropertiesToBlobMetadata(
-	    IfDirectoryReturnNameStrategy ifDirectoryReturnName) {
-	this.ifDirectoryReturnName = Preconditions.checkNotNull(
-		ifDirectoryReturnName, "ifDirectoryReturnName");
+	@Override
+	public MutableBlobMetadata apply(BlobProperties from) {
+		if (from == null) {
+			return null;
+		}
+		MutableBlobMetadata to = new MutableBlobMetadataImpl();
+		HttpUtils.copy(from.getContentMetadata(), to.getContentMetadata());
+		to.setUserMetadata(from.getMetadata());
+		to.setETag(from.getETag());
+		to.setLastModified(from.getLastModified());
+		to.setName(from.getName());
+		to.setContainer(from.getContainer());
+		to.setUri(from.getUrl());
 
-    }
-
-    @Override
-    public MutableBlobMetadata apply(BlobProperties from) {
-	if (from == null) {
-	    return null;
+		if (from.getType() == org.jclouds.orion.domain.BlobType.FOLDER_BLOB) {
+			to.setType(StorageType.FOLDER);
+		} else if (from.getType() == org.jclouds.orion.domain.BlobType.FILE_BLOB) {
+			to.setType(StorageType.BLOB);
+		} else if (from.getType() == org.jclouds.orion.domain.BlobType.PROJECT_BLOB) {
+			to.setType(StorageType.CONTAINER);
+		} else {
+			to.setType(null);
+		}
+		return to;
 	}
-	MutableBlobMetadata to = new MutableBlobMetadataImpl();
-	HttpUtils.copy(from.getContentMetadata(), to.getContentMetadata());
-	to.setUserMetadata(from.getMetadata());
-	to.setETag(from.getETag());
-	to.setLastModified(from.getLastModified());
-	to.setName(from.getName());
-	to.setContainer(from.getContainer());
-	to.setUri(from.getUrl());
-
-	if (from.getType() != org.jclouds.orion.domain.BlobType.FILE_BLOB) {
-	    to.setType(StorageType.RELATIVE_PATH);
-	} else {
-	    to.setType(StorageType.BLOB);
-	}
-	return to;
-    }
 }
