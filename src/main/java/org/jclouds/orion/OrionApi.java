@@ -37,15 +37,17 @@ import org.jclouds.orion.blobstore.functions.BlobName;
 import org.jclouds.orion.blobstore.functions.CreationResponseParser;
 import org.jclouds.orion.blobstore.functions.FileDoesNotExistResponseParser;
 import org.jclouds.orion.blobstore.functions.FolderMetadataResponseParser;
-import org.jclouds.orion.blobstore.functions.HiddenFileFilter;
 import org.jclouds.orion.blobstore.functions.MetadataResponseParser;
 import org.jclouds.orion.blobstore.validators.ContainerNameValidator;
 import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.orion.config.constans.OrionHttpFields;
 import org.jclouds.orion.domain.MutableBlobProperties;
 import org.jclouds.orion.domain.OrionBlob;
-import org.jclouds.orion.http.filters.FolderCreationFilter;
 import org.jclouds.orion.http.filters.FormAuthentication;
+import org.jclouds.orion.http.filters.create.CreateFolderFilter;
+import org.jclouds.orion.http.filters.create.CreateHiddenFileFilter;
+import org.jclouds.orion.http.filters.create.CreateReadonlyFileFilter;
+import org.jclouds.orion.http.filters.create.EmptyRequestFilter;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.FormParams;
 import org.jclouds.rest.annotations.Headers;
@@ -152,7 +154,7 @@ public interface OrionApi extends Closeable {
     @POST
     @Path(OrionConstantValues.ORION_FILE_PATH
 	    + "{userWorkspace}/{container}/{parentPath}")
-    @RequestFilters(FolderCreationFilter.class)
+    @RequestFilters({ EmptyRequestFilter.class, CreateFolderFilter.class })
     @Produces(MediaType.APPLICATION_JSON)
     @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
     @ResponseParser(CreationResponseParser.class)
@@ -164,7 +166,8 @@ public interface OrionApi extends Closeable {
     @POST
     @Path(OrionConstantValues.ORION_FILE_PATH
 	    + "{userWorkspace}/{container}/{parentPath}")
-    @RequestFilters(FolderCreationFilter.class)
+    @RequestFilters({ EmptyRequestFilter.class, CreateFolderFilter.class,
+	    CreateHiddenFileFilter.class, CreateReadonlyFileFilter.class })
     @Produces(MediaType.APPLICATION_JSON)
     @Headers(keys = { OrionHttpFields.HEADER_SLUG,
 	    OrionHttpFields.ORION_VERSION_FIELD }, values = {
@@ -191,7 +194,8 @@ public interface OrionApi extends Closeable {
 	    + OrionConstantValues.ORION_METADATA_PATH)
     @Produces(MediaType.APPLICATION_JSON)
     @ResponseParser(CreationResponseParser.class)
-    @RequestFilters(HiddenFileFilter.class)
+    @RequestFilters({ EmptyRequestFilter.class, CreateHiddenFileFilter.class,
+	    CreateReadonlyFileFilter.class })
     @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
     boolean createMetadata(@PathParam("userWorkspace") String userName,
 	    @PathParam("container") String container,
