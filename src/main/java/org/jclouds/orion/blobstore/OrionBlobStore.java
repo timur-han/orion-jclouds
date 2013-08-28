@@ -1,6 +1,9 @@
 package org.jclouds.orion.blobstore;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -66,8 +69,8 @@ public class OrionBlobStore extends BaseBlobStore {
 
     @Override
     public boolean blobExists(String container, String blobName) {
-	// TODO Auto-generated method stub
-	throw new IllegalStateException("Not yet implemented.");
+	return api.blobExits(getUserLocation(), container,
+		OrionUtils.getFilePath(blobName));
     }
 
     @Override
@@ -77,10 +80,10 @@ public class OrionBlobStore extends BaseBlobStore {
 	// they will be automatically removed in case it starts with that
 	// Get the blob name
 	// Convert the blob name to it's metadata file name and fetch it
-	return blobProps2BlobMetadata.apply(api.getMetadata(getUserLocation(),
-		container, parentPath, OrionUtils
-			.getMetadataFileName(OrionUtils.fetchName(blobName,
-				parentPath))));
+	return blobProps2BlobMetadata
+		.apply(api.getMetadata(getUserLocation(), container,
+			parentPath, OrionUtils.getMetadataFileName(OrionUtils
+				.fetchName(blobName))));
     }
 
     @Override
@@ -145,8 +148,10 @@ public class OrionBlobStore extends BaseBlobStore {
 	    e1.printStackTrace();
 	}
 
-	createPathRecursively(container, orionBlob.getProperties()
-		.getParentPath().split(OrionConstantValues.PATH_DELIMITER));
+	ArrayList<String> pathList = new ArrayList<String>(
+		Arrays.asList(orionBlob.getProperties().getParentPath()
+			.split(OrionConstantValues.PATH_DELIMITER)));
+	createPathRecursively(container, pathList);
 
 	api.createBlob(getUserLocation(), container, orionBlob.getProperties()
 		.getParentPath(), orionBlob);
@@ -194,8 +199,8 @@ public class OrionBlobStore extends BaseBlobStore {
      * @param container
      * @param pathArray
      */
-    private void createPathRecursively(String container, String[] pathArray) {
-	if (pathArray.length == 1) {
+    private void createPathRecursively(String container, List<String> pathArray) {
+	if (pathArray.size() == 1) {
 	    return;
 	}
 	String parentPath = "";
@@ -208,12 +213,12 @@ public class OrionBlobStore extends BaseBlobStore {
 	    startIndex++;
 	    parentPath = parentPath + path;
 	}
-	for (; startIndex < pathArray.length; startIndex++) {
+	for (; startIndex < pathArray.size(); startIndex++) {
 	    putBlob(container,
 		    blobUtils.blobBuilder().payload("")
-			    .name(parentPath + pathArray[startIndex])
+			    .name(parentPath + pathArray.get(startIndex))
 			    .type(StorageType.FOLDER).build());
-	    parentPath = parentPath + pathArray[startIndex]
+	    parentPath = parentPath + pathArray.get(startIndex)
 		    + OrionConstantValues.PATH_DELIMITER;
 	}
     }

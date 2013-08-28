@@ -35,37 +35,37 @@ import com.google.common.base.Function;
  */
 @Singleton
 public class BlobMetadataToBlobProperties implements
-		Function<BlobMetadata, MutableBlobProperties> {
+	Function<BlobMetadata, MutableBlobProperties> {
 
-	@Override
-	public MutableBlobProperties apply(BlobMetadata from) {
-		if (from == null) {
-			return null;
-		}
-		MutableBlobProperties to = new MutableBlobPropertiesImpl();
-		HttpUtils.copy(from.getContentMetadata(), to.getContentMetadata());
-		to.setParentPath(OrionUtils.fetchParentPath(from.getName()));
-		to.setETag(from.getETag());
-		to.setName(OrionUtils.fetchName(from.getName(), to.getParentPath()));
-		to.setUrl(from.getUri());
-		to.setLastModified(from.getLastModified());
-
-		if (from.getUserMetadata() != null) {
-			for (Entry<String, String> entry : from.getUserMetadata()
-					.entrySet()) {
-				to.getMetadata().put(entry.getKey().toLowerCase(),
-						entry.getValue());
-			}
-		}
-		if (from.getType() == StorageType.FOLDER) {
-			to.setType(BlobType.FOLDER_BLOB);
-		} else if (from.getType() == StorageType.BLOB) {
-			to.setType(BlobType.FILE_BLOB);
-		} else if (from.getType() == StorageType.CONTAINER) {
-			to.setType(BlobType.PROJECT_BLOB);
-		} else {
-			to.setType(BlobType.UNRECOGNIZED);
-		}
-		return to;
+    @Override
+    public MutableBlobProperties apply(BlobMetadata from) {
+	if (from == null) {
+	    return null;
 	}
+	MutableBlobProperties to = new MutableBlobPropertiesImpl();
+	HttpUtils.copy(from.getContentMetadata(), to.getContentMetadata());
+	to.setParentPath(OrionUtils.fetchParentPath(from.getName()));
+	to.setETag(from.getETag());
+	to.setName(OrionUtils.fetchName(from.getName()));
+	to.setUrl(from.getUri());
+	to.setLastModified(from.getLastModified());
+
+	if (from.getUserMetadata() != null) {
+	    for (Entry<String, String> entry : from.getUserMetadata()
+		    .entrySet()) {
+		to.getMetadata().put(entry.getKey().toLowerCase(),
+			entry.getValue());
+	    }
+	}
+	if (from.getType() == StorageType.FOLDER) {
+	    to.setType(BlobType.FOLDER_BLOB);
+	} else if (from.getType() == StorageType.BLOB) {
+	    to.setType(BlobType.FILE_BLOB);
+	} else if (from.getType() == StorageType.CONTAINER) {
+	    to.setType(BlobType.PROJECT_BLOB);
+	} else {
+	    to.setType(BlobType.UNRECOGNIZED);
+	}
+	return to;
+    }
 }

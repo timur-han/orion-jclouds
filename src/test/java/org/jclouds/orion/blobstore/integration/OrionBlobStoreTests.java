@@ -80,6 +80,20 @@ public class OrionBlobStoreTests {
     }
 
     @Test
+    protected void blobExists() throws Exception {
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.createContainerInLocation(null, container);
+	String blobName = "/level1/level2/Blob+"
+		+ Calendar.getInstance().getTimeInMillis();
+	Assert.assertEquals(blobStore.blobExists(container, blobName), false);
+	Blob blob = blobStore.blobBuilder(blobName).build();
+	blob.setPayload("PutBlobTest");
+	blobStore.putBlob(container, blob);
+	Assert.assertEquals(blobStore.blobExists(container, blobName), true);
+    }
+
+    @Test
     protected void putBigBlob() throws Exception {
 	String container = "Container+"
 		+ Calendar.getInstance().getTimeInMillis();

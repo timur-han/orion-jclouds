@@ -4,7 +4,7 @@ import org.jclouds.http.HttpResponse;
 
 import com.google.common.base.Function;
 
-public class FileDoesNotExistResponseParser implements Function<HttpResponse, Boolean> {
+public class FileExistsResponseParser implements Function<HttpResponse, Boolean> {
 
     @Override
     public Boolean apply(HttpResponse response) {
