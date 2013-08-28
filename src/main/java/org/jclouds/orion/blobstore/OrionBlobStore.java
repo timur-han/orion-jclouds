@@ -40,7 +40,7 @@ import com.google.inject.Inject;
 public class OrionBlobStore extends BaseBlobStore {
 
     private final OrionApi api;
-    private final String workspaceName;
+    private final String userWorkspace;
     private final BlobToOrionBlob blob2OrionBlob;
     private final BlobPropertiesToBlobMetadata blobProps2BlobMetadata;
     private final BlobUtils blobUtils;
@@ -57,7 +57,7 @@ public class OrionBlobStore extends BaseBlobStore {
 	super(context, blobUtils, defaultLocation, locations);
 	this.blobUtils = blobUtils;
 	this.api = Preconditions.checkNotNull(api, "api is null");
-	this.workspaceName = Preconditions.checkNotNull(creds.get(),
+	this.userWorkspace = Preconditions.checkNotNull(creds.get(),
 		"creds is null").identity;
 	this.blob2OrionBlob = Preconditions.checkNotNull(blob2OrionBlob,
 		"blob2OrionBlob is null");
@@ -117,13 +117,13 @@ public class OrionBlobStore extends BaseBlobStore {
     }
 
     @Override
-    public Blob getBlob(String arg0, String arg1, GetOptions arg2) {
-	// TODO Auto-generated method stub
-	throw new IllegalStateException("Not yet implemented.");
+    public Blob getBlob(String container, String blob, GetOptions arg2) {
+	return api.getBlob(getUserLocation(), container,
+		OrionUtils.fetchParentPath(blob), OrionUtils.fetchName(blob));
     }
 
     private String getUserLocation() {
-	return this.workspaceName;
+	return this.userWorkspace;
     }
 
     @Override
@@ -146,25 +146,24 @@ public class OrionBlobStore extends BaseBlobStore {
 	ByteArrayOutputStream tempOutputStream = new ByteArrayOutputStream();
 	try {
 	    IOUtils.copy(blob.getPayload().getInput(), tempOutputStream);
+	    orionBlob.setPayload(tempOutputStream.toByteArray());
 	} catch (IOException e1) {
-	    // TODO Auto-generated catch block
 	    e1.printStackTrace();
 	}
-
+	// Create above paths recursively
 	ArrayList<String> pathList = new ArrayList<String>(
 		Arrays.asList(orionBlob.getProperties().getParentPath()
 			.split(OrionConstantValues.PATH_DELIMITER)));
 	createPathRecursively(container, pathList);
+	orionBlob.getProperties().setContainer(container);
 
 	api.createBlob(getUserLocation(), container, orionBlob.getProperties()
 		.getParentPath(), orionBlob);
 	// put contents in case it has some contents
 	if (orionBlob.getProperties().getType() == BlobType.FILE_BLOB) {
-	    orionBlob.setPayload(tempOutputStream.toByteArray());
 	    api.putBlob(getUserLocation(), container, orionBlob.getProperties()
 		    .getParentPath(), orionBlob);
 	}
-
 	createMetadata(container, orionBlob);
 	return null;
     }

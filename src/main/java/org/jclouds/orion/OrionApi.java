@@ -30,11 +30,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.orion.blobstore.binders.BlobCreationBinder;
 import org.jclouds.orion.blobstore.binders.OrionMetadataBinder;
 import org.jclouds.orion.blobstore.functions.BlobMetadataName;
+import org.jclouds.orion.blobstore.functions.BlobRequestParser;
 import org.jclouds.orion.blobstore.functions.BlobName;
+import org.jclouds.orion.blobstore.functions.BlobNameToMetadataNameParser;
 import org.jclouds.orion.blobstore.functions.CreationResponseParser;
 import org.jclouds.orion.blobstore.functions.FileExistsResponseParser;
 import org.jclouds.orion.blobstore.functions.FolderMetadataResponseParser;
@@ -167,6 +170,29 @@ public interface OrionApi extends Closeable {
 	    @PathParam("container") String container,
 	    @PathParam("parentPath") String parentPath,
 	    @PathParam("blobName") @ParamParser(BlobName.class) OrionBlob blob);
+
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}"
+	    + OrionConstantValues.ORION_METADATA_PATH + "{fileName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ResponseParser(BlobRequestParser.class)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    Blob getBlob(
+	    @PathParam("userWorkspace") String userName,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath,
+	    @PathParam("fileName") @ParamParser(BlobNameToMetadataNameParser.class) String blobName);
+
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{parentPath}{blobName}")
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    HttpResponse getBlobContents(
+	    @PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("container") String container,
+	    @PathParam("parentPath") String parentPath,
+	    @PathParam("blobName") String blob);
 
     @GET
     @Path(OrionConstantValues.ORION_FILE_PATH

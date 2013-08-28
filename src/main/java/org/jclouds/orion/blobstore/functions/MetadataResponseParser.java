@@ -32,7 +32,7 @@ public class MetadataResponseParser implements
 	    properties = mapper.readValue(theString,
 		    MutableBlobProperties.class);
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
+	    System.out.println(response.getMessage());
 	    e.printStackTrace();
 	}
 

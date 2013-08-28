@@ -5,11 +5,15 @@ import java.io.InputStream;
 import java.util.Calendar;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobMetadata;
+import org.jclouds.blobstore.domain.PageSet;
+import org.jclouds.blobstore.domain.StorageMetadata;
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -18,6 +22,15 @@ import org.testng.annotations.Test;
 public class OrionBlobStoreTests {
 
     private BlobStore blobStore;
+
+    @BeforeSuite
+    protected void setUp() throws Exception {
+	BlobStoreContext context = ContextBuilder.newBuilder("orionblob")
+		.endpoint("http://127.0.0.1:8080")
+		.credentials("timur", "123456").build(BlobStoreContext.class);
+	// create a container in the default location
+	blobStore = context.getBlobStore();
+    }
 
     @Test
     protected void createContainer() throws Exception {
@@ -151,12 +164,40 @@ public class OrionBlobStoreTests {
 
     }
 
-    @BeforeSuite
-    protected void setUp() throws Exception {
-	BlobStoreContext context = ContextBuilder.newBuilder("orionblob")
-		.endpoint("http://127.0.0.1:8080")
-		.credentials("timur", "123456").build(BlobStoreContext.class);
-	// create a container in the default location
-	blobStore = context.getBlobStore();
+    @Test
+    protected void getBlob() throws Exception {
+	String payload = "PutBlobTest";
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.createContainerInLocation(null, container);
+	String blobName = "/level1/level2/Blob+"
+		+ Calendar.getInstance().getTimeInMillis();
+	Blob blob = blobStore.blobBuilder(blobName).build();
+	blob.setPayload(payload);
+	blob.getMetadata().getUserMetadata().put("test", "test");
+	blobStore.putBlob(container, blob);
+	Blob returnBlob = blobStore.getBlob(container, blobName);
+	ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
+	IOUtils.copy(returnBlob.getPayload().getInput(), tempStream);
+
+	Assert.assertEquals(payload, new String(tempStream.toByteArray()));
+
     }
+
+    @Test
+    protected void listBlobs() throws Exception {
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.createContainerInLocation(null, container);
+	String blobName = "/level1/level2/Blob+"
+		+ Calendar.getInstance().getTimeInMillis();
+	Blob blob = blobStore.blobBuilder(blobName).build();
+	blob.setPayload("PutBlobTest");
+	blob.getMetadata().getUserMetadata().put("test", "test");
+	blobStore.putBlob(container, blob);
+
+	PageSet<? extends StorageMetadata> resultSet = blobStore.list();
+
+    }
+
 }

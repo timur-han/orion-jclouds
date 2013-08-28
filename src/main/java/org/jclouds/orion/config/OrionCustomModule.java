@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jclouds.orion.config;
 
 import org.codehaus.jackson.Version;
@@ -16,33 +32,38 @@ import org.jclouds.orion.domain.internal.OrionSpecificFileMetadataImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
+/**
+ * 
+ * @author timur
+ * 
+ */
 public class OrionCustomModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
+    @Override
+    protected void configure() {
 
-	}
+    }
 
-	@Provides
-	public ObjectMapper getObjectMapper() {
-		// configure objectmapper and provide it
-		SimpleModule module = new SimpleModule("SimpleAbstractTypeResolver",
-				Version.unknownVersion());
-		module.addAbstractTypeMapping(MutableBlobProperties.class,
-				MutableBlobPropertiesImpl.class);
-		module.addAbstractTypeMapping(MutableContentMetadata.class,
-				BaseMutableContentMetadata.class);
-		module.addAbstractTypeMapping(OrionSpecificFileMetadata.class,
-				OrionSpecificFileMetadataImpl.class);
-		module.addAbstractTypeMapping(Attributes.class, AttributesImpl.class);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(module);
-		mapper.setSerializationInclusion(Inclusion.NON_NULL);
-		return mapper;
-	}
+    @Provides
+    public ObjectMapper getObjectMapper() {
+	// configure objectmapper and provide it
+	SimpleModule module = new SimpleModule("SimpleAbstractTypeResolver",
+		Version.unknownVersion());
+	module.addAbstractTypeMapping(MutableBlobProperties.class,
+		MutableBlobPropertiesImpl.class);
+	module.addAbstractTypeMapping(MutableContentMetadata.class,
+		BaseMutableContentMetadata.class);
+	module.addAbstractTypeMapping(OrionSpecificFileMetadata.class,
+		OrionSpecificFileMetadataImpl.class);
+	module.addAbstractTypeMapping(Attributes.class, AttributesImpl.class);
+	ObjectMapper mapper = new ObjectMapper();
+	mapper.registerModule(module);
+	mapper.setSerializationInclusion(Inclusion.NON_NULL);
+	return mapper;
+    }
 
-	@Provides
-	OrionSpecificFileMetadata getOrionSpecificFileMetadata() {
-		return new OrionSpecificFileMetadataImpl();
-	}
+    @Provides
+    OrionSpecificFileMetadata getOrionSpecificFileMetadata() {
+	return new OrionSpecificFileMetadataImpl();
+    }
 }

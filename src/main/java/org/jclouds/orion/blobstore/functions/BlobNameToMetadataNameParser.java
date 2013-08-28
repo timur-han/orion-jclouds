@@ -14,34 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.domain;
+package org.jclouds.orion.blobstore.functions;
 
-import com.google.common.base.CaseFormat;
-import com.google.common.base.Preconditions;
+import org.jclouds.orion.OrionUtils;
+
+import com.google.common.base.Function;
 
 /**
+ * @author timur
  * 
- * @author Adrian Cole, Timur Sungur
  */
-public enum BlobType {
-    FOLDER_BLOB, PROJECT_BLOB, UNRECOGNIZED, FILE_BLOB;
+public class BlobNameToMetadataNameParser implements Function<Object, String> {
 
-    public String value() {
-	return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name());
-    }
-
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.google.common.base.Function#apply(java.lang.Object)
+     */
     @Override
-    public String toString() {
-	return value();
+    public String apply(Object blobName) {
+	return OrionUtils.getMetadataFileName((String) blobName);
+
     }
 
-    public static BlobType fromValue(String type) {
-	try {
-	    return BlobType.valueOf(CaseFormat.UPPER_CAMEL.to(
-		    CaseFormat.UPPER_UNDERSCORE,
-		    Preconditions.checkNotNull(type, "type")));
-	} catch (IllegalArgumentException e) {
-	    return UNRECOGNIZED;
-	}
-    }
 }

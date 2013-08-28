@@ -24,6 +24,12 @@ public class OrionUtils {
 	return fetchedParent;
     }
 
+    /**
+     * Requires a blob name without parent path
+     * 
+     * @param blobName
+     * @return
+     */
     static public String getMetadataFileName(String blobName) {
 	MessageDigest messageDigest;
 	try {
