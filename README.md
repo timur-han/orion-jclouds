@@ -1,10 +1,11 @@
 orion
 =====
 
-jclouds blobstore implementation for orion based back-ends
+jclouds blobstore implementation for orion based back-ends. This implementation is based on maven archetype of jclouds: http://jclouds.incubator.apache.org/documentation/devguides/creating-providers-with-maven/. 
 
 =====
 
-Orion to Blobstore Mapping
-====
-Containers in a Blobstore  = Sites + Workspaces so for each container a site and a workspace is assigned
+- Default end point is http://orionhub.org
+- File paths need to end with a "/" and they should not have a "/" at the beginning: filePath/
+
+Blob locations: host/container/blob
