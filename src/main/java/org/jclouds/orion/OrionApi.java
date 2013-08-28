@@ -55,6 +55,7 @@ import org.jclouds.rest.annotations.FormParams;
 import org.jclouds.rest.annotations.Headers;
 import org.jclouds.rest.annotations.ParamParser;
 import org.jclouds.rest.annotations.ParamValidators;
+import org.jclouds.rest.annotations.QueryParams;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.ResponseParser;
 
@@ -77,6 +78,7 @@ public interface OrionApi extends Closeable {
     @Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/{container}")
     @ResponseParser(FileExistsResponseParser.class)
     @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    @QueryParams(keys = { OrionHttpFields.FROM_PARAM_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
     Boolean containerExists(@PathParam("userWorkspace") String userWorkspace,
 	    @PathParam("container") String container);
 
@@ -105,6 +107,14 @@ public interface OrionApi extends Closeable {
     @Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/"
 	    + OrionConstantValues.ORION_FILE_PATH + "{container}")
     @ResponseParser(FileExistsResponseParser.class)
+    Boolean deleteContainerMetadata(
+	    @PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("container") String container);
+
+    @DELETE
+    @Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/"
+	    + "{container}")
+    @ResponseParser(FileExistsResponseParser.class)
     Boolean deleteContainer(@PathParam("userWorkspace") String userWorkspace,
 	    @PathParam("container") String container);
 
@@ -117,12 +127,26 @@ public interface OrionApi extends Closeable {
 	    @FormParam(value = OrionHttpFields.USERNAME) String userName,
 	    @FormParam(value = OrionHttpFields.PASSWORD) String pass);
 
+    // Normally only metadata needs to be fetched however
+    @GET
+    @Path(OrionConstantValues.ORION_FILE_PATH
+	    + "{userWorkspace}/{container}/{path}")
+    @ResponseParser(FileExistsResponseParser.class)
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    @QueryParams(keys = { OrionHttpFields.FROM_PARAM_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
+    @RequestFilters(EmptyDebugFilter.class)
+    boolean blobExits(@PathParam("userWorkspace") String userName,
+	    @PathParam("container") String container,
+	    @PathParam("path") String path);
+
     @DELETE
     @Path(OrionConstantValues.ORION_FILE_PATH
-	    + "{userWorkspace}/{container}/{pathToFile}")
+	    + "{userWorkspace}/{container}/{blobPath}")
     @ResponseParser(FileExistsResponseParser.class)
-    void removeBlob(@PathParam("pathToFile") String pathToFile,
-	    @HeaderParam(value = OrionHttpFields.HEADER_SLUG) String fileName);
+    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+    boolean removeBlob(@PathParam("userWorkspace") String userWorkspace,
+	    @PathParam("container") String container,
+	    @PathParam("blobPath") String blobPath);
 
     @POST
     @Path(OrionConstantValues.ORION_FILE_PATH
@@ -217,16 +241,5 @@ public interface OrionApi extends Closeable {
 	    @PathParam("container") String container,
 	    @PathParam("parentPath") String parentPath,
 	    @PathParam("fileName") String blob);
-
-    @GET
-    @Path(OrionConstantValues.ORION_FILE_PATH
-	    + "{userWorkspace}/{container}/{path}")
-    @ResponseParser(FileExistsResponseParser.class)
-    @Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-    @FormParams(keys = { OrionHttpFields.FROM_PARAM_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
-    @RequestFilters(EmptyDebugFilter.class)
-    boolean blobExits(@PathParam("userWorkspace") String userName,
-	    @PathParam("container") String container,
-	    @PathParam("path") String path);
 
 }

@@ -93,7 +93,9 @@ public class OrionBlobStore extends BaseBlobStore {
 
     @Override
     public void deleteContainer(String container) {
+	api.deleteContainerMetadata(getUserLocation(), container);
 	api.deleteContainer(getUserLocation(), container);
+
     }
 
     @Override
@@ -110,6 +112,7 @@ public class OrionBlobStore extends BaseBlobStore {
 
     @Override
     protected boolean deleteAndVerifyContainerGone(String container) {
+	api.deleteContainerMetadata(getUserLocation(), container);
 	return api.deleteContainer(getUserLocation(), container);
     }
 
@@ -167,15 +170,14 @@ public class OrionBlobStore extends BaseBlobStore {
     }
 
     @Override
-    public String putBlob(String arg0, Blob arg1, PutOptions arg2) {
-	// TODO Auto-generated method stub
-	throw new IllegalStateException("Not yet implemented.");
+    public String putBlob(String container, Blob blob, PutOptions arg2) {
+	return putBlob(container, blob);
     }
 
     @Override
-    public void removeBlob(String arg0, String arg1) {
-	// TODO Auto-generated method stub
-	throw new IllegalStateException("Not yet implemented.");
+    public void removeBlob(String container, String blobName) {
+	api.removeBlob(getUserLocation(), container,
+		OrionUtils.getFilePath(blobName));
     }
 
     private boolean createMetadata(String container, OrionBlob blob) {

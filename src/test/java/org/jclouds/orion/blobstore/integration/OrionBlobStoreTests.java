@@ -20,18 +20,6 @@ public class OrionBlobStoreTests {
     private BlobStore blobStore;
 
     @Test
-    protected void containerExists() throws Exception {
-	String container = "Container+"
-		+ Calendar.getInstance().getTimeInMillis();
-	blobStore.createContainerInLocation(null, container);
-	Assert.assertTrue(blobStore.containerExists(container),
-		"Container SHOULD exist");
-	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
-		.getInstance().getTimeInMillis())),
-		"Container SHOULD NOT exist");
-    }
-
-    @Test
     protected void createContainer() throws Exception {
 	blobStore.createContainerInLocation(null, "Container+"
 		+ Calendar.getInstance().getTimeInMillis());
@@ -63,6 +51,18 @@ public class OrionBlobStoreTests {
     }
 
     @Test
+    protected void containerExists() throws Exception {
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.createContainerInLocation(null, container);
+	Assert.assertTrue(blobStore.containerExists(container),
+		"Container SHOULD exist");
+	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+		.getInstance().getTimeInMillis())),
+		"Container SHOULD NOT exist");
+    }
+
+    @Test
     protected void putBlob() throws Exception {
 	String container = "Container+"
 		+ Calendar.getInstance().getTimeInMillis();
@@ -77,6 +77,26 @@ public class OrionBlobStoreTests {
 	Blob blob = blobStore.blobBuilder(blobName).build();
 	blob.setPayload("PutBlobTest");
 	blobStore.putBlob(container, blob);
+    }
+
+    @Test
+    protected void removeBlob() throws Exception {
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.createContainerInLocation(null, container);
+	Assert.assertTrue(blobStore.containerExists(container),
+		"Container SHOULD exist");
+	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+		.getInstance().getTimeInMillis())),
+		"Container SHOULD NOT exist");
+	String blobName = "/level1/level2/Blob+"
+		+ Calendar.getInstance().getTimeInMillis();
+	Blob blob = blobStore.blobBuilder(blobName).build();
+	blob.setPayload("PutBlobTest");
+	blobStore.putBlob(container, blob);
+	Assert.assertEquals(true, blobStore.blobExists(container, blobName));
+	blobStore.removeBlob(container, blobName);
+	Assert.assertEquals(false, blobStore.blobExists(container, blobName));
     }
 
     @Test
