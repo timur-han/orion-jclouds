@@ -12,8 +12,12 @@ import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobMetadata;
+<<<<<<< HEAD
 import org.jclouds.blobstore.domain.PageSet;
 import org.jclouds.blobstore.domain.StorageMetadata;
+=======
+import org.jclouds.blobstore.domain.StorageType;
+>>>>>>> 47e58634f57c8c8d4d070c1f9cb2638043b12cf4
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -23,6 +27,7 @@ public class OrionBlobStoreTests {
 
 	private BlobStore blobStore;
 
+<<<<<<< HEAD
     @BeforeSuite
     protected void setUp() throws Exception {
 	BlobStoreContext context = ContextBuilder.newBuilder("orionblob")
@@ -40,18 +45,18 @@ public class OrionBlobStoreTests {
 
     @Test
     protected void deleteContainer() throws Exception {
-		String container = "Container+"
-				+ Calendar.getInstance().getTimeInMillis();
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
 	blobStore.deleteContainer(container);
-		blobStore.createContainerInLocation(null, container);
-		Assert.assertTrue(blobStore.containerExists(container),
-				"Container SHOULD exist");
-		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
-				.getInstance().getTimeInMillis())),
-				"Container SHOULD NOT exist");
-	}
+	blobStore.createContainerInLocation(null, container);
+	Assert.assertTrue(blobStore.containerExists(container),
+		"Container SHOULD exist");
+	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+		.getInstance().getTimeInMillis())),
+		"Container SHOULD NOT exist");
+    }
 
-	@Test
+    @Test
     protected void clearContainer() throws Exception {
 	String container = "Container+"
 		+ Calendar.getInstance().getTimeInMillis();
@@ -61,39 +66,102 @@ public class OrionBlobStoreTests {
 	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
 		.getInstance().getTimeInMillis())),
 		"Container SHOULD NOT exist");
-	}
+    }
 
-	@Test
+    @Test
     protected void containerExists() throws Exception {
-		String container = "Container+"
-				+ Calendar.getInstance().getTimeInMillis();
-		blobStore.createContainerInLocation(null, container);
-		Assert.assertTrue(blobStore.containerExists(container),
-				"Container SHOULD exist");
-		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
-				.getInstance().getTimeInMillis())),
-				"Container SHOULD NOT exist");
-	}
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.createContainerInLocation(null, container);
+	Assert.assertTrue(blobStore.containerExists(container),
+		"Container SHOULD exist");
+	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+		.getInstance().getTimeInMillis())),
+		"Container SHOULD NOT exist");
+    }
 
-	@Test
+    @Test
     protected void putBlob() throws Exception {
-		String container = "Container+"
-				+ Calendar.getInstance().getTimeInMillis();
-		blobStore.createContainerInLocation(null, container);
-		Assert.assertTrue(blobStore.containerExists(container),
-				"Container SHOULD exist");
-		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
-				.getInstance().getTimeInMillis())),
-				"Container SHOULD NOT exist");
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.createContainerInLocation(null, container);
+	Assert.assertTrue(blobStore.containerExists(container),
+		"Container SHOULD exist");
+	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+		.getInstance().getTimeInMillis())),
+		"Container SHOULD NOT exist");
 	String blobName = "/level1/level2/Blob+"
 		+ Calendar.getInstance().getTimeInMillis();
 	Blob blob = blobStore.blobBuilder(blobName).build();
 	blob.setPayload("PutBlobTest");
 	blobStore.putBlob(container, blob);
+    }
+
+    @Test
+    protected void removeBlob() throws Exception {
+	String container = "Container+"
+		+ Calendar.getInstance().getTimeInMillis();
+	blobStore.createContainerInLocation(null, container);
+	Assert.assertTrue(blobStore.containerExists(container),
+		"Container SHOULD exist");
+	Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+		.getInstance().getTimeInMillis())),
+		"Container SHOULD NOT exist");
+	String blobName = "/level1/level2/Blob+"
+		+ Calendar.getInstance().getTimeInMillis();
+	Blob blob = blobStore.blobBuilder(blobName).build();
+	blob.setPayload("PutBlobTest");
+	blobStore.putBlob(container, blob);
+	Assert.assertEquals(true, blobStore.blobExists(container, blobName));
+	blobStore.removeBlob(container, blobName);
+	Assert.assertEquals(false, blobStore.blobExists(container, blobName));
+    }
+=======
+	@Test
+	protected void containerExists() throws Exception {
+		String container = "Container+"
+				+ Calendar.getInstance().getTimeInMillis();
+		blobStore.createContainerInLocation(null, container);
+		Assert.assertTrue(blobStore.containerExists(container),
+				"Container SHOULD exist");
+		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+				.getInstance().getTimeInMillis())),
+				"Container SHOULD NOT exist");
 	}
 
 	@Test
-    protected void removeBlob() throws Exception {
+	protected void createContainer() throws Exception {
+		blobStore.createContainerInLocation(null, "Container+"
+				+ Calendar.getInstance().getTimeInMillis());
+	}
+
+	@Test
+	protected void deleteContainer() throws Exception {
+		String container = "Container+"
+				+ Calendar.getInstance().getTimeInMillis();
+		blobStore.deleteContainer(container);
+		blobStore.createContainerInLocation(null, container);
+		Assert.assertTrue(blobStore.containerExists(container),
+				"Container SHOULD exist");
+		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+				.getInstance().getTimeInMillis())),
+				"Container SHOULD NOT exist");
+	}
+
+	@Test
+	protected void clearContainer() throws Exception {
+		String container = "Container+"
+				+ Calendar.getInstance().getTimeInMillis();
+		blobStore.createContainerInLocation(null, container);
+		Assert.assertTrue(blobStore.containerExists(container),
+				"Container SHOULD exist");
+		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
+				.getInstance().getTimeInMillis())),
+				"Container SHOULD NOT exist");
+	}
+
+	@Test
+	protected void putBlob() throws Exception {
 		String container = "Container+"
 				+ Calendar.getInstance().getTimeInMillis();
 		blobStore.createContainerInLocation(null, container);
@@ -106,11 +174,9 @@ public class OrionBlobStoreTests {
 				+ Calendar.getInstance().getTimeInMillis();
 		Blob blob = blobStore.blobBuilder(blobName).payload("")
 				.type(StorageType.FOLDER).build();
+>>>>>>> 47e58634f57c8c8d4d070c1f9cb2638043b12cf4
 
 		blobStore.putBlob(container, blob);
-	Assert.assertEquals(true, blobStore.blobExists(container, blobName));
-	blobStore.removeBlob(container, blobName);
-	Assert.assertEquals(false, blobStore.blobExists(container, blobName));
 	}
 
 	@Test
@@ -163,8 +229,7 @@ public class OrionBlobStoreTests {
 		Assert.assertEquals(metadata.getUserMetadata().containsKey("test"),
 				true, "user metadata is not there");
 
-	}
-
+<<<<<<< HEAD
     @Test
     protected void getBlob() throws Exception {
 	String payload = "PutBlobTest";
@@ -199,6 +264,18 @@ public class OrionBlobStoreTests {
 
 	PageSet<? extends StorageMetadata> resultSet = blobStore.list();
 
+    }
+
+=======
 	}
 
+	@BeforeSuite
+	protected void setUp() throws Exception {
+		BlobStoreContext context = ContextBuilder.newBuilder("orionblob")
+				.endpoint("http://127.0.0.1:8080")
+				.credentials("timur", "123456").build(BlobStoreContext.class);
+		// create a container in the default location
+		blobStore = context.getBlobStore();
+	}
+>>>>>>> 47e58634f57c8c8d4d070c1f9cb2638043b12cf4
 }

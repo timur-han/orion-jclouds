@@ -43,57 +43,60 @@ import com.google.inject.Inject;
  */
 @Singleton
 public class OrionErrorHandler implements HttpErrorHandler {
-    private final Credentials creds;
-    private final HttpCommandExecutorService commandExecutor;
+	private final Credentials creds;
+	private final HttpCommandExecutorService commandExecutor;
 
-    @Inject
-    public OrionErrorHandler(@Provider Supplier<Credentials> creds,
-	    HttpCommandExecutorService commandExecutor) {
-	this.commandExecutor = Preconditions.checkNotNull(commandExecutor,
-		"HttpCommandExecutorService");
-	Preconditions.checkNotNull(creds, "creds");
-	this.creds = creds.get();
-    }
-
-    @Override
-    public void handleError(HttpCommand command, HttpResponse response) {
-	// it is important to always read fully and close streams
-	byte[] data = HttpUtils.closeClientButKeepContentStream(response);
-	String message = data != null ? new String(data) : null;
-
-	Exception exception = message != null ? new HttpResponseException(
-		command, response, message) : new HttpResponseException(
-		command, response);
-	message = message != null ? message : String
-		.format("%s -> %s", command.getCurrentRequest()
-			.getRequestLine(), response.getStatusLine());
-	switch (response.getStatusCode()) {
-	case 400:
-	    command.setException(exception);
-	    break;
-	case 401:
-	case 403:
-	    if ((command.getFailureCount() < 3)
-		    && FormAuthentication.hasKey(creds.identity)) {
-		// Remove the outdated key and replay the request
-		FormAuthentication.removeKey(creds.identity);
-		commandExecutor.invoke(command);
-	    } else {
-		exception = new AuthorizationException(message, exception);
-		command.setException(exception);
-	    }
-	    break;
-	case 404:
-	    if (!command.getCurrentRequest().getMethod().equals("DELETE")) {
-		// exception = new ResourceNotFoundException(message,
-		// exception);
-	    }
-	    break;
-	case 409:
-	    exception = new IllegalStateException(message, exception);
-	    command.setException(exception);
-	    break;
+	@Inject
+	public OrionErrorHandler(@Provider Supplier<Credentials> creds,
+			HttpCommandExecutorService commandExecutor) {
+		this.commandExecutor = Preconditions.checkNotNull(commandExecutor,
+				"HttpCommandExecutorService");
+		Preconditions.checkNotNull(creds, "creds");
+		this.creds = creds.get();
 	}
 
-    }
+	@Override
+	public void handleError(HttpCommand command, HttpResponse response) {
+		// it is important to always read fully and close streams
+		byte[] data = HttpUtils.closeClientButKeepContentStream(response);
+		String message = data != null ? new String(data) : null;
+
+		Exception exception = message != null ? new HttpResponseException(
+				command, response, message) : new HttpResponseException(
+				command, response);
+		message = message != null ? message : String
+				.format("%s -> %s", command.getCurrentRequest()
+						.getRequestLine(), response.getStatusLine());
+		switch (response.getStatusCode()) {
+		case 400:
+			// command.setException(exception);
+			exception.printStackTrace();
+			break;
+		case 401:
+		case 403:
+			if ((command.getFailureCount() < 3)
+					&& FormAuthentication.hasKey(creds.identity)) {
+				// Remove the outdated key and replay the request
+				FormAuthentication.removeKey(creds.identity);
+				commandExecutor.invoke(command);
+			} else {
+				exception = new AuthorizationException(message, exception);
+				command.setException(exception);
+				exception.printStackTrace();
+			}
+			break;
+		case 404:
+			if (!command.getCurrentRequest().getMethod().equals("DELETE")) {
+				// exception = new ResourceNotFoundException(message,
+				// exception);
+			}
+			break;
+		case 409:
+			exception = new IllegalStateException(message, exception);
+			command.setException(exception);
+			exception.printStackTrace();
+			break;
+		}
+
+	}
 }
