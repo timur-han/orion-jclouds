@@ -38,6 +38,7 @@ public class BlobCreationBinder implements Binder {
 			this.metadata.setDirectory(true);
 		} else {
 			// fail since something is going wrong
+			Preconditions.checkArgument(false, "metadata type is unknown");
 			req = null;
 		}
 		req.setPayload(this.orionSpecificObject2JSON.apply(metadata));
