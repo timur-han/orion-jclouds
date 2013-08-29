@@ -14,27 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.blobstore.functions;
+package org.jclouds.orion;
 
-import org.jclouds.orion.OrionUtils;
-
-import com.google.common.base.Function;
+import org.jclouds.http.HttpCommand;
+import org.jclouds.http.HttpResponse;
+import org.jclouds.http.HttpResponseException;
+import org.jclouds.orion.domain.OrionError;
 
 /**
  * @author timur
  * 
  */
-public class BlobNameToMetadataNameParser implements Function<Object, String> {
+public class OrionResponseException extends HttpResponseException {
+	OrionError orionError;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1832578464717472164L;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.google.common.base.Function#apply(java.lang.Object)
-     */
-    @Override
-    public String apply(Object blobName) {
-	return OrionUtils.getHashID((String) blobName);
+	/**
+	 * @param command
+	 * @param response
+	 */
 
-    }
+	public OrionResponseException(HttpCommand command, HttpResponse response,
+			OrionError error) {
+		super(command, response);
+		orionError = error;
+	}
 
+	public OrionError getError() {
+		return orionError;
+	}
 }

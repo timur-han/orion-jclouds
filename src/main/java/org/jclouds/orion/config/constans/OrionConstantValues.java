@@ -50,4 +50,7 @@ public class OrionConstantValues {
     public static final String ORION_METADATA_PATH = ".metadata/";
     public static final String ORION_METADATA_FILE_NAME = ".metadata";
 
+    // Standard encoding
+    public static final String ENCODING = "UTF-8";
+
 }

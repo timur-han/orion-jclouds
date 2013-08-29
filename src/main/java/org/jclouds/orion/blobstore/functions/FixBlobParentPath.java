@@ -21,20 +21,24 @@ import org.jclouds.orion.OrionUtils;
 import com.google.common.base.Function;
 
 /**
+ * This class is used to fix the blob parent path due to caused by an encoding
+ * bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=416118
+ * 
+ * 
  * @author timur
  * 
  */
-public class BlobNameToMetadataNameParser implements Function<Object, String> {
+public class FixBlobParentPath implements Function<Object, String> {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.google.common.base.Function#apply(java.lang.Object)
-     */
-    @Override
-    public String apply(Object blobName) {
-	return OrionUtils.getHashID((String) blobName);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.google.common.base.Function#apply(java.lang.Object)
+	 */
+	@Override
+	public String apply(Object parentPath) {
 
-    }
+		return OrionUtils.getParentRequestPath(String.class.cast(parentPath));
+	}
 
 }

@@ -18,8 +18,13 @@
  */
 package org.jclouds.orion.handlers;
 
+import java.io.IOException;
+
 import javax.inject.Singleton;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jclouds.domain.Credentials;
 import org.jclouds.http.HttpCommand;
 import org.jclouds.http.HttpCommandExecutorService;
@@ -28,6 +33,8 @@ import org.jclouds.http.HttpResponse;
 import org.jclouds.http.HttpResponseException;
 import org.jclouds.http.HttpUtils;
 import org.jclouds.location.Provider;
+import org.jclouds.orion.OrionResponseException;
+import org.jclouds.orion.domain.OrionError;
 import org.jclouds.orion.http.filters.FormAuthentication;
 import org.jclouds.rest.AuthorizationException;
 
@@ -43,16 +50,18 @@ import com.google.inject.Inject;
  */
 @Singleton
 public class OrionErrorHandler implements HttpErrorHandler {
-	private final Credentials creds;
+	private final String userWorkspace;
 	private final HttpCommandExecutorService commandExecutor;
+	private final ObjectMapper mapper;
 
 	@Inject
 	public OrionErrorHandler(@Provider Supplier<Credentials> creds,
-			HttpCommandExecutorService commandExecutor) {
+			HttpCommandExecutorService commandExecutor, ObjectMapper mapper) {
 		this.commandExecutor = Preconditions.checkNotNull(commandExecutor,
 				"HttpCommandExecutorService");
-		Preconditions.checkNotNull(creds, "creds");
-		this.creds = creds.get();
+		this.mapper = Preconditions.checkNotNull(mapper, "mapper is null");
+		this.userWorkspace = Preconditions
+				.checkNotNull(creds, "creds  is null").get().identity;
 	}
 
 	@Override
@@ -67,6 +76,63 @@ public class OrionErrorHandler implements HttpErrorHandler {
 		message = message != null ? message : String
 				.format("%s -> %s", command.getCurrentRequest()
 						.getRequestLine(), response.getStatusLine());
+
+		try {
+			OrionError error = mapper.readValue(response.getPayload()
+					.getInput(), OrionError.class);
+			OrionResponseException orionException = new OrionResponseException(
+					command, response, error);
+			command.setException(orionException);
+
+			switch (response.getStatusCode()) {
+
+			case 401:
+				if ((command.getFailureCount() < 3)
+						&& FormAuthentication.hasKey(userWorkspace)) {
+					// Remove the outdated key and replay the request
+					FormAuthentication.removeKey(userWorkspace);
+					commandExecutor.invoke(command);
+				} else {
+					exception = new AuthorizationException(message, exception);
+					command.setException(exception);
+					exception.printStackTrace();
+				}
+			case 403:
+				exception = new AuthorizationException(message, exception);
+				command.setException(exception);
+				exception.printStackTrace();
+				break;
+
+			case 409:
+				exception = new IllegalStateException(message, exception);
+				command.setException(exception);
+				exception.printStackTrace();
+				break;
+			}
+			return;
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+			doStandardHandling(command, response, exception);
+
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			doStandardHandling(command, response, exception);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			doStandardHandling(command, response, exception);
+
+		}
+
+	}
+
+	/**
+	 * @param command
+	 * @param response
+	 * @param exception
+	 */
+	private void doStandardHandling(HttpCommand command, HttpResponse response,
+			Exception exception) {
 		switch (response.getStatusCode()) {
 		case 400:
 			// command.setException(exception);
@@ -75,12 +141,13 @@ public class OrionErrorHandler implements HttpErrorHandler {
 		case 401:
 		case 403:
 			if ((command.getFailureCount() < 3)
-					&& FormAuthentication.hasKey(creds.identity)) {
+					&& FormAuthentication.hasKey(userWorkspace)) {
 				// Remove the outdated key and replay the request
-				FormAuthentication.removeKey(creds.identity);
+				FormAuthentication.removeKey(userWorkspace);
 				commandExecutor.invoke(command);
 			} else {
-				exception = new AuthorizationException(message, exception);
+				exception = new AuthorizationException(response.getMessage(),
+						exception);
 				command.setException(exception);
 				exception.printStackTrace();
 			}
@@ -92,7 +159,8 @@ public class OrionErrorHandler implements HttpErrorHandler {
 			}
 			break;
 		case 409:
-			exception = new IllegalStateException(message, exception);
+			exception = new IllegalStateException(response.getMessage(),
+					exception);
 			command.setException(exception);
 			exception.printStackTrace();
 			break;

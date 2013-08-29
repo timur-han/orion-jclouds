@@ -44,9 +44,9 @@ public class BlobMetadataToBlobProperties implements
 	}
 	MutableBlobProperties to = new MutableBlobPropertiesImpl();
 	HttpUtils.copy(from.getContentMetadata(), to.getContentMetadata());
-	to.setParentPath(OrionUtils.fetchParentPath(from.getName()));
+	to.setParentPath(OrionUtils.getParentPath(from.getName()));
 	to.setETag(from.getETag());
-	to.setName(OrionUtils.fetchName(from.getName()));
+	to.setName(OrionUtils.getName(from.getName()));
 	to.setUrl(from.getUri());
 	to.setLastModified(from.getLastModified());
 

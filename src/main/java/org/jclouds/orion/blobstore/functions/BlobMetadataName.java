@@ -9,7 +9,7 @@ public class BlobMetadataName implements Function<Object, String> {
 
 	@Override
 	public String apply(Object blob) {
-		return OrionUtils.getID(OrionBlob.class.cast(blob)
+		return OrionUtils.getHashID(OrionBlob.class.cast(blob)
 				.getProperties().getName());
 	}
 

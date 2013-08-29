@@ -1,5 +1,6 @@
 package org.jclouds.orion.blobstore.functions;
 
+import org.jclouds.orion.OrionUtils;
 import org.jclouds.orion.domain.OrionBlob;
 
 import com.google.common.base.Function;
@@ -8,7 +9,9 @@ public class BlobName implements Function<Object, String> {
 
 	@Override
 	public String apply(Object blob) {
-		return ((OrionBlob) blob).getProperties().getName();
+		// TODO when bug is fixed this line needs to changed
+		return OrionUtils.getRequestName(((OrionBlob) blob).getProperties()
+				.getName());
 	}
 
 }
