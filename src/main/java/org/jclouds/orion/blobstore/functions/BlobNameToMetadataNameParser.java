@@ -33,7 +33,7 @@ public class BlobNameToMetadataNameParser implements Function<Object, String> {
      */
     @Override
     public String apply(Object blobName) {
-	return OrionUtils.getMetadataFileName((String) blobName);
+	return OrionUtils.getID((String) blobName);
 
     }
 
