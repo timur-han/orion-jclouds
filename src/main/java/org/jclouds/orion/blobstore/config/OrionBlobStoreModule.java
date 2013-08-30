@@ -11,7 +11,7 @@ import org.jclouds.blobstore.strategy.GetBlobsInListStrategy;
 import org.jclouds.blobstore.strategy.PutBlobsStrategy;
 import org.jclouds.orion.blobstore.OrionBlobStore;
 import org.jclouds.orion.blobstore.OrionBlobStoreContext;
-import org.jclouds.orion.blobstore.strategy.internal.ClearAllFoldersInContainer;
+import org.jclouds.orion.blobstore.strategy.internal.ClearFilesInContainer;
 import org.jclouds.orion.blobstore.strategy.internal.DeleteAllKeysInList;
 import org.jclouds.orion.blobstore.strategy.internal.GetAllBlobsInListAndRetryOnFailure;
 import org.jclouds.orion.blobstore.strategy.internal.PutBlobsStrategyImpl;
@@ -35,7 +35,7 @@ public class OrionBlobStoreModule extends AbstractModule {
 				.in(Scopes.SINGLETON);
 		bind(PutBlobsStrategy.class).to(PutBlobsStrategyImpl.class).in(
 				Scopes.SINGLETON);
-		bind(ClearContainerStrategy.class).to(ClearAllFoldersInContainer.class)
+		bind(ClearContainerStrategy.class).to(ClearFilesInContainer.class)
 				.in(Scopes.SINGLETON);
 		bind(ClearListStrategy.class).to(DeleteAllKeysInList.class).in(
 				Scopes.SINGLETON);

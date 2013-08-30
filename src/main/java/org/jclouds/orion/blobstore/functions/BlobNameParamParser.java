@@ -5,7 +5,7 @@ import org.jclouds.orion.domain.OrionBlob;
 
 import com.google.common.base.Function;
 
-public class BlobName implements Function<Object, String> {
+public class BlobNameParamParser implements Function<Object, String> {
 
 	@Override
 	public String apply(Object blob) {

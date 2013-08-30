@@ -17,6 +17,7 @@
 package org.jclouds.orion;
 
 import java.io.Closeable;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -31,26 +32,34 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.jclouds.blobstore.domain.Blob;
+import org.jclouds.blobstore.domain.PageSet;
+import org.jclouds.blobstore.domain.StorageMetadata;
+import org.jclouds.blobstore.options.ListContainerOptions;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.orion.blobstore.binders.BlobCreationBinder;
+import org.jclouds.orion.blobstore.binders.ListRequestBinder;
 import org.jclouds.orion.blobstore.binders.OrionMetadataBinder;
 import org.jclouds.orion.blobstore.fallbacks.DuplicateCreationFallback;
 import org.jclouds.orion.blobstore.fallbacks.ExistenceCheckFallback;
 import org.jclouds.orion.blobstore.fallbacks.SameFileWithDiffTypeFallback;
 import org.jclouds.orion.blobstore.functions.BlobMetadataName;
-import org.jclouds.orion.blobstore.functions.BlobName;
-import org.jclouds.orion.blobstore.functions.BlobNameToMetadataNameParser;
-import org.jclouds.orion.blobstore.functions.BlobRequestParser;
-import org.jclouds.orion.blobstore.functions.CreationResponseParser;
-import org.jclouds.orion.blobstore.functions.FileExistsResponseParser;
+import org.jclouds.orion.blobstore.functions.BlobNameParamParser;
 import org.jclouds.orion.blobstore.functions.FixBlobName;
 import org.jclouds.orion.blobstore.functions.FixBlobParentPath;
-import org.jclouds.orion.blobstore.functions.MetadataResponseParser;
-import org.jclouds.orion.blobstore.validators.ContainerNameValidator;
+import org.jclouds.orion.blobstore.functions.parsers.BlobNameToMetadataNameParser;
+import org.jclouds.orion.blobstore.functions.parsers.BlobResponseParser;
+import org.jclouds.orion.blobstore.functions.parsers.CreationResponseParser;
+import org.jclouds.orion.blobstore.functions.parsers.FileExistsResponseParser;
+import org.jclouds.orion.blobstore.functions.parsers.FolderListParser;
+import org.jclouds.orion.blobstore.functions.parsers.ListContainersResponseParser;
+import org.jclouds.orion.blobstore.functions.parsers.MetadataResponseParser;
+import org.jclouds.orion.blobstore.validators.BlobNameValidator;
+import org.jclouds.orion.blobstore.validators.StringNameValidator;
 import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.orion.config.constans.OrionHttpFields;
 import org.jclouds.orion.domain.MutableBlobProperties;
 import org.jclouds.orion.domain.OrionBlob;
+import org.jclouds.orion.domain.OrionChildMetadata;
 import org.jclouds.orion.http.filters.EmptyDebugFilter;
 import org.jclouds.orion.http.filters.FormAuthentication;
 import org.jclouds.orion.http.filters.create.CreateFolderFilter;
@@ -66,8 +75,6 @@ import org.jclouds.rest.annotations.ParamValidators;
 import org.jclouds.rest.annotations.QueryParams;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.ResponseParser;
-
-import com.google.gson.JsonObject;
 
 /**
  * Provides asynchronous access to Orion via their REST API.
@@ -87,7 +94,7 @@ public interface OrionApi extends Closeable {
 			+ "{userWorkspace}/{containerName}")
 	@Fallback(ExistenceCheckFallback.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	@QueryParams(keys = { OrionHttpFields.FROM_PARAM_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
+	@QueryParams(keys = { OrionHttpFields.QUERY_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
 	boolean containerExists(@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName);
 
@@ -104,13 +111,23 @@ public interface OrionApi extends Closeable {
 	@Fallback(DuplicateCreationFallback.class)
 	Boolean createContainerAsAProject(
 			@PathParam("userWorkspace") String userWorkspace,
-			@HeaderParam("Slug") @ParamValidators(ContainerNameValidator.class) String containerName);
+			@HeaderParam("Slug") @ParamValidators(StringNameValidator.class) String containerName);
+
+	@GET
+	@Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/")
+	@ResponseParser(ListContainersResponseParser.class)
+	@QueryParams(keys = { "depth" }, values = { "1" })
+	@Headers(keys = { OrionHttpFields.ORION_ECLIPSE_WEB_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+	PageSet<? extends StorageMetadata> listContainers(
+			@PathParam("userWorkspace") String userWorkspace);
 
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{containerName/}")
-	@FormParams(keys = { "depth" }, values = { "1" })
-	JsonObject listContainerContents(
+			+ "{userWorkspace}/{containerName}/")
+	@ResponseParser(FolderListParser.class)
+	@QueryParams(keys = { "depth" }, values = { "1" })
+	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+	List<OrionChildMetadata> listContainerContents(
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName);
 
@@ -144,7 +161,7 @@ public interface OrionApi extends Closeable {
 			+ "{userWorkspace}/{containerName}/{parentPath}{blobName}")
 	@Fallback(ExistenceCheckFallback.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	@QueryParams(keys = { OrionHttpFields.FROM_PARAM_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
+	@QueryParams(keys = { OrionHttpFields.QUERY_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
 	@RequestFilters(EmptyDebugFilter.class)
 	boolean blobExits(
 			@PathParam("userWorkspace") String userName,
@@ -172,7 +189,7 @@ public interface OrionApi extends Closeable {
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName,
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
-			@BinderParam(BlobCreationBinder.class) OrionBlob blob);
+			@BinderParam(BlobCreationBinder.class) @ParamValidators(value = { BlobNameValidator.class }) OrionBlob blob);
 
 	@PUT
 	@Path(OrionConstantValues.ORION_FILE_PATH
@@ -183,20 +200,20 @@ public interface OrionApi extends Closeable {
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName,
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
-			@PathParam("blobName") @ParamParser(BlobName.class) OrionBlob blob);
+			@PathParam("blobName") @ParamParser(BlobNameParamParser.class) OrionBlob blob);
 
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}"
 			+ OrionConstantValues.ORION_METADATA_PATH + "{blobName}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ResponseParser(BlobRequestParser.class)
+	@ResponseParser(BlobResponseParser.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	Blob getBlob(
 			@PathParam("userWorkspace") String userName,
 			@PathParam("containerName") String containerName,
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
-			@PathParam("blobName") @ParamParser(BlobNameToMetadataNameParser.class) String blobName);
+			@PathParam("blobName") @ParamParser(BlobNameToMetadataNameParser.class) @ParamValidators(StringNameValidator.class) String blobName);
 
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
@@ -294,5 +311,21 @@ public interface OrionApi extends Closeable {
 	@Path("{path}")
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	boolean deleteGivenPath(@PathParam("path") String endpoint);
+
+	/**
+	 * @param userWorkspace
+	 * @param container
+	 * @param options
+	 * @return
+	 */
+	@GET
+	@Path(OrionConstantValues.ORION_FILE_PATH
+			+ "{userWorkspace}/{containerName}")
+	@ResponseParser(ListContainersResponseParser.class)
+	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+	PageSet<? extends StorageMetadata> list(
+			@PathParam("userWorkspace") String userWorkspace,
+			@PathParam("containerName") String container,
+			@BinderParam(ListRequestBinder.class) ListContainerOptions options);
 
 }

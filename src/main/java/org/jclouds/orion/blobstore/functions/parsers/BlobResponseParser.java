@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.blobstore.functions;
+package org.jclouds.orion.blobstore.functions.parsers;
 
 /**
  * @author timur
@@ -31,6 +31,7 @@ import org.jclouds.domain.Credentials;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.location.Provider;
 import org.jclouds.orion.OrionApi;
+import org.jclouds.orion.blobstore.functions.OrionBlobToBlob;
 import org.jclouds.orion.domain.BlobType;
 import org.jclouds.orion.domain.MutableBlobProperties;
 import org.jclouds.orion.domain.OrionBlob;
@@ -41,7 +42,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 
-public class BlobRequestParser implements Function<HttpResponse, Blob> {
+public class BlobResponseParser implements Function<HttpResponse, Blob> {
 
     private final ObjectMapper mapper;
     private final OrionApi api;
@@ -50,7 +51,7 @@ public class BlobRequestParser implements Function<HttpResponse, Blob> {
     private final OrionBlobToBlob orionBlob2Blob;
 
     @Inject
-    public BlobRequestParser(ObjectMapper mapper, OrionApi api,
+    public BlobResponseParser(ObjectMapper mapper, OrionApi api,
 	    @Provider Supplier<Credentials> creds,
 	    OrionBlob.Factory orionBlobProvider, OrionBlobToBlob orionBlob2Blob) {
 	this.mapper = Preconditions.checkNotNull(mapper, "mapper is null");

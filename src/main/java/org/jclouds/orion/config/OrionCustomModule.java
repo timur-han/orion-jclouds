@@ -24,12 +24,16 @@ import org.jclouds.io.MutableContentMetadata;
 import org.jclouds.io.payloads.BaseMutableContentMetadata;
 import org.jclouds.orion.domain.Attributes;
 import org.jclouds.orion.domain.MutableBlobProperties;
+import org.jclouds.orion.domain.OrionChildMetadata;
 import org.jclouds.orion.domain.OrionError;
 import org.jclouds.orion.domain.OrionSpecificFileMetadata;
+import org.jclouds.orion.domain.OrionStorageMetadata;
 import org.jclouds.orion.domain.internal.AttributesImpl;
 import org.jclouds.orion.domain.internal.MutableBlobPropertiesImpl;
+import org.jclouds.orion.domain.internal.OrionChildMetadataImpl;
 import org.jclouds.orion.domain.internal.OrionErrorImpl;
 import org.jclouds.orion.domain.internal.OrionSpecificFileMetadataImpl;
+import org.jclouds.orion.domain.internal.OrionStorageMetadataImpl;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -43,7 +47,8 @@ public class OrionCustomModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-
+		bind(OrionChildMetadata.class).to(OrionChildMetadataImpl.class);
+		bind(OrionStorageMetadata.class).to(OrionStorageMetadataImpl.class);
 	}
 
 	@Provides
@@ -59,6 +64,8 @@ public class OrionCustomModule extends AbstractModule {
 				OrionSpecificFileMetadataImpl.class);
 		module.addAbstractTypeMapping(Attributes.class, AttributesImpl.class);
 		module.addAbstractTypeMapping(OrionError.class, OrionErrorImpl.class);
+		module.addAbstractTypeMapping(OrionChildMetadata.class,
+				OrionChildMetadataImpl.class);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(module);
 		mapper.setSerializationInclusion(Inclusion.NON_NULL);

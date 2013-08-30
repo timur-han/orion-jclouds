@@ -15,6 +15,7 @@ import org.jclouds.blobstore.domain.BlobMetadata;
 import org.jclouds.blobstore.domain.PageSet;
 import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.blobstore.domain.StorageType;
+import org.jclouds.blobstore.options.ListContainerOptions;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
@@ -167,7 +168,7 @@ public class OrionBlobStoreTests {
 	}
 
 	@Test
-	protected void listBlobs() throws Exception {
+	protected void clearContainer() throws Exception {
 
 		blobStore.createContainerInLocation(null, container);
 
@@ -177,6 +178,41 @@ public class OrionBlobStoreTests {
 		blobStore.putBlob(container, blob);
 
 		PageSet<? extends StorageMetadata> resultSet = blobStore.list();
+
+	}
+
+	@Test
+	protected void listContainers() throws Exception {
+
+		blobStore.createContainerInLocation(null, container);
+
+		Blob blob = blobStore.blobBuilder(blobName).build();
+		blob.setPayload(payload);
+		blob.getMetadata().getUserMetadata().put("test", "test");
+		blobStore.putBlob(container, blob);
+
+		PageSet<? extends StorageMetadata> resultSet = blobStore.list();
+		for (StorageMetadata data : resultSet) {
+			System.out.println(data.getName());
+		}
+
+	}
+
+	@Test
+	protected void listBlobs() throws Exception {
+
+		blobStore.createContainerInLocation(null, container);
+
+		Blob blob = blobStore.blobBuilder(blobName).build();
+		blob.setPayload(payload);
+		blob.getMetadata().getUserMetadata().put("test", "test");
+		blobStore.putBlob(container, blob);
+
+		PageSet<? extends StorageMetadata> resultSet = blobStore.list(
+				container, ListContainerOptions.Builder.recursive());
+		for (StorageMetadata data : resultSet) {
+			System.out.println(data.getName());
+		}
 
 	}
 

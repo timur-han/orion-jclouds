@@ -1,4 +1,4 @@
-package org.jclouds.orion.blobstore.functions;
+package org.jclouds.orion.blobstore.functions.parsers;
 
 import java.io.IOException;
 import java.io.StringWriter;

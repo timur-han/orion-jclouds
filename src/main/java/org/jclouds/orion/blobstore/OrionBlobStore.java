@@ -31,7 +31,6 @@ import org.jclouds.orion.blobstore.functions.BlobToOrionBlob;
 import org.jclouds.orion.config.constans.OrionConstantValues;
 import org.jclouds.orion.domain.BlobType;
 import org.jclouds.orion.domain.OrionBlob;
-import org.jclouds.orion.domain.OrionBlob.Factory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
@@ -44,7 +43,6 @@ public class OrionBlobStore extends BaseBlobStore {
 	private final BlobToOrionBlob blob2OrionBlob;
 	private final BlobPropertiesToBlobMetadata blobProps2BlobMetadata;
 	private final BlobUtils blobUtils;
-	private final Factory orionBlobProvider;
 
 	@Inject
 	protected OrionBlobStore(BlobStoreContext context,
@@ -63,13 +61,12 @@ public class OrionBlobStore extends BaseBlobStore {
 				"blob2OrionBlob is null");
 		this.blobProps2BlobMetadata = Preconditions.checkNotNull(
 				blobProps2BlobMetadata, "blobProps2BlobMetadata is null");
-		this.orionBlobProvider = Preconditions.checkNotNull(orionBlobProvider,
-				"orionBlobProvider is null");
+
 	}
 
 	@Override
 	public boolean blobExists(String container, String blobName) {
-		return api.blobExits(getUserLocation(), container,
+		return api.blobExits(getUserWorkspace(), container,
 				OrionUtils.getParentPath(blobName),
 				OrionUtils.getName(blobName));
 	}
@@ -77,29 +74,30 @@ public class OrionBlobStore extends BaseBlobStore {
 	@Override
 	public BlobMetadata blobMetadata(String container, String blobName) {
 		String parentPath = OrionUtils.getParentPath(blobName);
-		// Blob names must not start with a "/" since they are relative paths
+		// Blob names must NOT start with a "/" since they are relative paths
 		// they will be automatically removed in case it starts with that
 		// Get the blob name
 		// Convert the blob name to it's metadata file name and fetch it
-		return blobProps2BlobMetadata.apply(api.getMetadata(getUserLocation(),
+		return blobProps2BlobMetadata.apply(api.getMetadata(getUserWorkspace(),
 				container, parentPath,
 				OrionUtils.getHashID(OrionUtils.getName(blobName))));
 	}
 
 	@Override
 	public boolean containerExists(String container) {
-		return api.containerExists(getUserLocation(), container);
+		return api.containerExists(getUserWorkspace(), container);
 	}
 
 	@Override
 	public void deleteContainer(String container) {
 		// api.deleteContainer(getUserLocation(), container);
-		api.deleteContainerMetadata(getUserLocation(), container);
+		api.deleteContainerMetadata(getUserWorkspace(), container);
 	}
 
 	@Override
 	public boolean createContainerInLocation(Location location, String container) {
-		return this.api.createContainerAsAProject(getUserLocation(), container);
+		return this.api
+				.createContainerAsAProject(getUserWorkspace(), container);
 	}
 
 	@Override
@@ -110,30 +108,28 @@ public class OrionBlobStore extends BaseBlobStore {
 
 	@Override
 	protected boolean deleteAndVerifyContainerGone(String container) {
-		return api.deleteContainerMetadata(getUserLocation(), container);
+		return api.deleteContainerMetadata(getUserWorkspace(), container);
 	}
 
 	@Override
 	public Blob getBlob(String container, String blob, GetOptions arg2) {
-		return api.getBlob(getUserLocation(), container,
+		return api.getBlob(getUserWorkspace(), container,
 				OrionUtils.getParentPath(blob), OrionUtils.getName(blob));
 	}
 
-	private String getUserLocation() {
+	private String getUserWorkspace() {
 		return this.userWorkspace;
 	}
 
 	@Override
 	public PageSet<? extends StorageMetadata> list() {
-		// TODO Auto-generated method stub
-		throw new IllegalStateException("Not yet implemented.");
+		return api.listContainers(getUserWorkspace());
 	}
 
 	@Override
-	public PageSet<? extends StorageMetadata> list(String arg0,
-			ListContainerOptions arg1) {
-		// TODO Auto-generated method stub
-		throw new IllegalStateException("Not yet implemented.");
+	public PageSet<? extends StorageMetadata> list(String container,
+			ListContainerOptions options) {
+		return api.list(getUserWorkspace(), container, options);
 	}
 
 	@Override
@@ -163,7 +159,7 @@ public class OrionBlobStore extends BaseBlobStore {
 
 	@Override
 	public void removeBlob(String container, String blobName) {
-		api.removeBlob(getUserLocation(), container,
+		api.removeBlob(getUserWorkspace(), container,
 				OrionUtils.getParentPath(blobName),
 				OrionUtils.getName(blobName));
 	}
@@ -178,17 +174,17 @@ public class OrionBlobStore extends BaseBlobStore {
 	 */
 	private void insertBlob(String container, OrionBlob orionBlob) {
 		orionBlob.getProperties().setContainer(container);
-		boolean creationFlag = api.createBlob(getUserLocation(), container,
+		boolean creationFlag = api.createBlob(getUserWorkspace(), container,
 				orionBlob.getProperties().getParentPath(), orionBlob);
 		if (creationFlag) {
 			if (orionBlob.getProperties().getType() == BlobType.FILE_BLOB) {
-				api.putBlob(getUserLocation(), container, orionBlob
+				api.putBlob(getUserWorkspace(), container, orionBlob
 						.getProperties().getParentPath(), orionBlob);
 			}
 			if (!createMetadata(container, orionBlob)) {
 				System.err
 						.println("metadata could not be created blob will be removed");
-				api.removeBlob(getUserLocation(), container, orionBlob
+				api.removeBlob(getUserWorkspace(), container, orionBlob
 						.getProperties().getParentPath(), orionBlob
 						.getProperties().getName());
 
@@ -201,15 +197,15 @@ public class OrionBlobStore extends BaseBlobStore {
 
 	private boolean createMetadata(String container, OrionBlob blob) {
 
-		return api.createMetadataFolder(getUserLocation(), container, blob
+		return api.createMetadataFolder(getUserWorkspace(), container, blob
 				.getProperties().getParentPath())
 				&&
 				// Create metadata file
-				api.createMetadata(getUserLocation(), container, blob
+				api.createMetadata(getUserWorkspace(), container, blob
 						.getProperties().getParentPath(), OrionUtils
 						.getHashID(blob.getProperties().getName())) &&
 				// Add metadata file contents
-				api.putMetadata(getUserLocation(), container, blob
+				api.putMetadata(getUserWorkspace(), container, blob
 						.getProperties().getParentPath(), blob);
 
 	}

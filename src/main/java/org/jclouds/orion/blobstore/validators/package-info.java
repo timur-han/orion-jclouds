@@ -14,27 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.blobstore.functions;
-
-import org.jclouds.orion.OrionUtils;
-
-import com.google.common.base.Function;
-
 /**
  * @author timur
- * 
+ *
  */
-public class BlobNameToMetadataNameParser implements Function<Object, String> {
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.google.common.base.Function#apply(java.lang.Object)
-     */
-    @Override
-    public String apply(Object blobName) {
-	return OrionUtils.getHashID((String) blobName);
-
-    }
-
-}
+package org.jclouds.orion.blobstore.validators;
