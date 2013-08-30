@@ -17,6 +17,7 @@
 package org.jclouds.orion.config.constans;
 
 /**
+ * Orion related constants
  * 
  * @author timur
  * 
@@ -24,7 +25,7 @@ package org.jclouds.orion.config.constans;
 public class OrionConstantValues {
 	// Orion Blob Store Properties
 	public final static String ORION_ID = "orionblob";
-	public final static String END_POINT = "http://localhost:8080/";
+	public final static String END_POINT = "http://orionhub.org/";
 	public final static String ORION_VERSION = "1.0";
 
 	// Orion Paths
@@ -44,7 +45,6 @@ public class OrionConstantValues {
 	public final static String PATH_DELIMITER = "/";
 
 	// METADATA FIELDS
-
 	public static final String METADATA_CONTENTDATA = "contentMetadata";
 	public static final String ORION_METADATA_PATH = ".metadata/";
 	public static final String ORION_METADATA_FILE_NAME = ".metadata";
@@ -53,6 +53,7 @@ public class OrionConstantValues {
 	public static final String ENCODING = "UTF-8";
 	public static final String LIST_CHILDREN = "Children";
 
+	// The depth of requested children
 	public static final String MAXIMUM_DEPTH = "10";
 
 }

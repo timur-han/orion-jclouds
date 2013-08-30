@@ -26,6 +26,8 @@ import org.jclouds.domain.Location;
 import org.jclouds.domain.ResourceMetadata;
 
 /**
+ * Orion version of {@code StorageMetadata}
+ * 
  * @author timur
  * 
  */

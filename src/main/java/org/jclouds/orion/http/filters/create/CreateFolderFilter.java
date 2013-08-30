@@ -10,6 +10,12 @@ import org.jclouds.orion.http.functions.OrionSpecificObject2JSON;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+/**
+ * Make Directory attribute of file attributes true in the request
+ * 
+ * @author Timur
+ * 
+ */
 public class CreateFolderFilter implements HttpRequestFilter {
 
 	private final JSON2OrionSpecificObject json2OrionSpecificObj;

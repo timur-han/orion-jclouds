@@ -16,8 +16,10 @@
  */
 package org.jclouds.orion.domain;
 
-
 /**
+ * List operation on Orion returns an object with an array of children objects.
+ * A child node in this array represented by this object.
+ * 
  * @author timur
  * 
  */

@@ -1,5 +1,10 @@
 package org.jclouds.orion.domain;
 
+/**
+ * Orion file properties representation
+ * 
+ * @author Timur
+ */
 public interface OrionSpecificFileMetadata {
 
 	/**

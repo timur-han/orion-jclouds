@@ -11,6 +11,12 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+/**
+ * A function to serialize to {@link OrionSpecificFileMetadata} to JSON format
+ * 
+ * @author Timur
+ * 
+ */
 public class OrionSpecificObject2JSON implements
 		Function<OrionSpecificFileMetadata, String> {
 

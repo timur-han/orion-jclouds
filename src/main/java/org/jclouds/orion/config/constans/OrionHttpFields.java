@@ -17,6 +17,7 @@
 package org.jclouds.orion.config.constans;
 
 /**
+ * Http related fields such as headers, query fields, form fields
  * 
  * @author timur
  * 
@@ -37,8 +38,6 @@ public class OrionHttpFields {
 	// check
 	public final static String IGNORE_AUTHENTICATION = "ignoreAuthentication";
 
-	public final static String QUERY_PARTS = "parts";
-
 	// Orion Specific Fields
 
 	public final static String ORION_NAME = "Name";
@@ -46,13 +45,8 @@ public class OrionHttpFields {
 	public final static String ORION_ATTRIBUTES = "Attributes";
 	public final static String ORION_CONTENT_TYPE = "ContentType";
 
-	public final static String ORION_ATTRIBUTE_READONLY = "ContentType";
-	public final static String ORION_ATTRIBUTE_EXECUTABLE = "Executable";
-	public final static String ORION_ATTRIBUTE_HIDDEN = "Hidden";
-	public final static String ORION_ATTRIBUTE_ARCHIVE = "Archive";
-	public final static String ORION_ATTRIBUTE_SYMLINK = "SymbolicLink";
-
 	public static final String QUERY_DEPTH = "depth";
+	public final static String QUERY_PARTS = "parts";
 
 	public static final String ORION_ECLIPSE_WEB_FIELD = "EclipseWeb-Version";
 

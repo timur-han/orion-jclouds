@@ -21,7 +21,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.net.HttpHeaders;
 
 /**
- * 
+ * This class is used to make a form-based authentication. It contains a cache.
+ * To bypass the authentication requests need to have
+ * {@code OrionHttpFields.IGNORE_AUTHENTICATION} header which will be removed by
+ * this filter.
  * 
  * @author Timur
  * 

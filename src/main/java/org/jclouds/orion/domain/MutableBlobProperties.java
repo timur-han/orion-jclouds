@@ -74,6 +74,11 @@ public interface MutableBlobProperties extends BlobProperties {
 
 	void setType(BlobType blobType);
 
+	/**
+	 * Get parent path of this blob
+	 * 
+	 * @return
+	 */
 	String getParentPath();
 
 }

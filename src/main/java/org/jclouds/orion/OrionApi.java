@@ -60,7 +60,6 @@ import org.jclouds.orion.config.constans.OrionHttpFields;
 import org.jclouds.orion.domain.MutableBlobProperties;
 import org.jclouds.orion.domain.OrionBlob;
 import org.jclouds.orion.domain.OrionChildMetadata;
-import org.jclouds.orion.http.filters.EmptyDebugFilter;
 import org.jclouds.orion.http.filters.FormAuthentication;
 import org.jclouds.orion.http.filters.create.CreateFolderFilter;
 import org.jclouds.orion.http.filters.create.CreateHiddenFileFilter;
@@ -68,7 +67,6 @@ import org.jclouds.orion.http.filters.create.CreateReadonlyFileFilter;
 import org.jclouds.orion.http.filters.create.EmptyRequestFilter;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
-import org.jclouds.rest.annotations.FormParams;
 import org.jclouds.rest.annotations.Headers;
 import org.jclouds.rest.annotations.ParamParser;
 import org.jclouds.rest.annotations.ParamValidators;
@@ -89,6 +87,13 @@ public interface OrionApi extends Closeable {
 
 	public static final String API_VERSION = "0.0.1";
 
+	/**
+	 * Check if container exists
+	 * 
+	 * @param userWorkspace
+	 * @param containerName
+	 * @return
+	 */
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}")
@@ -113,6 +118,12 @@ public interface OrionApi extends Closeable {
 			@PathParam("userWorkspace") String userWorkspace,
 			@HeaderParam("Slug") @ParamValidators(StringNameValidator.class) String containerName);
 
+	/**
+	 * List existing containers for the user
+	 * 
+	 * @param userWorkspace
+	 * @return
+	 */
 	@GET
 	@Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/")
 	@ResponseParser(ListContainersResponseParser.class)
@@ -121,6 +132,13 @@ public interface OrionApi extends Closeable {
 	PageSet<? extends StorageMetadata> listContainers(
 			@PathParam("userWorkspace") String userWorkspace);
 
+	/**
+	 * List contents of a specifc container
+	 * 
+	 * @param userWorkspace
+	 * @param containerName
+	 * @return
+	 */
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/")
@@ -131,6 +149,13 @@ public interface OrionApi extends Closeable {
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName);
 
+	/**
+	 * Delete project from workspace API
+	 * 
+	 * @param userWorkspace
+	 * @param containerName
+	 * @return
+	 */
 	@DELETE
 	@Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/"
 			+ OrionConstantValues.ORION_FILE_PATH + "{containerName}")
@@ -139,6 +164,13 @@ public interface OrionApi extends Closeable {
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName);
 
+	/**
+	 * Delete project from file API
+	 * 
+	 * @param userWorkspace
+	 * @param containerName
+	 * @return
+	 */
 	@DELETE
 	@Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/"
 			+ "{containerName}")
@@ -146,6 +178,13 @@ public interface OrionApi extends Closeable {
 	Boolean deleteContainer(@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName);
 
+	/**
+	 * Form authentication request
+	 * 
+	 * @param userName
+	 * @param pass
+	 * @return
+	 */
 	@POST
 	@Path(OrionConstantValues.ORION_AUTH_PATH)
 	@Headers(keys = { OrionHttpFields.IGNORE_AUTHENTICATION,
@@ -156,19 +195,38 @@ public interface OrionApi extends Closeable {
 			@FormParam(value = OrionHttpFields.PASSWORD) String pass);
 
 	// Normally only metadata needs to be fetched however
+	/**
+	 * Check if a blob exists
+	 * 
+	 * @param userName
+	 * @param containerName
+	 * @param parentPath
+	 * @param blobName
+	 * @return
+	 */
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}{blobName}")
 	@Fallback(ExistenceCheckFallback.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	@QueryParams(keys = { OrionHttpFields.QUERY_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
-	@RequestFilters(EmptyDebugFilter.class)
-	boolean blobExits(
+	boolean blobExists(
 			@PathParam("userWorkspace") String userName,
 			@PathParam("containerName") String containerName,
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
 			@PathParam("blobName") @ParamParser(FixBlobName.class) String blobName);
 
+	/**
+	 * Remove a blob. No "/" in the name and .metadata as name are possible.
+	 * 
+	 * @see FixBlobName is used.
+	 * 
+	 * @param userWorkspace
+	 * @param containerName
+	 * @param parentPath
+	 * @param blobName
+	 * @return
+	 */
 	@DELETE
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}")
@@ -178,8 +236,21 @@ public interface OrionApi extends Closeable {
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName,
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
-			@PathParam("blobName") @ParamParser(FixBlobName.class) String blobName);
+			@PathParam("blobName") @ParamParser(FixBlobName.class) @ParamValidators(StringNameValidator.class) String blobName);
 
+	/**
+	 * This method creates an empty file/folder depending on the request
+	 * parameters.
+	 * 
+	 * If a file/folder with the same name exists, it is removed and replaced
+	 * with the requested type.
+	 * 
+	 * @param userWorkspace
+	 * @param containerName
+	 * @param parentPath
+	 * @param blob
+	 * @return
+	 */
 	@POST
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}")
@@ -191,6 +262,15 @@ public interface OrionApi extends Closeable {
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
 			@BinderParam(BlobCreationBinder.class) @ParamValidators(value = { BlobNameValidator.class }) OrionBlob blob);
 
+	/**
+	 * Put the blob contents to the requested file.
+	 * 
+	 * @param userWorkspace
+	 * @param containerName
+	 * @param parentPath
+	 * @param blob
+	 * @return
+	 */
 	@PUT
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}{blobName}")
@@ -202,6 +282,16 @@ public interface OrionApi extends Closeable {
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
 			@PathParam("blobName") @ParamParser(BlobNameParamParser.class) OrionBlob blob);
 
+	/**
+	 * Get the blob on the path. This starts with a metadata request and then
+	 * file content is requested if the metadata could be fetched successfully.
+	 * 
+	 * @param userName
+	 * @param containerName
+	 * @param parentPath
+	 * @param blobName
+	 * @return
+	 */
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}"
@@ -215,27 +305,34 @@ public interface OrionApi extends Closeable {
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
 			@PathParam("blobName") @ParamParser(BlobNameToMetadataNameParser.class) @ParamValidators(StringNameValidator.class) String blobName);
 
+	/**
+	 * This method is used to get the blob contents
+	 * 
+	 * @param userWorkspace
+	 * @param containerName
+	 * @param parentPath
+	 * @param blob
+	 * @return
+	 */
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}{blobName}")
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	HttpResponse getBlobContents(
+	@HttpResponse
+	getBlobContents(
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName,
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
 			@PathParam("blobName") @ParamParser(FixBlobName.class) String blob);
 
-	@GET
-	@Path(OrionConstantValues.ORION_FILE_PATH
-			+ "{userWorkspace}/{containerName}/{parentPath}{blobName}")
-	@Fallback(ExistenceCheckFallback.class)
-	@FormParams(keys = { "type" }, values = { "meta" })
-	boolean folderExists(
-			@PathParam("userWorkspace") String containerName,
-			@PathParam("containerName") String userLocation,
-			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String firstPath,
-			@PathParam("blobName") @ParamParser(FixBlobName.class) String blobName);
-
+	/**
+	 * Create a metadata folder to the corresponding path
+	 * 
+	 * @param userName
+	 * @param containerName
+	 * @param parentPath
+	 * @return
+	 */
 	@POST
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}")
@@ -252,6 +349,15 @@ public interface OrionApi extends Closeable {
 			@PathParam("containerName") String containerName,
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath);
 
+	/**
+	 * Create an empty metadata file.
+	 * 
+	 * @param userName
+	 * @param containerName
+	 * @param parentPath
+	 * @param fileName
+	 * @return
+	 */
 	@POST
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}"
@@ -267,6 +373,14 @@ public interface OrionApi extends Closeable {
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
 			@HeaderParam(OrionHttpFields.HEADER_SLUG) String fileName);
 
+	/**
+	 * Check if the metadata folder exists
+	 * 
+	 * @param userName
+	 * @param containerName
+	 * @param parentPath
+	 * @return
+	 */
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}"
@@ -278,6 +392,15 @@ public interface OrionApi extends Closeable {
 			@PathParam("containerName") String containerName,
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath);
 
+	/**
+	 * Put metadata file contents.
+	 * 
+	 * @param userName
+	 * @param containerName
+	 * @param parentPath
+	 * @param blob
+	 * @return
+	 */
 	@PUT
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}"
@@ -291,6 +414,15 @@ public interface OrionApi extends Closeable {
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
 			@PathParam("fileName") @ParamParser(BlobMetadataName.class) @BinderParam(OrionMetadataBinder.class) OrionBlob blob);
 
+	/**
+	 * Return metadata object.
+	 * 
+	 * @param userName
+	 * @param containerName
+	 * @param parentPath
+	 * @param blobName
+	 * @return
+	 */
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}"
@@ -305,6 +437,8 @@ public interface OrionApi extends Closeable {
 			@PathParam("fileName") @ParamParser(FixBlobName.class) String blobName);
 
 	/**
+	 * This method sends a DELETE message to the given path
+	 * 
 	 * @param endpoint
 	 */
 	@DELETE
@@ -313,6 +447,11 @@ public interface OrionApi extends Closeable {
 	boolean deleteGivenPath(@PathParam("path") String endpoint);
 
 	/**
+	 * 
+	 * List blobs with respect to corresponding options. Detail is not
+	 * supported. Recursive means till 10th level in the file hierarchy and if
+	 * it's false only the first level is returned.
+	 * 
 	 * @param userWorkspace
 	 * @param container
 	 * @param options
@@ -323,6 +462,7 @@ public interface OrionApi extends Closeable {
 			+ "{userWorkspace}/{containerName}")
 	@ResponseParser(ListContainersResponseParser.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
+	@QueryParams(keys = { "depth" }, values = { "1" })
 	PageSet<? extends StorageMetadata> list(
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String container,

@@ -66,7 +66,7 @@ public class OrionBlobStore extends BaseBlobStore {
 
 	@Override
 	public boolean blobExists(String container, String blobName) {
-		return api.blobExits(getUserWorkspace(), container,
+		return api.blobExists(getUserWorkspace(), container,
 				OrionUtils.getParentPath(blobName),
 				OrionUtils.getName(blobName));
 	}

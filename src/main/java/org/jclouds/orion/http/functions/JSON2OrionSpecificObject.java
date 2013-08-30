@@ -11,6 +11,13 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+/**
+ * A function to de-serialize {@link OrionSpecificFileMetadata} from a JSON
+ * String
+ * 
+ * @author Timur
+ * 
+ */
 public class JSON2OrionSpecificObject implements
 		Function<String, OrionSpecificFileMetadata> {
 

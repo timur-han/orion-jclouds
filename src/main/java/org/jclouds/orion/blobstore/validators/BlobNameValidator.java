@@ -22,6 +22,9 @@ import org.jclouds.orion.domain.OrionBlob;
 import org.jclouds.predicates.Validator;
 
 /**
+ * Check if the blob name is valid. This function accepts a blob. String version
+ * {@code StringNameValidator}
+ * 
  * @author timur
  * 
  */

@@ -39,6 +39,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
 /**
+ * Configure orion specific settings in this module
  * 
  * @author timur
  * 

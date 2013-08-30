@@ -10,6 +10,12 @@ import org.jclouds.orion.http.functions.OrionSpecificObject2JSON;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+/**
+ * Make Hidden attribute of file attributes true in the request
+ * 
+ * @author Timur
+ * 
+ */
 public class CreateHiddenFileFilter implements HttpRequestFilter {
 
 	private final JSON2OrionSpecificObject json2OrionSpecificObj;
