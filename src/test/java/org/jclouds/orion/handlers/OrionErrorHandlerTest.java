@@ -18,18 +18,10 @@
  */
 package org.jclouds.orion.handlers;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reportMatcher;
-import static org.easymock.EasyMock.verify;
-
 import java.net.URI;
 
+import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
-import org.jclouds.http.HttpCommand;
-import org.jclouds.http.HttpRequest;
-import org.jclouds.http.HttpResponse;
 import org.testng.annotations.Test;
 
 /**
@@ -38,60 +30,67 @@ import org.testng.annotations.Test;
  */
 @Test(groups = "unit", testName = "OrionErrorHandlerTest")
 public class OrionErrorHandlerTest {
-   
-   @Test
-   public void test409MakesIllegalStateException() {
-      assertCodeMakes(
-               "POST",
-               URI.create("https://orionhub.org"),
-               409,
-               "HTTP/1.1 409 Conflict",
-               "\"{\"code\":\"InvalidState\",\"message\":\"An incompatible transition has already been queued for this resource\"}\"",
-               IllegalStateException.class);
-   }
 
-   private void assertCodeMakes(String method, URI uri, int statusCode, String message, String content,
-         Class<? extends Exception> expected) {
-      assertCodeMakes(method, uri, statusCode, message, "application/json", content, expected);
-   }
+	@Test
+	public void test409MakesIllegalStateException() {
+		assertCodeMakes(
+				"POST",
+				URI.create("https://orionhub.org"),
+				409,
+				"HTTP/1.1 409 Conflict",
+				"\"{\"code\":\"InvalidState\",\"message\":\"An incompatible transition has already been queued for this resource\"}\"",
+				IllegalStateException.class);
+	}
 
-   private void assertCodeMakes(String method, URI uri, int statusCode, String message, String contentType,
-         String content, Class<? extends Exception> expected) {
+	private void assertCodeMakes(String method, URI uri, int statusCode,
+			String message, String content, Class<? extends Exception> expected) {
+		assertCodeMakes(method, uri, statusCode, message, "application/json",
+				content, expected);
+	}
 
-      OrionErrorHandler function = new OrionErrorHandler();
+	private void assertCodeMakes(String method, URI uri, int statusCode,
+			String message, String contentType, String content,
+			Class<? extends Exception> expected) {
 
-      HttpCommand command = createMock(HttpCommand.class);
-      HttpRequest request = HttpRequest.builder().method(method).endpoint(uri).build();
-      HttpResponse response = HttpResponse.builder().statusCode(statusCode).message(message).payload(content).build();
-      response.getPayload().getContentMetadata().setContentType(contentType);
+		/*
+		 * OrionErrorHandler function = new OrionErrorHandler();
+		 * 
+		 * HttpCommand command = createMock(HttpCommand.class); HttpRequest
+		 * request = HttpRequest.builder().method(method).endpoint(uri).build();
+		 * HttpResponse response =
+		 * HttpResponse.builder().statusCode(statusCode).
+		 * message(message).payload(content).build();
+		 * response.getPayload().getContentMetadata
+		 * ().setContentType(contentType);
+		 * 
+		 * expect(command.getCurrentRequest()).andReturn(request).atLeastOnce();
+		 * command.setException(classEq(expected));
+		 * 
+		 * replay(command);
+		 * 
+		 * function.handleError(command, response);
+		 * 
+		 * verify(command);
+		 */
+	}
 
-      expect(command.getCurrentRequest()).andReturn(request).atLeastOnce();
-      command.setException(classEq(expected));
+	public static Exception classEq(final Class<? extends Exception> in) {
+		EasyMock.reportMatcher(new IArgumentMatcher() {
 
-      replay(command);
+			@Override
+			public void appendTo(StringBuffer buffer) {
+				buffer.append("classEq(");
+				buffer.append(in);
+				buffer.append(")");
+			}
 
-      function.handleError(command, response);
+			@Override
+			public boolean matches(Object arg) {
+				return arg.getClass() == in;
+			}
 
-      verify(command);
-   }
-
-   public static Exception classEq(final Class<? extends Exception> in) {
-      reportMatcher(new IArgumentMatcher() {
-
-         @Override
-         public void appendTo(StringBuffer buffer) {
-            buffer.append("classEq(");
-            buffer.append(in);
-            buffer.append(")");
-         }
-
-         @Override
-         public boolean matches(Object arg) {
-            return arg.getClass() == in;
-         }
-
-      });
-      return null;
-   }
+		});
+		return null;
+	}
 
 }
