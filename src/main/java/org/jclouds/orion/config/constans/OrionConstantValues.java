@@ -25,7 +25,7 @@ package org.jclouds.orion.config.constans;
 public class OrionConstantValues {
 	// Orion Blob Store Properties
 	public final static String ORION_ID = "orionblob";
-	public final static String END_POINT = "http://orionhub.org/";
+	public final static String END_POINT = "https://orionhub.org/";
 	public final static String ORION_VERSION = "1.0";
 
 	// Orion Paths

@@ -114,6 +114,7 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/")
 	@ResponseParser(CreationResponseParser.class)
 	@Fallback(DuplicateCreationFallback.class)
+	@Headers(keys = { OrionHttpFields.ORION_ECLIPSE_WEB_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	Boolean createContainerAsAProject(
 			@PathParam("userWorkspace") String userWorkspace,
 			@HeaderParam("Slug") @ParamValidators(StringNameValidator.class) String containerName);
@@ -160,6 +161,7 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/"
 			+ OrionConstantValues.ORION_FILE_PATH + "{containerName}")
 	@Fallback(ExistenceCheckFallback.class)
+	@Headers(keys = { OrionHttpFields.ORION_ECLIPSE_WEB_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	Boolean deleteContainerMetadata(
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName);
@@ -208,8 +210,8 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}{blobName}")
 	@Fallback(ExistenceCheckFallback.class)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	@QueryParams(keys = { OrionHttpFields.QUERY_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
+	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	boolean blobExists(
 			@PathParam("userWorkspace") String userName,
 			@PathParam("containerName") String containerName,
@@ -460,8 +462,8 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}")
 	@ResponseParser(ListContainersResponseParser.class)
-	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	@QueryParams(keys = { "depth" }, values = { "1" })
+	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	PageSet<? extends StorageMetadata> list(
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String container,

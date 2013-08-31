@@ -11,12 +11,12 @@ Please read <http://jclouds.incubator.apache.org/documentation/userguide/blobsto
 
 
 BlobStoreContext context = ContextBuilder.newBuilder("orionblob")
-                 .credentials(identity, credential)
+                 .credentials(username, password)
                  .buildView(BlobStoreContext.class);
 
 
 
-Default end-point is <http://orionhub.org/> this can be overridden by setting the end-point during the build of blobstore.
+Default end-point is <https://orionhub.org/> this can be overridden by setting the end-point during the build of blobstore.
 The general blob naming convention is like relative paths which start without a slash.
 
 In general names as.metadata and with slashes are forbidden. 
@@ -33,7 +33,9 @@ some remarks
 
 
 
-A file and older with the same name in the same directory are forbidden. In such a case a request removes the existing duplicate and adds the requested item. 
+- A file and older with the same name in the same directory are forbidden. In such a case a request removes the existing duplicate and adds the requested item. 
+
+- Username changes would be problematic since workspace name is based on it and Orion does not update workspace name in Version 3. In Version 4 it is not allowed. 
 
 
 
