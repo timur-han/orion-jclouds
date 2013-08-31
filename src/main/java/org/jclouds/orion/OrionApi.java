@@ -318,8 +318,7 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}{blobName}")
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
-	@HttpResponse
-	getBlobContents(
+	HttpResponse getBlobContents(
 			@PathParam("userWorkspace") String userWorkspace,
 			@PathParam("containerName") String containerName,
 			@PathParam("parentPath") @ParamParser(FixBlobParentPath.class) String parentPath,
