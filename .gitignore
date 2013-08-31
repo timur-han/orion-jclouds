@@ -3,3 +3,4 @@
 /.settings/org.eclipse.jdt.core.prefs
 test-output/
 target/
+.settings/

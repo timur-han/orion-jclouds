@@ -16,10 +16,10 @@ BlobStoreContext context = ContextBuilder.newBuilder("orionblob")
 
 
 
-Default end-point is http://orionhub.org/ this can be overridden by setting in the end-point in the builder.
+Default end-point is <http://orionhub.org/> this can be overridden by setting the end-point during the build of blobstore.
 The general blob naming convention is like relative paths which start without a slash.
 
-In general names with .metadata and slashes are forbidden. 
+In general names as.metadata and with slashes are forbidden. 
 
 
 
