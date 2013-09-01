@@ -40,7 +40,8 @@ import org.jclouds.orion.blobstore.binders.BlobCreationBinder;
 import org.jclouds.orion.blobstore.binders.ListRequestBinder;
 import org.jclouds.orion.blobstore.binders.OrionMetadataBinder;
 import org.jclouds.orion.blobstore.fallbacks.DuplicateCreationFallback;
-import org.jclouds.orion.blobstore.fallbacks.ExistenceCheckFallback;
+import org.jclouds.orion.blobstore.fallbacks.FileNotFoundFallback;
+import org.jclouds.orion.blobstore.fallbacks.ReturnNullOnNotFound;
 import org.jclouds.orion.blobstore.fallbacks.SameFileWithDiffTypeFallback;
 import org.jclouds.orion.blobstore.functions.BlobMetadataName;
 import org.jclouds.orion.blobstore.functions.BlobNameParamParser;
@@ -97,7 +98,7 @@ public interface OrionApi extends Closeable {
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}")
-	@Fallback(ExistenceCheckFallback.class)
+	@Fallback(FileNotFoundFallback.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	@QueryParams(keys = { OrionHttpFields.QUERY_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
 	boolean containerExists(@PathParam("userWorkspace") String userWorkspace,
@@ -160,7 +161,7 @@ public interface OrionApi extends Closeable {
 	@DELETE
 	@Path(OrionConstantValues.ORION_WORKSPACE_PATH + "{userWorkspace}/"
 			+ OrionConstantValues.ORION_FILE_PATH + "{containerName}")
-	@Fallback(ExistenceCheckFallback.class)
+	@Fallback(FileNotFoundFallback.class)
 	@Headers(keys = { OrionHttpFields.ORION_ECLIPSE_WEB_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	Boolean deleteContainerMetadata(
 			@PathParam("userWorkspace") String userWorkspace,
@@ -209,7 +210,7 @@ public interface OrionApi extends Closeable {
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}{blobName}")
-	@Fallback(ExistenceCheckFallback.class)
+	@Fallback(FileNotFoundFallback.class)
 	@QueryParams(keys = { OrionHttpFields.QUERY_PARTS }, values = { OrionConstantValues.ORION_FILE_METADATA })
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	boolean blobExists(
@@ -232,7 +233,7 @@ public interface OrionApi extends Closeable {
 	@DELETE
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}")
-	@ResponseParser(FileExistsResponseParser.class)
+	@Fallback(FileNotFoundFallback.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	boolean removeBlob(
 			@PathParam("userWorkspace") String userWorkspace,
@@ -300,6 +301,7 @@ public interface OrionApi extends Closeable {
 			+ OrionConstantValues.ORION_METADATA_PATH + "{blobName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ResponseParser(BlobResponseParser.class)
+	@Fallback(ReturnNullOnNotFound.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	Blob getBlob(
 			@PathParam("userWorkspace") String userName,
@@ -386,7 +388,7 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_FILE_PATH
 			+ "{userWorkspace}/{containerName}/{parentPath}"
 			+ OrionConstantValues.ORION_METADATA_FILE_NAME)
-	@Fallback(ExistenceCheckFallback.class)
+	@Fallback(FileNotFoundFallback.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	boolean metadaFolderExits(
 			@PathParam("userWorkspace") String userName,
@@ -430,6 +432,7 @@ public interface OrionApi extends Closeable {
 			+ OrionConstantValues.ORION_METADATA_PATH + "{fileName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ResponseParser(MetadataResponseParser.class)
+	@Fallback(ReturnNullOnNotFound.class)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	MutableBlobProperties getMetadata(
 			@PathParam("userWorkspace") String userName,

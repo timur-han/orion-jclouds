@@ -26,7 +26,7 @@ import com.google.common.util.concurrent.ListenableFuture;
  * @author timur
  * 
  */
-public class ExistenceCheckFallback implements Fallback<Boolean> {
+public class FileNotFoundFallback implements Fallback<Boolean> {
 
 	/*
 	 * (non-Javadoc)

@@ -1,4 +1,4 @@
-package org.jclouds.orion.blobstore.integration;
+package org.jclouds.orion;
 
 import java.io.File;
 import java.io.InputStream;
@@ -140,10 +140,16 @@ public class OrionBlobStoreTests {
 
 		blobStore.createContainerInLocation(null, container);
 
-		Blob blob = blobStore.blobBuilder(blobName).build();
+		Blob blob = blobStore.blobBuilder(blobName).type(StorageType.FOLDER)
+				.build();
+		blob.setPayload(payload);
+
+		blobStore.putBlob(container, blob);
+		blob = blobStore.blobBuilder(blobName).type(StorageType.FOLDER).build();
 		blob.setPayload(payload);
 		blob.getMetadata().getUserMetadata().put("test", "test");
 		blobStore.putBlob(container, blob);
+
 		BlobMetadata metadata = blobStore.blobMetadata(container, blobName);
 		Assert.assertEquals(metadata.getUserMetadata().containsKey("test"),
 				true, "user metadata is not there");

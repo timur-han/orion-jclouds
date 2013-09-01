@@ -80,7 +80,7 @@ public class OrionBlobStore extends BaseBlobStore {
 		// Convert the blob name to it's metadata file name and fetch it
 		return blobProps2BlobMetadata.apply(api.getMetadata(getUserWorkspace(),
 				container, parentPath,
-				OrionUtils.getHashID(OrionUtils.getName(blobName))));
+				OrionUtils.getMetadataName(OrionUtils.getName(blobName))));
 	}
 
 	@Override
@@ -203,7 +203,7 @@ public class OrionBlobStore extends BaseBlobStore {
 				// Create metadata file
 				api.createMetadata(getUserWorkspace(), container, blob
 						.getProperties().getParentPath(), OrionUtils
-						.getHashID(blob.getProperties().getName())) &&
+						.getMetadataName(blob.getProperties().getName())) &&
 				// Add metadata file contents
 				api.putMetadata(getUserWorkspace(), container, blob
 						.getProperties().getParentPath(), blob);
@@ -213,19 +213,23 @@ public class OrionBlobStore extends BaseBlobStore {
 	/**
 	 * Create the non existing paths starting from index 0
 	 * 
-	 * @param container
+	 * @param containerName
 	 * @param pathArray
 	 */
-	private void createParentPaths(String container, List<String> pathArray) {
-
+	private void createParentPaths(String containerName, List<String> pathArray) {
 		String parentPath = "";
 		for (String path : pathArray) {
-			insertBlob(
-					container,
-					blob2OrionBlob.apply(blobUtils.blobBuilder().payload("")
-							.name(parentPath + path).type(StorageType.FOLDER)
-							.build()));
-			parentPath = parentPath + path + OrionConstantValues.PATH_DELIMITER;
+			if (!api.blobExists(getUserWorkspace(), containerName, parentPath,
+					path)) {
+				insertBlob(
+						containerName,
+						blob2OrionBlob.apply(blobUtils.blobBuilder()
+								.payload("").name(parentPath + path)
+								.type(StorageType.FOLDER).build()));
+			
+			}
+			parentPath = parentPath + path
+					+ OrionConstantValues.PATH_DELIMITER;
 		}
 
 	}

@@ -2,6 +2,7 @@ package org.jclouds.orion;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -40,7 +41,7 @@ public class OrionUtils {
 	 * @param blobName
 	 * @return
 	 */
-	static public String getHashID(String blobName) {
+	static public String getMetadataName(String blobName) {
 		MessageDigest messageDigest;
 		try {
 			messageDigest = MessageDigest.getInstance("SHA-256");
@@ -133,7 +134,7 @@ public class OrionUtils {
 	/**
 	 * Create a name for the user from the path by removing /file then
 	 * userWorkspace and finally the container name This is achieved by removing
-	 * first 3 strings
+	 * first 3 strings It needs to be decoded once to avoid the bug
 	 * 
 	 * @param path
 	 * @return
@@ -142,19 +143,33 @@ public class OrionUtils {
 			String path) {
 
 		String[] paths = path.split(OrionConstantValues.PATH_DELIMITER);
+		int index = 0;
 		String originalName = "";
-		boolean userWorkspacePassed = false;
 		for (String pathPart : paths) {
-			if (userWorkspacePassed) {
+
+			if (index > 3) {
 				originalName = originalName + pathPart
 						+ OrionConstantValues.PATH_DELIMITER;
 			}
-			if (pathPart.equals(userWorkspace)) {
-				userWorkspacePassed = true;
-			}
-
+			index++;
 		}
-		return originalName;
+		return OrionUtils.decodeName(originalName);
+	}
+
+	/**
+	 * 
+	 * @param createdName
+	 * @return
+	 */
+	private static String decodeName(String createdName) {
+
+		try {
+			return URLDecoder.decode(createdName, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return createdName;
 	}
 
 	/**
