@@ -153,6 +153,9 @@ public class OrionUtils {
 			}
 			index++;
 		}
+		// remove the last slash
+		// last field is the name of the file
+		originalName = originalName.substring(0, originalName.length() - 1);
 		return OrionUtils.decodeName(originalName);
 	}
 

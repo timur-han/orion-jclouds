@@ -44,59 +44,59 @@ import com.google.inject.Inject;
 
 public class BlobResponseParser implements Function<HttpResponse, Blob> {
 
-    private final ObjectMapper mapper;
-    private final OrionApi api;
-    private final String userWorkspace;
-    private final Factory orionBlobProvider;
-    private final OrionBlobToBlob orionBlob2Blob;
+	private final ObjectMapper mapper;
+	private final OrionApi api;
+	private final String userWorkspace;
+	private final Factory orionBlobProvider;
+	private final OrionBlobToBlob orionBlob2Blob;
 
-    @Inject
-    public BlobResponseParser(ObjectMapper mapper, OrionApi api,
-	    @Provider Supplier<Credentials> creds,
-	    OrionBlob.Factory orionBlobProvider, OrionBlobToBlob orionBlob2Blob) {
-	this.mapper = Preconditions.checkNotNull(mapper, "mapper is null");
-	this.api = Preconditions.checkNotNull(api, "api is null");
-	this.userWorkspace = Preconditions.checkNotNull(creds, "creds is null")
-		.get().identity;
-	this.orionBlobProvider = Preconditions.checkNotNull(orionBlobProvider,
-		"orionBlobProvider is null");
-	this.orionBlob2Blob = Preconditions.checkNotNull(orionBlob2Blob,
-		"orionBlob2Blob is null");
+	@Inject
+	public BlobResponseParser(ObjectMapper mapper, OrionApi api,
+			@Provider Supplier<Credentials> creds,
+			OrionBlob.Factory orionBlobProvider, OrionBlobToBlob orionBlob2Blob) {
+		this.mapper = Preconditions.checkNotNull(mapper, "mapper is null");
+		this.api = Preconditions.checkNotNull(api, "api is null");
+		this.userWorkspace = Preconditions.checkNotNull(creds, "creds is null")
+				.get().identity;
+		this.orionBlobProvider = Preconditions.checkNotNull(orionBlobProvider,
+				"orionBlobProvider is null");
+		this.orionBlob2Blob = Preconditions.checkNotNull(orionBlob2Blob,
+				"orionBlob2Blob is null");
 
-    }
-
-    @Override
-    public Blob apply(HttpResponse response) {
-
-	StringWriter writer = new StringWriter();
-	MutableBlobProperties properties = null;
-	try {
-	    IOUtils.copy(response.getPayload().getInput(), writer);
-	    String theString = writer.toString();
-	    properties = mapper.readValue(theString,
-		    MutableBlobProperties.class);
-	    OrionBlob orionBlob = orionBlobProvider.create(properties);
-	    if (properties.getType() == BlobType.FILE_BLOB) {
-		HttpResponse payloadRes = api.getBlobContents(
-			getUserWorkspace(), properties.getContainer(),
-			properties.getParentPath(), properties.getName());
-		orionBlob.setPayload(payloadRes.getPayload());
-	    }
-	    return orionBlob2Blob.apply(orionBlob);
-
-	} catch (IOException e) {
-	    System.out.println(response.getMessage());
-	    e.printStackTrace();
 	}
 
-	return null;
-    }
+	@Override
+	public Blob apply(HttpResponse response) {
 
-    /**
-     * @return
-     */
-    private String getUserWorkspace() {
-	// TODO Auto-generated method stub
-	return userWorkspace;
-    }
+		StringWriter writer = new StringWriter();
+		MutableBlobProperties properties = null;
+		try {
+			IOUtils.copy(response.getPayload().getInput(), writer);
+			String theString = writer.toString();
+			properties = mapper.readValue(theString,
+					MutableBlobProperties.class);
+			OrionBlob orionBlob = orionBlobProvider.create(properties);
+			if (properties.getType() == BlobType.FILE_BLOB) {
+				HttpResponse payloadRes = api.getBlobContents(
+						getUserWorkspace(), properties.getContainer(),
+						properties.getParentPath(), properties.getName());
+				orionBlob.setPayload(payloadRes.getPayload());
+			}
+			return orionBlob2Blob.apply(orionBlob);
+
+		} catch (IOException e) {
+			System.out.println(response.getMessage());
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * @return
+	 */
+	private String getUserWorkspace() {
+		// TODO Auto-generated method stub
+		return userWorkspace;
+	}
 }

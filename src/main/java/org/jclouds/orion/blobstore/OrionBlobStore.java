@@ -23,6 +23,7 @@ import org.jclouds.blobstore.util.BlobUtils;
 import org.jclouds.collect.Memoized;
 import org.jclouds.domain.Credentials;
 import org.jclouds.domain.Location;
+import org.jclouds.io.MutableContentMetadata;
 import org.jclouds.location.Provider;
 import org.jclouds.orion.OrionApi;
 import org.jclouds.orion.OrionUtils;
@@ -135,11 +136,14 @@ public class OrionBlobStore extends BaseBlobStore {
 	@Override
 	public String putBlob(String container, Blob blob) {
 		OrionBlob orionBlob = this.blob2OrionBlob.apply(blob);
+		MutableContentMetadata tempMD = orionBlob.getProperties()
+				.getContentMetadata();
 		// Copy temporarily the inputstream otherwise JVM closes the stream
 		ByteArrayOutputStream tempOutputStream = new ByteArrayOutputStream();
 		try {
 			IOUtils.copy(blob.getPayload().getInput(), tempOutputStream);
 			orionBlob.setPayload(tempOutputStream.toByteArray());
+			orionBlob.getProperties().setContentMetadata(tempMD);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -226,10 +230,9 @@ public class OrionBlobStore extends BaseBlobStore {
 						blob2OrionBlob.apply(blobUtils.blobBuilder()
 								.payload("").name(parentPath + path)
 								.type(StorageType.FOLDER).build()));
-			
+
 			}
-			parentPath = parentPath + path
-					+ OrionConstantValues.PATH_DELIMITER;
+			parentPath = parentPath + path + OrionConstantValues.PATH_DELIMITER;
 		}
 
 	}

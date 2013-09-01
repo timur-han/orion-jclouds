@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 @Test(groups = "unit", testName = "OrionApiMetadataTest")
 public class OrionBlobStoreTests {
 
-	String blobName = "servicetemplates/http%3A%2F%2Fwww.example.org%2Fwinery%2FTEST%2Fjclouds1/test1/test2/";
+	String blobName = "servicetemplates/http%3A%2F%2Fwww.example.org%2Fwinery%2FTEST%2Fjclouds1/test1/";
 	private BlobStore blobStore;
 	private final String container = "Container";
 	String payload = "Payload Test String";
@@ -170,20 +170,6 @@ public class OrionBlobStoreTests {
 		IOUtils.copy(returnBlob.getPayload().getInput(), tempStream);
 
 		Assert.assertEquals(payload, new String(tempStream.toByteArray()));
-
-	}
-
-	@Test
-	protected void clearContainer() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-
-		Blob blob = blobStore.blobBuilder(blobName).build();
-		blob.setPayload(payload);
-		blob.getMetadata().getUserMetadata().put("test", "test");
-		blobStore.putBlob(container, blob);
-
-		PageSet<? extends StorageMetadata> resultSet = blobStore.list();
 
 	}
 
