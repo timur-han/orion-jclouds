@@ -6,12 +6,14 @@ import org.jclouds.orion.domain.OrionBlob;
 import com.google.common.base.Function;
 
 public class BlobNameParamParser implements Function<Object, String> {
-
+	
+	/**
+	 * Returns encoded blob name
+	 */
 	@Override
 	public String apply(Object blob) {
-		// TODO when bug is fixed this line needs to changed
-		return OrionUtils.getRequestName(((OrionBlob) blob).getProperties()
-				.getName());
+		
+		return OrionUtils.getRequestLocation(((OrionBlob) blob).getProperties().getName());
 	}
-
+	
 }

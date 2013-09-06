@@ -12,7 +12,7 @@ import org.jclouds.orion.config.constans.OrionConstantValues;
 import com.google.common.base.Preconditions;
 
 public class OrionUtils {
-
+	
 	/**
 	 * Removes the last element which is the name of the blob for instance
 	 * /path1/path2/blobname/ -> path1/path2/ The first slash is removed since
@@ -27,13 +27,12 @@ public class OrionUtils {
 		String[] blobPaths = blobName.split(OrionConstantValues.PATH_DELIMITER);
 		for (int index = 0; index < (blobPaths.length - 1); index++) {
 			if (!blobPaths[index].isEmpty()) {
-				fetchedParent = fetchedParent + blobPaths[index]
-						+ OrionConstantValues.PATH_DELIMITER;
+				fetchedParent = fetchedParent + blobPaths[index] + OrionConstantValues.PATH_DELIMITER;
 			}
 		}
 		return fetchedParent;
 	}
-
+	
 	/**
 	 * Convert blobName to an hashed unique ID SHA-256 hashing is used This
 	 * method is used to create
@@ -45,8 +44,7 @@ public class OrionUtils {
 		MessageDigest messageDigest;
 		try {
 			messageDigest = MessageDigest.getInstance("SHA-256");
-			messageDigest.update(blobName
-					.getBytes(OrionConstantValues.ENCODING));
+			messageDigest.update(blobName.getBytes(OrionConstantValues.ENCODING));
 			byte[] digest = messageDigest.digest();
 			BigInteger bigInteger = new BigInteger(1, digest);
 			return bigInteger.toString(16);
@@ -57,9 +55,9 @@ public class OrionUtils {
 			e.printStackTrace();
 			return String.valueOf(blobName.hashCode());
 		}
-
+		
 	}
-
+	
 	/**
 	 * Gets the name of passed name by extracting the parent paths
 	 * 
@@ -68,45 +66,41 @@ public class OrionUtils {
 	 */
 	public static String getName(String originalName) {
 		String parentPath = OrionUtils.getParentPath(originalName);
-		return originalName.replaceFirst(parentPath, "").replaceAll(
-				OrionConstantValues.PATH_DELIMITER, "");
+		return originalName.replaceFirst(parentPath, "").replaceAll(OrionConstantValues.PATH_DELIMITER, "");
 	}
-
+	
 	/**
 	 * Used to provide one more time encoded path due to an existing bug in
-	 * Orion https://bugs.eclipse.org/bugs/show_bug.cgi?id=416118 This method is
-	 * meant to be used while operating on already created objects
+	 * meant to be used while operating on already created objects. It is one
+	 * more encoded because it provides the location. In the childeren list name
+	 * is not double encoded.
 	 * 
 	 * @param parentPath
 	 * @return
 	 */
-	static public String getParentRequestPath(String parentPath) {
+	static public String getParentRequestLocation(String parentPath) {
 		Preconditions.checkNotNull(parentPath, "blobname is null");
 		String requestParent = "";
-
+		
 		for (String path : parentPath.split(OrionConstantValues.PATH_DELIMITER)) {
 			if (!path.isEmpty()) {
-				requestParent = requestParent + OrionUtils.getRequestName(path)
-						+ OrionConstantValues.PATH_DELIMITER;
+				requestParent = requestParent + OrionUtils.getRequestLocation(path) + OrionConstantValues.PATH_DELIMITER;
 			}
 		}
 		return requestParent;
 	}
-
+	
 	/**
-	 * Used to provide one more time encoded name due to an existing bug in
-	 * Orion https://bugs.eclipse.org/bugs/show_bug.cgi?id=416118 This method is
-	 * meant to be used while operating on already created objects
+	 * Locations are encoded one more time
 	 * 
-	 * @param createdName
-	 *            Gets orion based name ,i.e., all parent paths have been
-	 *            removed
+	 * @param createdName Gets orion based name ,i.e., all parent paths have
+	 *            been removed
 	 * @return
 	 */
-	public static String getRequestName(String createdName) {
+	public static String getRequestLocation(String createdName) {
 		return OrionUtils.encodeName(createdName);
 	}
-
+	
 	/**
 	 * 
 	 * Check if the given path is a container path. If it is a container path
@@ -130,42 +124,42 @@ public class OrionUtils {
 			return false;
 		}
 	}
-
+	
 	/**
-	 * Create a name for the user from the path by removing /file then
+	 * Create a name for the user from the path by removing/file then
 	 * userWorkspace and finally the container name This is achieved by removing
-	 * first 3 strings It needs to be decoded once to avoid the bug
+	 * first 3 strings.
 	 * 
 	 * @param path
 	 * @return
 	 */
-	public static String createOriginalNameFromLocation(String userWorkspace,
-			String path) {
-
+	public static String createOriginalNameFromLocation(String userWorkspace, String path) {
+		// decode once because names are decoded one time to create the location
+		// names
+		path = OrionUtils.decodeName(path);
 		String[] paths = path.split(OrionConstantValues.PATH_DELIMITER);
 		int index = 0;
 		String originalName = "";
 		for (String pathPart : paths) {
-
+			
 			if (index > 3) {
-				originalName = originalName + pathPart
-						+ OrionConstantValues.PATH_DELIMITER;
+				originalName = originalName + pathPart + OrionConstantValues.PATH_DELIMITER;
 			}
 			index++;
 		}
 		// remove the last slash
 		// last field is the name of the file
 		originalName = originalName.substring(0, originalName.length() - 1);
-		return OrionUtils.decodeName(originalName);
+		return originalName;
 	}
-
+	
 	/**
 	 * 
 	 * @param createdName
 	 * @return
 	 */
 	private static String decodeName(String createdName) {
-
+		
 		try {
 			return URLDecoder.decode(createdName, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -174,14 +168,14 @@ public class OrionUtils {
 		}
 		return createdName;
 	}
-
+	
 	/**
 	 * 
 	 * @param createdName
 	 * @return
 	 */
 	private static String encodeName(String createdName) {
-
+		
 		try {
 			return URLEncoder.encode(createdName, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -190,7 +184,7 @@ public class OrionUtils {
 		}
 		return createdName;
 	}
-
+	
 	/**
 	 * @param path
 	 * @return
@@ -200,7 +194,7 @@ public class OrionUtils {
 			path = path.replaceFirst(OrionConstantValues.PATH_DELIMITER, "");
 		}
 		return path;
-
+		
 	}
-
+	
 }
