@@ -23,189 +23,181 @@ import org.testng.annotations.Test;
 
 @Test(groups = "unit", testName = "OrionApiMetadataTest")
 public class OrionBlobStoreTests {
-
+	
 	String blobName = "servicetemplates/http%3A%2F%2Fwww.example.org%2Fwinery%2FTEST%2Fjclouds1/test1/";
 	private BlobStore blobStore;
 	private final String container = "Container";
 	String payload = "Payload Test String";
-
+	
+	
 	@BeforeSuite
 	protected void setUp() throws Exception {
-		BlobStoreContext context = ContextBuilder.newBuilder("orionblob")
-				.endpoint("http://127.0.0.1:8080")
-				.credentials("timur", "123456").build(BlobStoreContext.class);
+		BlobStoreContext context = ContextBuilder.newBuilder("orionblob").endpoint("http://127.0.0.1:8080").credentials("timur", "123456").build(BlobStoreContext.class);
 		// create a container in the default location
-		blobStore = context.getBlobStore();
+		this.blobStore = context.getBlobStore();
 	}
-
+	
 	@AfterTest
 	protected void tearDown() throws Exception {
-		blobStore.deleteContainer(container);
+		this.blobStore.deleteContainer(this.container);
 	}
-
+	
 	@Test
 	protected void createContainer() throws Exception {
-		blobStore.createContainerInLocation(null, container);
+		this.blobStore.createContainerInLocation(null, this.container);
 	}
-
+	
 	@Test
 	protected void deleteContainer() throws Exception {
-
-		blobStore.deleteContainer(container);
-		blobStore.createContainerInLocation(null, container);
-		Assert.assertTrue(blobStore.containerExists(container),
-				"Container SHOULD exist");
-		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
-				.getInstance().getTimeInMillis())),
-				"Container SHOULD NOT exist");
+		
+		this.blobStore.deleteContainer(this.container);
+		this.blobStore.createContainerInLocation(null, this.container);
+		Assert.assertTrue(this.blobStore.containerExists(this.container), "Container SHOULD exist");
+		Assert.assertTrue(!this.blobStore.containerExists(String.valueOf(Calendar.getInstance().getTimeInMillis())), "Container SHOULD NOT exist");
 	}
-
+	
 	@Test
 	protected void containerExists() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-		Assert.assertTrue(blobStore.containerExists(container),
-				"Container SHOULD exist");
-		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
-				.getInstance().getTimeInMillis())),
-				"Container SHOULD NOT exist");
+		
+		this.blobStore.createContainerInLocation(null, this.container);
+		Assert.assertTrue(this.blobStore.containerExists(this.container), "Container SHOULD exist");
+		Assert.assertTrue(!this.blobStore.containerExists(String.valueOf(Calendar.getInstance().getTimeInMillis())), "Container SHOULD NOT exist");
 	}
-
+	
 	@Test
 	protected void putBlob() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-		Assert.assertTrue(blobStore.containerExists(container),
-				"Container SHOULD exist");
-		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
-				.getInstance().getTimeInMillis())),
-				"Container SHOULD NOT exist");
-
-		Blob blob = blobStore.blobBuilder(blobName).build();
-		blob.setPayload(payload);
-		blobStore.putBlob(container, blob);
+		
+		this.blobStore.createContainerInLocation(null, this.container);
+		Assert.assertTrue(this.blobStore.containerExists(this.container), "Container SHOULD exist");
+		Assert.assertTrue(!this.blobStore.containerExists(String.valueOf(Calendar.getInstance().getTimeInMillis())), "Container SHOULD NOT exist");
+		
+		Blob blob = this.blobStore.blobBuilder(this.blobName).build();
+		blob.setPayload(this.payload);
+		this.blobStore.putBlob(this.container, blob);
 	}
-
+	
 	@Test
 	protected void removeBlob() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-		Assert.assertTrue(blobStore.containerExists(container),
-				"Container SHOULD exist");
-		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
-				.getInstance().getTimeInMillis())),
-				"Container SHOULD NOT exist");
-
-		Blob blob = blobStore.blobBuilder(blobName).payload("")
-				.type(StorageType.FOLDER).build();
-		blobStore.putBlob(container, blob);
-		Assert.assertEquals(true, blobStore.blobExists(container, blobName));
-		blobStore.removeBlob(container, blobName);
-		Assert.assertEquals(false, blobStore.blobExists(container, blobName));
+		
+		this.blobStore.createContainerInLocation(null, this.container);
+		Assert.assertTrue(this.blobStore.containerExists(this.container), "Container SHOULD exist");
+		Assert.assertTrue(!this.blobStore.containerExists(String.valueOf(Calendar.getInstance().getTimeInMillis())), "Container SHOULD NOT exist");
+		
+		Blob blob = this.blobStore.blobBuilder(this.blobName).payload("").type(StorageType.FOLDER).build();
+		this.blobStore.putBlob(this.container, blob);
+		Assert.assertEquals(true, this.blobStore.blobExists(this.container, this.blobName));
+		this.blobStore.removeBlob(this.container, this.blobName);
+		Assert.assertEquals(false, this.blobStore.blobExists(this.container, this.blobName));
 	}
-
+	
 	@Test
 	protected void blobExists() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-
-		Assert.assertEquals(blobStore.blobExists(container, blobName), false);
-		Blob blob = blobStore.blobBuilder(blobName).build();
-		blob.setPayload(payload);
-		blobStore.putBlob(container, blob);
-		Assert.assertEquals(blobStore.blobExists(container, blobName), true);
+		this.blobStore.deleteContainer(this.container);
+		this.blobStore.createContainerInLocation(null, this.container);
+		
+		Assert.assertEquals(this.blobStore.blobExists(this.container, this.blobName), false);
+		Blob blob = this.blobStore.blobBuilder(this.blobName).build();
+		blob.setPayload(this.payload);
+		this.blobStore.putBlob(this.container, blob);
+		Assert.assertEquals(this.blobStore.blobExists(this.container, this.blobName), true);
 	}
-
+	
 	@Test
 	protected void putBigBlob() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-		Assert.assertTrue(blobStore.containerExists(container),
-				"Container SHOULD exist");
-		Assert.assertTrue(!blobStore.containerExists(String.valueOf(Calendar
-				.getInstance().getTimeInMillis())),
-				"Container SHOULD NOT exist");
-
-		Blob blob = blobStore.blobBuilder(blobName).build();
-		String pathName = getClass().getClassLoader()
-				.getResource("Moodle.csar").getPath();
+		
+		this.blobStore.createContainerInLocation(null, this.container);
+		Assert.assertTrue(this.blobStore.containerExists(this.container), "Container SHOULD exist");
+		Assert.assertTrue(!this.blobStore.containerExists(String.valueOf(Calendar.getInstance().getTimeInMillis())), "Container SHOULD NOT exist");
+		
+		Blob blob = this.blobStore.blobBuilder(this.blobName).build();
+		String pathName = this.getClass().getClassLoader().getResource("SugarCRM.zip").getPath();
 		File testFile = new File(pathName);
 		InputStream iStream = FileUtils.openInputStream(testFile);
 		blob.setPayload(iStream);
-		blobStore.putBlob(container, blob);
+		this.blobStore.putBlob(this.container, blob);
+		
+		iStream = FileUtils.openInputStream(testFile);
+		Blob returnedBlob = this.blobStore.getBlob(this.container, this.blobName);
+		
+		while (true) {
+			int temp = iStream.read();
+			// System.out.print(temp);
+			Assert.assertEquals(returnedBlob.getPayload().getInput().read(), temp);
+			if (temp == -1) {
+				break;
+			}
+		}
+		
 	}
-
+	
 	@Test
 	protected void getBlobMetadata() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-
-		Blob blob = blobStore.blobBuilder(blobName).type(StorageType.FOLDER)
-				.build();
-		blob.setPayload(payload);
-
-		blobStore.putBlob(container, blob);
-		blob = blobStore.blobBuilder(blobName).type(StorageType.FOLDER).build();
-		blob.setPayload(payload);
+		
+		this.blobStore.createContainerInLocation(null, this.container);
+		
+		Blob blob = this.blobStore.blobBuilder(this.blobName).type(StorageType.FOLDER).build();
+		blob.setPayload(this.payload);
+		
+		this.blobStore.putBlob(this.container, blob);
+		blob = this.blobStore.blobBuilder(this.blobName).type(StorageType.FOLDER).build();
+		blob.setPayload(this.payload);
 		blob.getMetadata().getUserMetadata().put("test", "test");
-		blobStore.putBlob(container, blob);
-
-		BlobMetadata metadata = blobStore.blobMetadata(container, blobName);
-		Assert.assertEquals(metadata.getUserMetadata().containsKey("test"),
-				true, "user metadata is not there");
-
+		this.blobStore.putBlob(this.container, blob);
+		
+		BlobMetadata metadata = this.blobStore.blobMetadata(this.container, this.blobName);
+		Assert.assertEquals(metadata.getUserMetadata().containsKey("test"), true, "user metadata is not there");
+		
 	}
-
+	
 	@Test
 	protected void getBlob() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-
-		Blob blob = blobStore.blobBuilder(blobName).build();
-		blob.setPayload(payload);
+		
+		this.blobStore.createContainerInLocation(null, this.container);
+		
+		Blob blob = this.blobStore.blobBuilder(this.blobName).build();
+		blob.setPayload(this.payload);
 		blob.getMetadata().getUserMetadata().put("test", "test");
-		blobStore.putBlob(container, blob);
-		Blob returnBlob = blobStore.getBlob(container, blobName);
+		this.blobStore.putBlob(this.container, blob);
+		Blob returnBlob = this.blobStore.getBlob(this.container, this.blobName);
 		ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
 		IOUtils.copy(returnBlob.getPayload().getInput(), tempStream);
-
-		Assert.assertEquals(payload, new String(tempStream.toByteArray()));
-
+		
+		Assert.assertEquals(this.payload, new String(tempStream.toByteArray()));
+		
 	}
-
+	
 	@Test
 	protected void listContainers() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-
-		Blob blob = blobStore.blobBuilder(blobName).build();
-		blob.setPayload(payload);
+		
+		this.blobStore.createContainerInLocation(null, this.container);
+		
+		Blob blob = this.blobStore.blobBuilder(this.blobName).build();
+		blob.setPayload(this.payload);
 		blob.getMetadata().getUserMetadata().put("test", "test");
-		blobStore.putBlob(container, blob);
-
-		PageSet<? extends StorageMetadata> resultSet = blobStore.list();
+		this.blobStore.putBlob(this.container, blob);
+		
+		PageSet<? extends StorageMetadata> resultSet = this.blobStore.list();
 		for (StorageMetadata data : resultSet) {
 			System.out.println(data.getName());
 		}
-
+		
 	}
-
+	
 	@Test
 	protected void listBlobs() throws Exception {
-
-		blobStore.createContainerInLocation(null, container);
-
-		Blob blob = blobStore.blobBuilder(blobName).build();
-		blob.setPayload(payload);
+		
+		this.blobStore.createContainerInLocation(null, this.container);
+		
+		Blob blob = this.blobStore.blobBuilder(this.blobName).build();
+		blob.setPayload(this.payload);
 		blob.getMetadata().getUserMetadata().put("test", "test");
-		blobStore.putBlob(container, blob);
-
-		PageSet<? extends StorageMetadata> resultSet = blobStore.list(
-				container, ListContainerOptions.Builder.recursive());
+		this.blobStore.putBlob(this.container, blob);
+		
+		PageSet<? extends StorageMetadata> resultSet = this.blobStore.list(this.container, ListContainerOptions.Builder.recursive());
 		for (StorageMetadata data : resultSet) {
 			System.out.println(data.getName());
 		}
-
+		
 	}
-
+	
 }

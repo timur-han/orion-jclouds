@@ -38,40 +38,30 @@ import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 
 public class OrionBlobStore extends BaseBlobStore {
-
+	
 	private final OrionApi api;
 	private final String userWorkspace;
 	private final BlobToOrionBlob blob2OrionBlob;
 	private final BlobPropertiesToBlobMetadata blobProps2BlobMetadata;
 	private final BlobUtils blobUtils;
-
+	
+	
 	@Inject
-	protected OrionBlobStore(BlobStoreContext context,
-			@Provider Supplier<Credentials> creds, BlobUtils blobUtils,
-			OrionApi api, Supplier<Location> defaultLocation,
-			@Memoized Supplier<Set<? extends Location>> locations,
-			BlobToOrionBlob blob2OrionBlob,
-			BlobPropertiesToBlobMetadata blobProps2BlobMetadata,
-			OrionBlob.Factory orionBlobProvider) {
+	protected OrionBlobStore(BlobStoreContext context, @Provider Supplier<Credentials> creds, BlobUtils blobUtils, OrionApi api, Supplier<Location> defaultLocation, @Memoized Supplier<Set<? extends Location>> locations, BlobToOrionBlob blob2OrionBlob, BlobPropertiesToBlobMetadata blobProps2BlobMetadata, OrionBlob.Factory orionBlobProvider) {
 		super(context, blobUtils, defaultLocation, locations);
 		this.blobUtils = blobUtils;
 		this.api = Preconditions.checkNotNull(api, "api is null");
-		this.userWorkspace = Preconditions.checkNotNull(creds.get(),
-				"creds is null").identity;
-		this.blob2OrionBlob = Preconditions.checkNotNull(blob2OrionBlob,
-				"blob2OrionBlob is null");
-		this.blobProps2BlobMetadata = Preconditions.checkNotNull(
-				blobProps2BlobMetadata, "blobProps2BlobMetadata is null");
-
+		this.userWorkspace = Preconditions.checkNotNull(creds.get(), "creds is null").identity;
+		this.blob2OrionBlob = Preconditions.checkNotNull(blob2OrionBlob, "blob2OrionBlob is null");
+		this.blobProps2BlobMetadata = Preconditions.checkNotNull(blobProps2BlobMetadata, "blobProps2BlobMetadata is null");
+		
 	}
-
+	
 	@Override
 	public boolean blobExists(String container, String blobName) {
-		return api.blobExists(getUserWorkspace(), container,
-				OrionUtils.getParentPath(blobName),
-				OrionUtils.getName(blobName));
+		return this.api.blobExists(this.getUserWorkspace(), container, OrionUtils.getParentPath(blobName), OrionUtils.getName(blobName));
 	}
-
+	
 	@Override
 	public BlobMetadata blobMetadata(String container, String blobName) {
 		String parentPath = OrionUtils.getParentPath(blobName);
@@ -79,65 +69,58 @@ public class OrionBlobStore extends BaseBlobStore {
 		// they will be automatically removed in case it starts with that
 		// Get the blob name
 		// Convert the blob name to it's metadata file name and fetch it
-		return blobProps2BlobMetadata.apply(api.getMetadata(getUserWorkspace(),
-				container, parentPath,
-				OrionUtils.getMetadataName(OrionUtils.getName(blobName))));
+		return this.blobProps2BlobMetadata.apply(this.api.getMetadata(this.getUserWorkspace(), container, parentPath, OrionUtils.getMetadataName(OrionUtils.getName(blobName))));
 	}
-
+	
 	@Override
 	public boolean containerExists(String container) {
-		return api.containerExists(getUserWorkspace(), container);
+		return this.api.containerExists(this.getUserWorkspace(), container);
 	}
-
+	
 	@Override
 	public void deleteContainer(String container) {
 		// api.deleteContainer(getUserLocation(), container);
-		api.deleteContainerMetadata(getUserWorkspace(), container);
+		this.api.deleteContainerMetadata(this.getUserWorkspace(), container);
 	}
-
+	
 	@Override
 	public boolean createContainerInLocation(Location location, String container) {
-		return this.api
-				.createContainerAsAProject(getUserWorkspace(), container);
+		return this.api.createContainerAsAProject(this.getUserWorkspace(), container);
 	}
-
+	
 	@Override
-	public boolean createContainerInLocation(Location arg0, String arg1,
-			CreateContainerOptions arg2) {
+	public boolean createContainerInLocation(Location arg0, String arg1, CreateContainerOptions arg2) {
 		return this.createContainerInLocation(arg0, arg1);
 	}
-
+	
 	@Override
 	protected boolean deleteAndVerifyContainerGone(String container) {
-		return api.deleteContainerMetadata(getUserWorkspace(), container);
+		return this.api.deleteContainerMetadata(this.getUserWorkspace(), container);
 	}
-
+	
 	@Override
 	public Blob getBlob(String container, String blob, GetOptions arg2) {
-		return api.getBlob(getUserWorkspace(), container,
-				OrionUtils.getParentPath(blob), OrionUtils.getName(blob));
+		return this.api.getBlob(this.getUserWorkspace(), container, OrionUtils.getParentPath(blob), OrionUtils.getName(blob));
 	}
-
+	
 	private String getUserWorkspace() {
 		return this.userWorkspace;
 	}
-
+	
 	@Override
 	public PageSet<? extends StorageMetadata> list() {
-		return api.listContainers(getUserWorkspace());
+		return this.api.listContainers(this.getUserWorkspace());
 	}
-
+	
 	@Override
-	public PageSet<? extends StorageMetadata> list(String container,
-			ListContainerOptions options) {
-		return api.list(getUserWorkspace(), container, options);
+	public PageSet<? extends StorageMetadata> list(String container, ListContainerOptions options) {
+		return this.api.list(this.getUserWorkspace(), container, options);
 	}
-
+	
 	@Override
 	public String putBlob(String container, Blob blob) {
 		OrionBlob orionBlob = this.blob2OrionBlob.apply(blob);
-		MutableContentMetadata tempMD = orionBlob.getProperties()
-				.getContentMetadata();
+		MutableContentMetadata tempMD = orionBlob.getProperties().getContentMetadata();
 		// Copy temporarily the inputstream otherwise JVM closes the stream
 		ByteArrayOutputStream tempOutputStream = new ByteArrayOutputStream();
 		try {
@@ -148,26 +131,22 @@ public class OrionBlobStore extends BaseBlobStore {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		ArrayList<String> pathList = new ArrayList<String>(
-				Arrays.asList(orionBlob.getProperties().getParentPath()
-						.split(OrionConstantValues.PATH_DELIMITER)));
-		createParentPaths(container, pathList);
-		insertBlob(container, orionBlob);
+		ArrayList<String> pathList = new ArrayList<String>(Arrays.asList(orionBlob.getProperties().getParentPath().split(OrionConstantValues.PATH_DELIMITER)));
+		this.createParentPaths(container, pathList);
+		this.insertBlob(container, orionBlob);
 		return null;
 	}
-
+	
 	@Override
 	public String putBlob(String container, Blob blob, PutOptions arg2) {
-		return putBlob(container, blob);
+		return this.putBlob(container, blob);
 	}
-
+	
 	@Override
 	public void removeBlob(String container, String blobName) {
-		api.removeBlob(getUserWorkspace(), container,
-				OrionUtils.getParentPath(blobName),
-				OrionUtils.getName(blobName));
+		this.api.removeBlob(this.getUserWorkspace(), container, OrionUtils.getParentPath(blobName), OrionUtils.getName(blobName));
 	}
-
+	
 	/**
 	 * insert blob operations 1. create a blob file 2. put blob content 3.
 	 * create metadata
@@ -178,42 +157,30 @@ public class OrionBlobStore extends BaseBlobStore {
 	 */
 	private void insertBlob(String container, OrionBlob orionBlob) {
 		orionBlob.getProperties().setContainer(container);
-		boolean creationFlag = api.createBlob(getUserWorkspace(), container,
-				orionBlob.getProperties().getParentPath(), orionBlob);
-		if (creationFlag) {
-			if (orionBlob.getProperties().getType() == BlobType.FILE_BLOB) {
-				api.putBlob(getUserWorkspace(), container, orionBlob
-						.getProperties().getParentPath(), orionBlob);
-			}
-			if (!createMetadata(container, orionBlob)) {
-				System.err
-						.println("metadata could not be created blob will be removed");
-				api.removeBlob(getUserWorkspace(), container, orionBlob
-						.getProperties().getParentPath(), orionBlob
-						.getProperties().getName());
-
-			}
+		
+		if (orionBlob.getProperties().getType() == BlobType.FILE_BLOB) {
+			this.api.createBlob(this.getUserWorkspace(), container, orionBlob.getProperties().getParentPath(), orionBlob);
+		} else if (orionBlob.getProperties().getType() == BlobType.FOLDER_BLOB) {
+			this.api.createFolder(this.getUserWorkspace(), container, orionBlob.getProperties().getParentPath(), orionBlob.getProperties().getName());
 		} else {
-			System.err.println("blob could not be created");
+			System.err.println("blob could not be created. type is not supported! ");
 		}
-
+		
+		if (!this.createMetadata(container, orionBlob)) {
+			System.err.println("metadata could not be created blob will be removed");
+			this.api.removeBlob(this.getUserWorkspace(), container, orionBlob.getProperties().getParentPath(), orionBlob.getProperties().getName());
+		}
+		
 	}
-
+	
 	private boolean createMetadata(String container, OrionBlob blob) {
-
-		return api.createMetadataFolder(getUserWorkspace(), container, blob
-				.getProperties().getParentPath())
-				&&
-				// Create metadata file
-				api.createMetadata(getUserWorkspace(), container, blob
-						.getProperties().getParentPath(), OrionUtils
-						.getMetadataName(blob.getProperties().getName())) &&
-				// Add metadata file contents
-				api.putMetadata(getUserWorkspace(), container, blob
-						.getProperties().getParentPath(), blob);
-
+		
+		return this.api.createMetadataFolder(this.getUserWorkspace(), container, blob.getProperties().getParentPath()) &&
+		// Create metadata file
+		this.api.createMetadata(this.getUserWorkspace(), container, blob.getProperties().getParentPath(), blob);
+		
 	}
-
+	
 	/**
 	 * Create the non existing paths starting from index 0
 	 * 
@@ -223,18 +190,13 @@ public class OrionBlobStore extends BaseBlobStore {
 	private void createParentPaths(String containerName, List<String> pathArray) {
 		String parentPath = "";
 		for (String path : pathArray) {
-			if (!api.blobExists(getUserWorkspace(), containerName, parentPath,
-					path)) {
-				insertBlob(
-						containerName,
-						blob2OrionBlob.apply(blobUtils.blobBuilder()
-								.payload("").name(parentPath + path)
-								.type(StorageType.FOLDER).build()));
-
+			if (!this.api.blobExists(this.getUserWorkspace(), containerName, parentPath, path)) {
+				this.insertBlob(containerName, this.blob2OrionBlob.apply(this.blobUtils.blobBuilder().payload("").name(parentPath + path).type(StorageType.FOLDER).build()));
+				
 			}
 			parentPath = parentPath + path + OrionConstantValues.PATH_DELIMITER;
 		}
-
+		
 	}
-
+	
 }
