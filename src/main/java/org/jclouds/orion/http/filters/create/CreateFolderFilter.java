@@ -3,9 +3,9 @@ package org.jclouds.orion.http.filters.create;
 import org.jclouds.http.HttpException;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpRequestFilter;
+import org.jclouds.orion.blobstore.functions.JSON2OrionSpecificObject;
+import org.jclouds.orion.blobstore.functions.OrionSpecificObject2JSON;
 import org.jclouds.orion.domain.OrionSpecificFileMetadata;
-import org.jclouds.orion.http.functions.JSON2OrionSpecificObject;
-import org.jclouds.orion.http.functions.OrionSpecificObject2JSON;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;

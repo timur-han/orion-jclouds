@@ -1,4 +1,4 @@
-package org.jclouds.orion.http.functions;
+package org.jclouds.orion.blobstore.functions;
 
 import java.io.IOException;
 

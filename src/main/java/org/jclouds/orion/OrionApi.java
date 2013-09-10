@@ -43,9 +43,6 @@ import org.jclouds.orion.blobstore.fallbacks.DuplicateCreationFallback;
 import org.jclouds.orion.blobstore.fallbacks.FileNotFoundFallback;
 import org.jclouds.orion.blobstore.fallbacks.ReturnNullOnNotFound;
 import org.jclouds.orion.blobstore.fallbacks.SameFileWithDiffTypeFallback;
-import org.jclouds.orion.blobstore.functions.BlobMetadataName;
-import org.jclouds.orion.blobstore.functions.EncodeBlobName;
-import org.jclouds.orion.blobstore.functions.EncodeBlobParentPath;
 import org.jclouds.orion.blobstore.functions.parsers.BlobNameToMetadataNameParser;
 import org.jclouds.orion.blobstore.functions.parsers.BlobResponseParser;
 import org.jclouds.orion.blobstore.functions.parsers.CreationResponseParser;
@@ -53,6 +50,9 @@ import org.jclouds.orion.blobstore.functions.parsers.FileExistsResponseParser;
 import org.jclouds.orion.blobstore.functions.parsers.FolderListParser;
 import org.jclouds.orion.blobstore.functions.parsers.ListContainersResponseParser;
 import org.jclouds.orion.blobstore.functions.parsers.MetadataResponseParser;
+import org.jclouds.orion.blobstore.functions.parsers.param.BlobMetadataNameParamParser;
+import org.jclouds.orion.blobstore.functions.parsers.param.EncodeBlobNameParamParser;
+import org.jclouds.orion.blobstore.functions.parsers.param.EncodeBlobParentPathParamParser;
 import org.jclouds.orion.blobstore.validators.BlobNameValidator;
 import org.jclouds.orion.blobstore.validators.StringNameValidator;
 import org.jclouds.orion.config.constans.OrionConstantValues;
@@ -195,12 +195,12 @@ public interface OrionApi extends Closeable {
 	@Fallback(FileNotFoundFallback.class)
 	@QueryParams(keys = {OrionHttpFields.QUERY_PARTS}, values = {OrionConstantValues.ORION_FILE_METADATA})
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD}, values = {OrionConstantValues.ORION_VERSION})
-	boolean blobExists(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath, @PathParam("blobName") @ParamParser(EncodeBlobName.class) String blobName);
+	boolean blobExists(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath, @PathParam("blobName") @ParamParser(EncodeBlobNameParamParser.class) String blobName);
 	
 	/**
 	 * Remove a blob. No "/" in the name and .metadata as name are possible.
 	 * 
-	 * @see EncodeBlobName is used.
+	 * @see EncodeBlobNameParamParser is used.
 	 * 
 	 * @param userWorkspace
 	 * @param containerName
@@ -212,7 +212,7 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/{containerName}/{parentPath}")
 	@Fallback(FileNotFoundFallback.class)
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD}, values = {OrionConstantValues.ORION_VERSION})
-	boolean removeBlob(@PathParam("userWorkspace") String userWorkspace, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath, @PathParam("blobName") @ParamParser(EncodeBlobName.class) @ParamValidators(StringNameValidator.class) String blobName);
+	boolean removeBlob(@PathParam("userWorkspace") String userWorkspace, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath, @PathParam("blobName") @ParamParser(EncodeBlobNameParamParser.class) @ParamValidators(StringNameValidator.class) String blobName);
 	
 	/**
 	 * This method creates an empty file/folder depending on the request
@@ -231,7 +231,7 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_IMPORT_PATH + "{userWorkspace}/{containerName}/{parentPath}")
 	@Fallback(SameFileWithDiffTypeFallback.class)
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD, OrionHttpFields.ORION_XFER_OPTIONS}, values = {OrionConstantValues.ORION_VERSION, OrionConstantValues.XFER_RAW})
-	boolean createBlob(@PathParam("userWorkspace") String userWorkspace, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath, @BinderParam(BlobCreationBinder.class) @ParamValidators(value = {BlobNameValidator.class}) OrionBlob blob);
+	boolean createBlob(@PathParam("userWorkspace") String userWorkspace, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath, @BinderParam(BlobCreationBinder.class) @ParamValidators(value = {BlobNameValidator.class}) OrionBlob blob);
 	
 	/**
 	 * Create a metadata folder to the corresponding path
@@ -248,7 +248,7 @@ public interface OrionApi extends Closeable {
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD}, values = {OrionConstantValues.ORION_VERSION})
 	@ResponseParser(CreationResponseParser.class)
 	@Fallback(SameFileWithDiffTypeFallback.class)
-	boolean createFolder(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath, @HeaderParam(OrionHttpFields.HEADER_SLUG) String blobName);
+	boolean createFolder(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath, @HeaderParam(OrionHttpFields.HEADER_SLUG) String blobName);
 	
 	/**
 	 * Get the blob on the path. This starts with a metadata request and then
@@ -266,7 +266,7 @@ public interface OrionApi extends Closeable {
 	@ResponseParser(BlobResponseParser.class)
 	@Fallback(ReturnNullOnNotFound.class)
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD}, values = {OrionConstantValues.ORION_VERSION})
-	Blob getBlob(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath, @PathParam("blobName") @ParamParser(BlobNameToMetadataNameParser.class) @ParamValidators(StringNameValidator.class) String blobName);
+	Blob getBlob(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath, @PathParam("blobName") @ParamParser(BlobNameToMetadataNameParser.class) @ParamValidators(StringNameValidator.class) String blobName);
 	
 	/**
 	 * This method is used to get the blob contents
@@ -280,7 +280,7 @@ public interface OrionApi extends Closeable {
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/{containerName}/{parentPath}{blobName}")
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD}, values = {OrionConstantValues.ORION_VERSION})
-	HttpResponse getBlobContents(@PathParam("userWorkspace") String userWorkspace, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath, @PathParam("blobName") @ParamParser(EncodeBlobName.class) String blob);
+	HttpResponse getBlobContents(@PathParam("userWorkspace") String userWorkspace, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath, @PathParam("blobName") @ParamParser(EncodeBlobNameParamParser.class) String blob);
 	
 	/**
 	 * Create a metadata folder to the corresponding path
@@ -296,7 +296,7 @@ public interface OrionApi extends Closeable {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Headers(keys = {OrionHttpFields.HEADER_SLUG, OrionHttpFields.ORION_VERSION_FIELD}, values = {OrionConstantValues.ORION_METADATA_FILE_NAME, OrionConstantValues.ORION_VERSION})
 	@ResponseParser(CreationResponseParser.class)
-	boolean createMetadataFolder(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath);
+	boolean createMetadataFolder(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath);
 	
 	/**
 	 * Create an empty metadata file.
@@ -312,7 +312,7 @@ public interface OrionApi extends Closeable {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ResponseParser(CreationResponseParser.class)
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD, OrionHttpFields.ORION_XFER_OPTIONS}, values = {OrionConstantValues.ORION_VERSION, OrionConstantValues.XFER_RAW})
-	boolean createMetadata(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath, @BinderParam(OrionMetadataBinder.class) OrionBlob fileName);
+	boolean createMetadata(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath, @BinderParam(OrionMetadataBinder.class) OrionBlob fileName);
 	
 	/**
 	 * Check if the metadata folder exists
@@ -326,7 +326,7 @@ public interface OrionApi extends Closeable {
 	@Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/{containerName}/{parentPath}" + OrionConstantValues.ORION_METADATA_FILE_NAME)
 	@Fallback(FileNotFoundFallback.class)
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD}, values = {OrionConstantValues.ORION_VERSION})
-	boolean metadaFolderExits(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath);
+	boolean metadaFolderExits(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath);
 	
 	/**
 	 * Put metadata file contents.
@@ -342,7 +342,7 @@ public interface OrionApi extends Closeable {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ResponseParser(CreationResponseParser.class)
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD}, values = {OrionConstantValues.ORION_VERSION})
-	boolean putMetadata(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath, @PathParam("fileName") @ParamParser(BlobMetadataName.class) @BinderParam(OrionMetadataBinder.class) OrionBlob blob);
+	boolean putMetadata(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath, @PathParam("fileName") @ParamParser(BlobMetadataNameParamParser.class) @BinderParam(OrionMetadataBinder.class) OrionBlob blob);
 	
 	/**
 	 * Return metadata object.
@@ -359,7 +359,7 @@ public interface OrionApi extends Closeable {
 	@ResponseParser(MetadataResponseParser.class)
 	@Fallback(ReturnNullOnNotFound.class)
 	@Headers(keys = {OrionHttpFields.ORION_VERSION_FIELD}, values = {OrionConstantValues.ORION_VERSION})
-	MutableBlobProperties getMetadata(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPath.class) String parentPath, @PathParam("fileName") @ParamParser(EncodeBlobName.class) String blobName);
+	MutableBlobProperties getMetadata(@PathParam("userWorkspace") String userName, @PathParam("containerName") String containerName, @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath, @PathParam("fileName") @ParamParser(EncodeBlobNameParamParser.class) String blobName);
 	
 	/**
 	 * This method sends a DELETE message to the given path

@@ -144,37 +144,4 @@
       </build>
     </profile>
   </profiles>
-  <build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<version>1.5</version>
-				<configuration>
-					<licenseName>apache_v2</licenseName>
-					<verbose>false</verbose>
-					<organizationName>IAAS</organizationName>
-					<roots>
-						<root>src/main/java/</root>
-						<root>src/test/java/</root>
-					</roots>
-					<inceptionYear>2013</inceptionYear>
-				
-				</configuration>
-				<executions>
-					<execution>
-						<id>first</id>
-						<goals>
-							<goal>update-file-header</goal>
-						</goals>
-						<phase>process-sources</phase>
-						<configuration>
-							<licenseName>apache_v2</licenseName>
-							
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>

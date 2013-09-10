@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jclouds.orion.blobstore.functions;
+package org.jclouds.orion.blobstore.functions.parsers.param;
 
 import org.jclouds.orion.OrionUtils;
 
@@ -27,7 +27,7 @@ import com.google.common.base.Function;
  * @author timur
  * 
  */
-public class EncodeBlobName implements Function<Object, String> {
+public class EncodeBlobNameParamParser implements Function<Object, String> {
 	
 	/*
 	 * (non-Javadoc)

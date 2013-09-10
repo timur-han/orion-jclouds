@@ -1,4 +1,4 @@
-package org.jclouds.orion.blobstore.functions;
+package org.jclouds.orion.blobstore.functions.parsers.param;
 
 import org.jclouds.orion.OrionUtils;
 import org.jclouds.orion.domain.OrionBlob;
