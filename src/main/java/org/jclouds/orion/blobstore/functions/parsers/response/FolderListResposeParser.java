@@ -14,17 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.blobstore.functions.parsers;
+package org.jclouds.orion.blobstore.functions.parsers.response;
 
-import org.jclouds.orion.OrionUtils;
+import java.util.List;
+
+import org.jclouds.http.HttpResponse;
+import org.jclouds.orion.blobstore.functions.converters.ListMetadataToChildrenList;
+import org.jclouds.orion.domain.OrionChildMetadata;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 
 /**
  * @author timur
  * 
  */
-public class BlobNameToMetadataNameParser implements Function<Object, String> {
+public class FolderListResposeParser implements Function<HttpResponse, List<OrionChildMetadata>> {
+
+	private final ListMetadataToChildrenList listMetadata2ChildrenList;
+
+	@Inject
+	public FolderListResposeParser(ListMetadataToChildrenList listMetadata2ChildrenList) {
+		this.listMetadata2ChildrenList = Preconditions.checkNotNull(listMetadata2ChildrenList,
+		      "listMetadata2ChildrenList is null");
+
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -32,9 +47,7 @@ public class BlobNameToMetadataNameParser implements Function<Object, String> {
 	 * @see com.google.common.base.Function#apply(java.lang.Object)
 	 */
 	@Override
-	public String apply(Object blobName) {
-		return OrionUtils.getMetadataName((String) blobName);
-
+	public List<OrionChildMetadata> apply(HttpResponse res) {
+		return listMetadata2ChildrenList.apply(res);
 	}
-
 }

@@ -16,23 +16,18 @@
  */
 package org.jclouds.orion.blobstore.strategy.internal;
 
-import static com.google.common.base.Throwables.propagate;
-import static org.jclouds.concurrent.FutureIterables.awaitCompletion;
-
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
 import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.jclouds.Constants;
-import org.jclouds.blobstore.AsyncBlobStore;
 import org.jclouds.blobstore.BlobStore;
-import org.jclouds.blobstore.internal.BlobRuntimeException;
 import org.jclouds.blobstore.reference.BlobStoreConstants;
 import org.jclouds.blobstore.strategy.DeleteDirectoryStrategy;
+import org.jclouds.blobstore.strategy.internal.MarkerFileMkdirStrategy;
 import org.jclouds.logging.Logger;
 
 import com.google.common.collect.Maps;
@@ -87,6 +82,7 @@ public class MarkersDeleteDirectoryStrategy implements DeleteDirectoryStrategy {
 		this.blobstore = blobstore;
 	}
 
+	@Override
 	public void execute(String containerName, String directory) {
 		Set<String> names = Sets.newHashSet();
 		names.add(directory);
@@ -95,7 +91,7 @@ public class MarkersDeleteDirectoryStrategy implements DeleteDirectoryStrategy {
 		}
 		Map<String, ListenableFuture<?>> responses = Maps.newHashMap();
 		for (String name : names) {
-			blobstore.removeBlob(containerName, name);
+			this.blobstore.removeBlob(containerName, name);
 		}
 
 	}

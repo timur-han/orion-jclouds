@@ -43,16 +43,16 @@ import org.jclouds.orion.blobstore.fallbacks.DuplicateCreationFallback;
 import org.jclouds.orion.blobstore.fallbacks.FileNotFoundFallback;
 import org.jclouds.orion.blobstore.fallbacks.ReturnNullOnNotFound;
 import org.jclouds.orion.blobstore.fallbacks.SameFileWithDiffTypeFallback;
-import org.jclouds.orion.blobstore.functions.parsers.BlobNameToMetadataNameParser;
-import org.jclouds.orion.blobstore.functions.parsers.BlobResponseParser;
-import org.jclouds.orion.blobstore.functions.parsers.CreationResponseParser;
-import org.jclouds.orion.blobstore.functions.parsers.FileExistsResponseParser;
-import org.jclouds.orion.blobstore.functions.parsers.FolderListParser;
-import org.jclouds.orion.blobstore.functions.parsers.ListContainersResponseParser;
-import org.jclouds.orion.blobstore.functions.parsers.MetadataResponseParser;
 import org.jclouds.orion.blobstore.functions.parsers.param.BlobMetadataNameParamParser;
+import org.jclouds.orion.blobstore.functions.parsers.param.BlobNameToMetadataNameParamParser;
 import org.jclouds.orion.blobstore.functions.parsers.param.EncodeBlobNameParamParser;
 import org.jclouds.orion.blobstore.functions.parsers.param.EncodeBlobParentPathParamParser;
+import org.jclouds.orion.blobstore.functions.parsers.response.BlobResponseParser;
+import org.jclouds.orion.blobstore.functions.parsers.response.CreationResponseParser;
+import org.jclouds.orion.blobstore.functions.parsers.response.FileExistsResponseParser;
+import org.jclouds.orion.blobstore.functions.parsers.response.FolderListResposeParser;
+import org.jclouds.orion.blobstore.functions.parsers.response.ListContainersResponseParser;
+import org.jclouds.orion.blobstore.functions.parsers.response.MetadataResponseParser;
 import org.jclouds.orion.blobstore.validators.BlobNameValidator;
 import org.jclouds.orion.blobstore.validators.StringNameValidator;
 import org.jclouds.orion.config.constans.OrionConstantValues;
@@ -139,7 +139,7 @@ public interface OrionApi extends Closeable {
 	 */
 	@GET
 	@Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/{containerName}/")
-	@ResponseParser(FolderListParser.class)
+	@ResponseParser(FolderListResposeParser.class)
 	@QueryParams(keys = { "depth" }, values = { "1" })
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	List<OrionChildMetadata> listContainerContents(@PathParam("userWorkspace") String userWorkspace,
@@ -291,7 +291,7 @@ public interface OrionApi extends Closeable {
 	      @PathParam("userWorkspace") String userName,
 	      @PathParam("containerName") String containerName,
 	      @PathParam("parentPath") @ParamParser(EncodeBlobParentPathParamParser.class) String parentPath,
-	      @PathParam("blobName") @ParamParser(BlobNameToMetadataNameParser.class) @ParamValidators(StringNameValidator.class) String blobName);
+	      @PathParam("blobName") @ParamParser(BlobNameToMetadataNameParamParser.class) @ParamValidators(StringNameValidator.class) String blobName);
 
 	/**
 	 * This method is used to get the blob contents

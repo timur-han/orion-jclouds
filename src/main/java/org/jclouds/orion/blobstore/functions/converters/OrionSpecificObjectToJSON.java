@@ -1,4 +1,4 @@
-package org.jclouds.orion.blobstore.functions;
+package org.jclouds.orion.blobstore.functions.converters;
 
 import java.io.IOException;
 
@@ -12,25 +12,24 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 /**
- * A function to de-serialize {@link OrionSpecificFileMetadata} from a JSON
- * String
+ * A function to serialize to {@link OrionSpecificFileMetadata} to JSON format
  * 
  * @author Timur
  * 
  */
-public class JSON2OrionSpecificObject implements Function<String, OrionSpecificFileMetadata> {
+public class OrionSpecificObjectToJSON implements Function<OrionSpecificFileMetadata, String> {
 
 	private final ObjectMapper mapper;
 
 	@Inject
-	public JSON2OrionSpecificObject(ObjectMapper mapper) {
+	public OrionSpecificObjectToJSON(ObjectMapper mapper) {
 		this.mapper = Preconditions.checkNotNull(mapper, "mapper is null");
 	}
 
 	@Override
-	public OrionSpecificFileMetadata apply(String jsonObj) {
+	public String apply(OrionSpecificFileMetadata jsonObj) {
 		try {
-			return mapper.readValue(jsonObj, OrionSpecificFileMetadata.class);
+			return mapper.writeValueAsString(jsonObj);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

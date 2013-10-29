@@ -14,9 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jclouds.orion.domain;
+
+import org.jclouds.http.HttpCommand;
+import org.jclouds.http.HttpResponse;
+import org.jclouds.http.HttpResponseException;
+import org.jclouds.orion.domain.OrionError;
+
 /**
- * String validators
  * @author timur
- *
+ * 
  */
-package org.jclouds.orion.blobstore.validators;
+public class OrionResponseException extends HttpResponseException {
+	OrionError orionError;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1832578464717472164L;
+
+	/**
+	 * @param command
+	 * @param response
+	 */
+
+	public OrionResponseException(HttpCommand command, HttpResponse response, OrionError error) {
+		super(command, response);
+		orionError = error;
+	}
+
+	public OrionError getError() {
+		return orionError;
+	}
+}

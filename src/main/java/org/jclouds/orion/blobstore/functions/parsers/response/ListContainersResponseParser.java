@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.blobstore.functions.parsers;
+package org.jclouds.orion.blobstore.functions.parsers.response;
 
 import java.util.List;
 
 import org.jclouds.blobstore.domain.PageSet;
 import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.http.HttpResponse;
-import org.jclouds.orion.blobstore.functions.ChildMetadataToStorageMetadata;
+import org.jclouds.orion.blobstore.functions.converters.ChildMetadataToStorageMetadata;
 import org.jclouds.orion.domain.OrionStorageMetadata;
 import org.jclouds.orion.domain.internal.OrionPageSet;
 
@@ -36,11 +36,11 @@ import com.google.inject.Inject;
  */
 public class ListContainersResponseParser implements Function<HttpResponse, PageSet<? extends StorageMetadata>> {
 
-	private final FolderListParser folderListParser;
+	private final FolderListResposeParser folderListParser;
 	private final ChildMetadataToStorageMetadata childMetadataToStorageMetadata;
 
 	@Inject
-	public ListContainersResponseParser(FolderListParser folderListParser,
+	public ListContainersResponseParser(FolderListResposeParser folderListParser,
 	      ChildMetadataToStorageMetadata childMetadataToStorageMetadata) {
 		this.folderListParser = Preconditions.checkNotNull(folderListParser, "folderListParser is null");
 		this.childMetadataToStorageMetadata = Preconditions.checkNotNull(childMetadataToStorageMetadata,

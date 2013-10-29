@@ -16,27 +16,17 @@
  */
 package org.jclouds.orion.blobstore.strategy.internal;
 
-import static com.google.common.base.Throwables.propagate;
-import static org.jclouds.concurrent.FutureIterables.awaitCompletion;
-
-import java.util.Map;
-import java.util.concurrent.TimeoutException;
-
 import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.jclouds.Constants;
-import org.jclouds.blobstore.AsyncBlobStore;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.domain.Blob;
-import org.jclouds.blobstore.internal.BlobRuntimeException;
 import org.jclouds.blobstore.reference.BlobStoreConstants;
 import org.jclouds.blobstore.strategy.PutBlobsStrategy;
 import org.jclouds.logging.Logger;
 
-import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 
@@ -70,7 +60,7 @@ public class PutBlobsStrategyImpl implements PutBlobsStrategy {
 	public void execute(String containerName, Iterable<? extends Blob> blobs) {
 
 		for (Blob blob : blobs) {
-			blobstore.putBlob(containerName, blob);
+			this.blobstore.putBlob(containerName, blob);
 		}
 
 	}

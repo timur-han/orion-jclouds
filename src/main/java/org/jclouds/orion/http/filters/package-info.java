@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Authentication filter
  * @author Timur
  *
  */

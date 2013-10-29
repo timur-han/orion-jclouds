@@ -3,8 +3,8 @@ package org.jclouds.orion.http.filters.create;
 import org.jclouds.http.HttpException;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpRequestFilter;
-import org.jclouds.orion.blobstore.functions.JSON2OrionSpecificObject;
-import org.jclouds.orion.blobstore.functions.OrionSpecificObject2JSON;
+import org.jclouds.orion.blobstore.functions.converters.JSONToOrionSpecificObject;
+import org.jclouds.orion.blobstore.functions.converters.OrionSpecificObjectToJSON;
 import org.jclouds.orion.domain.OrionSpecificFileMetadata;
 
 import com.google.common.base.Preconditions;
@@ -18,12 +18,12 @@ import com.google.inject.Inject;
  */
 public class CreateReadonlyFileFilter implements HttpRequestFilter {
 
-	private final JSON2OrionSpecificObject json2OrionSpecificObj;
-	private final OrionSpecificObject2JSON orionSpecificObject2JSON;
+	private final JSONToOrionSpecificObject json2OrionSpecificObj;
+	private final OrionSpecificObjectToJSON orionSpecificObject2JSON;
 
 	@Inject
-	public CreateReadonlyFileFilter(OrionSpecificFileMetadata metadata, JSON2OrionSpecificObject json2OrionSpecificObj,
-	      OrionSpecificObject2JSON orionSpecificObject2JSON) {
+	public CreateReadonlyFileFilter(OrionSpecificFileMetadata metadata, JSONToOrionSpecificObject json2OrionSpecificObj,
+	      OrionSpecificObjectToJSON orionSpecificObject2JSON) {
 		this.json2OrionSpecificObj = Preconditions.checkNotNull(json2OrionSpecificObj, "json2OrionSpecificObjis null");
 		this.orionSpecificObject2JSON = Preconditions.checkNotNull(orionSpecificObject2JSON,
 		      "orionSpecificObject2JSON is null");

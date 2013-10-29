@@ -1,4 +1,4 @@
-package org.jclouds.orion.blobstore.functions.parsers;
+package org.jclouds.orion.blobstore.functions.parsers.response;
 
 import org.jclouds.http.HttpResponse;
 

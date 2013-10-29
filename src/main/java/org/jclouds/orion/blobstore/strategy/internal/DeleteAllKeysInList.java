@@ -21,8 +21,6 @@ import static org.jclouds.blobstore.options.ListContainerOptions.Builder.recursi
 import static org.jclouds.concurrent.FutureIterables.awaitCompletion;
 
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.annotation.Resource;
@@ -86,33 +84,36 @@ public class DeleteAllKeysInList implements ClearListStrategy, ClearContainerStr
 		this.maxErrors = maxErrors;
 	}
 
+	@Override
 	public void execute(String containerName) {
-		execute(containerName, recursive());
+		this.execute(containerName, recursive());
 	}
 
+	@Override
 	public void execute(final String containerName, ListContainerOptions options) {
 		String message = options.getDir() != null ? String.format("clearing path %s/%s", containerName, options.getDir())
 		      : String.format("clearing container %s", containerName);
 		options = options.clone();
 		if (options.isRecursive())
 			message += " recursively";
-		logger.debug(message);
+		this.logger.debug(message);
 		Map<StorageMetadata, Exception> exceptions = Maps.newHashMap();
-		for (int numErrors = 0; numErrors < maxErrors;) {
+		for (int numErrors = 0; numErrors < this.maxErrors;) {
 			// fetch partial directory listing
-			PageSet<? extends StorageMetadata> listing = blobStore.list(containerName, options);
+			PageSet<? extends StorageMetadata> listing = this.blobStore.list(containerName, options);
 
 			// recurse on subdirectories
 			if (options.isRecursive()) {
 				for (StorageMetadata md : listing) {
-					String fullPath = parentIsFolder(options, md) ? options.getDir() + "/" + md.getName() : md.getName();
+					String fullPath = this.parentIsFolder(options, md) ? options.getDir() + "/" + md.getName() : md
+					      .getName();
 					switch (md.getType()) {
 					case BLOB:
 						break;
 					case FOLDER:
 					case RELATIVE_PATH:
 						if (options.isRecursive() && !fullPath.equals(options.getDir())) {
-							execute(containerName, options.clone().inDirectory(fullPath));
+							this.execute(containerName, options.clone().inDirectory(fullPath));
 						}
 						break;
 					case CONTAINER:
@@ -124,32 +125,33 @@ public class DeleteAllKeysInList implements ClearListStrategy, ClearContainerStr
 			// remove blobs and now-empty subdirectories
 			Map<StorageMetadata, ListenableFuture<?>> responses = Maps.newHashMap();
 			for (final StorageMetadata md : listing) {
-				final String fullPath = parentIsFolder(options, md) ? options.getDir() + "/" + md.getName() : md.getName();
+				final String fullPath = this.parentIsFolder(options, md) ? options.getDir() + "/" + md.getName() : md
+				      .getName();
 				switch (md.getType()) {
 				case BLOB:
-					responses.put(md, executorService.submit(new Runnable() {
+					responses.put(md, this.executorService.submit(new Runnable() {
 						@Override
 						public void run() {
-							blobStore.removeBlob(containerName, fullPath);
+							DeleteAllKeysInList.this.blobStore.removeBlob(containerName, fullPath);
 						}
 					}));
 					break;
 				case FOLDER:
 					if (options.isRecursive()) {
-						responses.put(md, executorService.submit(new Runnable() {
+						responses.put(md, this.executorService.submit(new Runnable() {
 							@Override
 							public void run() {
-								blobStore.deleteDirectory(containerName, fullPath);
+								DeleteAllKeysInList.this.blobStore.deleteDirectory(containerName, fullPath);
 							}
 						}));
 					}
 					break;
 				case RELATIVE_PATH:
 					if (options.isRecursive()) {
-						responses.put(md, executorService.submit(new Runnable() {
+						responses.put(md, this.executorService.submit(new Runnable() {
 							@Override
 							public void run() {
-								blobStore.deleteDirectory(containerName, md.getName());
+								DeleteAllKeysInList.this.blobStore.deleteDirectory(containerName, md.getName());
 							}
 						}));
 					}
@@ -160,13 +162,13 @@ public class DeleteAllKeysInList implements ClearListStrategy, ClearContainerStr
 			}
 
 			try {
-				exceptions = awaitCompletion(responses, executorService, maxTime, logger, message);
+				exceptions = awaitCompletion(responses, this.executorService, this.maxTime, this.logger, message);
 			} catch (TimeoutException te) {
 				++numErrors;
-				if (numErrors == maxErrors) {
+				if (numErrors == this.maxErrors) {
 					throw propagate(te);
 				}
-				retryHandler.imposeBackoffExponentialDelay(numErrors, message);
+				this.retryHandler.imposeBackoffExponentialDelay(numErrors, message);
 				continue;
 			} finally {
 				for (ListenableFuture<?> future : responses.values()) {
@@ -176,10 +178,10 @@ public class DeleteAllKeysInList implements ClearListStrategy, ClearContainerStr
 
 			if (!exceptions.isEmpty()) {
 				++numErrors;
-				if (numErrors == maxErrors) {
+				if (numErrors == this.maxErrors) {
 					break;
 				}
-				retryHandler.imposeBackoffExponentialDelay(numErrors, message);
+				this.retryHandler.imposeBackoffExponentialDelay(numErrors, message);
 				continue;
 			}
 
@@ -187,7 +189,7 @@ public class DeleteAllKeysInList implements ClearListStrategy, ClearContainerStr
 			if (marker == null) {
 				break;
 			}
-			logger.debug("%s with marker %s", message, marker);
+			this.logger.debug("%s with marker %s", message, marker);
 			options = options.afterMarker(marker);
 
 			// Reset numErrors if we execute a successful iteration. This ensures
@@ -201,6 +203,6 @@ public class DeleteAllKeysInList implements ClearListStrategy, ClearContainerStr
 	}
 
 	private boolean parentIsFolder(final ListContainerOptions options, final StorageMetadata md) {
-		return options.getDir() != null && md.getName().indexOf('/') == -1;
+		return (options.getDir() != null) && (md.getName().indexOf('/') == -1);
 	}
 }

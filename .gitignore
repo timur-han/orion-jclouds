@@ -4,3 +4,4 @@
 test-output/
 target/
 .settings/
+/target

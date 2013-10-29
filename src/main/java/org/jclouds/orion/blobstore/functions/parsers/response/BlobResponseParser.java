@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.orion.blobstore.functions.parsers;
+package org.jclouds.orion.blobstore.functions.parsers.response;
 
 /**
  * @author timur
@@ -31,7 +31,7 @@ import org.jclouds.domain.Credentials;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.location.Provider;
 import org.jclouds.orion.OrionApi;
-import org.jclouds.orion.blobstore.functions.OrionBlobToBlob;
+import org.jclouds.orion.blobstore.functions.converters.OrionBlobToBlob;
 import org.jclouds.orion.domain.BlobType;
 import org.jclouds.orion.domain.MutableBlobProperties;
 import org.jclouds.orion.domain.OrionBlob;

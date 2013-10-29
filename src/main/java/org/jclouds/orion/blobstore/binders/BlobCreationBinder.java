@@ -5,6 +5,11 @@ import org.jclouds.orion.config.constans.OrionHttpFields;
 import org.jclouds.orion.domain.OrionBlob;
 import org.jclouds.rest.Binder;
 
+/**
+ * 
+ * @author timur
+ * 
+ */
 public class BlobCreationBinder implements Binder {
 
 	@Override

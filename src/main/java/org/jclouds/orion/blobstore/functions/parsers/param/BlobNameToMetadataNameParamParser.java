@@ -14,8 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jclouds.orion.blobstore.functions.parsers.param;
+
+import org.jclouds.orion.OrionUtils;
+
+import com.google.common.base.Function;
+
 /**
  * @author timur
- *
+ * 
  */
-package org.jclouds.orion.blobstore.functions.parsers;
+public class BlobNameToMetadataNameParamParser implements Function<Object, String> {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.google.common.base.Function#apply(java.lang.Object)
+	 */
+	@Override
+	public String apply(Object blobName) {
+		return OrionUtils.getMetadataName((String) blobName);
+
+	}
+
+}
