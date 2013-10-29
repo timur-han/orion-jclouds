@@ -52,8 +52,7 @@ public class DuplicateCreationFallback implements Fallback<Boolean> {
 		if (t instanceof OrionResponseException) {
 			OrionResponseException exception = (OrionResponseException) t;
 			if (exception.getError().getHttpCode().equals("400")
-					&& exception.getError().getMessage()
-							.startsWith("Duplicate")) {
+			      && exception.getError().getMessage().startsWith("Duplicate")) {
 				return false;
 			}
 		}

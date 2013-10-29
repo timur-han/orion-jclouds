@@ -45,21 +45,17 @@ public class BlobPropertiesImpl implements BlobProperties {
 	private final Map<String, String> metadata = Maps.newLinkedHashMap();
 	private final BaseImmutableContentMetadata contentMetadata;
 
-	public BlobPropertiesImpl(BlobType type, String name, String container,
-			URI url, Date lastModified, String eTag, long size,
-			String contentType, @Nullable byte[] contentMD5,
-			@Nullable String contentMetadata, @Nullable String contentLanguage,
-			@Nullable Date currentExpires, Map<String, String> metadata) {
+	public BlobPropertiesImpl(BlobType type, String name, String container, URI url, Date lastModified, String eTag,
+	      long size, String contentType, @Nullable byte[] contentMD5, @Nullable String contentMetadata,
+	      @Nullable String contentLanguage, @Nullable Date currentExpires, Map<String, String> metadata) {
 		this.type = Preconditions.checkNotNull(type, "type");
 		this.name = Preconditions.checkNotNull(name, "name");
 		this.container = Preconditions.checkNotNull(container, "container");
 		this.url = Preconditions.checkNotNull(url, "url");
-		this.lastModified = Preconditions.checkNotNull(lastModified,
-				"lastModified");
+		this.lastModified = Preconditions.checkNotNull(lastModified, "lastModified");
 		this.eTag = Preconditions.checkNotNull(eTag, "eTag");
-		this.contentMetadata = new BaseImmutableContentMetadata(contentType,
-				size, contentMD5, null, contentLanguage, contentMetadata,
-				currentExpires);
+		this.contentMetadata = new BaseImmutableContentMetadata(contentType, size, contentMD5, null, contentLanguage,
+		      contentMetadata, currentExpires);
 		this.metadata.putAll(Preconditions.checkNotNull(metadata, "metadata"));
 	}
 
@@ -168,8 +164,8 @@ public class BlobPropertiesImpl implements BlobProperties {
 	@Override
 	public String toString() {
 		return String
-				.format("[name=%s, container=%s, url=%s, contentMetadata=%s, eTag=%s, lastModified=%s, leaseStatus=%s, metadata=%s, type=%s]",
-						name, container, url, contentMetadata, eTag,
-						lastModified, metadata, type);
+		      .format(
+		            "[name=%s, container=%s, url=%s, contentMetadata=%s, eTag=%s, lastModified=%s, leaseStatus=%s, metadata=%s, type=%s]",
+		            name, container, url, contentMetadata, eTag, lastModified, metadata, type);
 	}
 }

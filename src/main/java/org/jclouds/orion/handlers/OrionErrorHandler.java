@@ -48,35 +48,37 @@ import com.google.inject.Inject;
  */
 @Singleton
 public class OrionErrorHandler implements HttpErrorHandler {
-	
+
 	private final String userWorkspace;
 	private final HttpCommandExecutorService commandExecutor;
 	private final ObjectMapper mapper;
-	
-	
+
 	@Inject
-	public OrionErrorHandler(@Provider Supplier<Credentials> creds, HttpCommandExecutorService commandExecutor, ObjectMapper mapper) {
+	public OrionErrorHandler(@Provider Supplier<Credentials> creds, HttpCommandExecutorService commandExecutor,
+	      ObjectMapper mapper) {
 		this.commandExecutor = Preconditions.checkNotNull(commandExecutor, "HttpCommandExecutorService");
 		this.mapper = Preconditions.checkNotNull(mapper, "mapper is null");
 		this.userWorkspace = Preconditions.checkNotNull(creds, "creds  is null").get().identity;
 	}
-	
+
 	@Override
 	public void handleError(HttpCommand command, HttpResponse response) {
 		// it is important to always read fully and close streams
 		byte[] data = HttpUtils.closeClientButKeepContentStream(response);
 		String message = data != null ? new String(data) : null;
-		
-		Exception exception = message != null ? new HttpResponseException(command, response, message) : new HttpResponseException(command, response);
-		message = message != null ? message : String.format("%s -> %s", command.getCurrentRequest().getRequestLine(), response.getStatusLine());
-		
+
+		Exception exception = message != null ? new HttpResponseException(command, response, message)
+		      : new HttpResponseException(command, response);
+		message = message != null ? message : String.format("%s -> %s", command.getCurrentRequest().getRequestLine(),
+		      response.getStatusLine());
+
 		try {
 			OrionError error = this.mapper.readValue(response.getPayload().getInput(), OrionError.class);
 			OrionResponseException orionException = new OrionResponseException(command, response, error);
 			command.setException(orionException);
-			
+
 			switch (response.getStatusCode()) {
-			
+
 			case 401:
 				if ((command.getFailureCount() < 3) && FormAuthentication.hasKey(this.userWorkspace)) {
 					// Remove the outdated key and replay the request
@@ -92,7 +94,7 @@ public class OrionErrorHandler implements HttpErrorHandler {
 				command.setException(exception);
 				exception.printStackTrace();
 				break;
-			
+
 			case 409:
 				exception = new IllegalStateException(message, exception);
 				command.setException(exception);
@@ -103,19 +105,19 @@ public class OrionErrorHandler implements HttpErrorHandler {
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			this.doStandardHandling(command, response, exception);
-			
+
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 			this.doStandardHandling(command, response, exception);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			this.doStandardHandling(command, response, exception);
-			
+
 		}
-		
+
 	}
-	
+
 	/**
 	 * @param command
 	 * @param response
@@ -151,6 +153,6 @@ public class OrionErrorHandler implements HttpErrorHandler {
 			exception.printStackTrace();
 			break;
 		}
-		
+
 	}
 }

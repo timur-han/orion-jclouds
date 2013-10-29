@@ -34,8 +34,7 @@ public class BlobToOrionBlob implements Function<Blob, OrionBlob> {
 	private final OrionBlob.Factory objectProvider;
 
 	@Inject
-	BlobToOrionBlob(BlobMetadataToBlobProperties blob2ObjectMd,
-			OrionBlob.Factory objectProvider) {
+	BlobToOrionBlob(BlobMetadataToBlobProperties blob2ObjectMd, OrionBlob.Factory objectProvider) {
 		this.blob2ObjectMd = blob2ObjectMd;
 		this.objectProvider = objectProvider;
 	}
@@ -45,10 +44,8 @@ public class BlobToOrionBlob implements Function<Blob, OrionBlob> {
 		if (from == null) {
 			return null;
 		}
-		OrionBlob object = objectProvider.create(blob2ObjectMd.apply(from
-				.getMetadata()));
-		object.setPayload(Preconditions.checkNotNull(from.getPayload(),
-				"payload: " + from));
+		OrionBlob object = objectProvider.create(blob2ObjectMd.apply(from.getMetadata()));
+		object.setPayload(Preconditions.checkNotNull(from.getPayload(), "payload: " + from));
 		object.setAllHeaders(from.getAllHeaders());
 		return object;
 	}

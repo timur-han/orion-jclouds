@@ -18,8 +18,7 @@ import com.google.inject.Inject;
  * @author Timur
  * 
  */
-public class JSON2OrionSpecificObject implements
-		Function<String, OrionSpecificFileMetadata> {
+public class JSON2OrionSpecificObject implements Function<String, OrionSpecificFileMetadata> {
 
 	private final ObjectMapper mapper;
 

@@ -8,8 +8,7 @@ public class CreationResponseParser implements Function<HttpResponse, Boolean> {
 
 	@Override
 	public Boolean apply(HttpResponse response) {
-		if ((response.getStatusCode() == 200)
-				|| (response.getStatusCode() == 201)) {
+		if ((response.getStatusCode() == 200) || (response.getStatusCode() == 201)) {
 			return true;
 		} else {
 			return false;

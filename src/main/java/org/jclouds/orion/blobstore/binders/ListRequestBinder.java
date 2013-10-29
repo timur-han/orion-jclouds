@@ -39,10 +39,8 @@ public class ListRequestBinder implements Binder {
 	public <R extends HttpRequest> R bindToRequest(R request, Object input) {
 		ListContainerOptions options = ListContainerOptions.class.cast(input);
 		if (options.isRecursive()) {
-			request = (R) request
-					.toBuilder()
-					.replaceQueryParam(OrionHttpFields.QUERY_DEPTH,
-							OrionConstantValues.MAXIMUM_DEPTH).build();
+			request = (R) request.toBuilder()
+			      .replaceQueryParam(OrionHttpFields.QUERY_DEPTH, OrionConstantValues.MAXIMUM_DEPTH).build();
 		}
 		if (options.isDetailed()) {
 			// TODO a mechanism for this
@@ -52,8 +50,7 @@ public class ListRequestBinder implements Binder {
 			if (!requestPath.endsWith(OrionConstantValues.PATH_DELIMITER)) {
 				requestPath = requestPath + OrionConstantValues.PATH_DELIMITER;
 			}
-			requestPath = OrionConstantValues.PATH_DELIMITER
-					+ OrionUtils.convert2RelativePath(options.getDir());
+			requestPath = OrionConstantValues.PATH_DELIMITER + OrionUtils.convert2RelativePath(options.getDir());
 			request = (R) request.toBuilder().endpoint(requestPath).build();
 
 		}

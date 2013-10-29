@@ -35,9 +35,7 @@ public class FormAuthentication implements HttpRequestFilter {
 
 		@Override
 		public Collection<String> call() throws Exception {
-			return getApi()
-					.formLogin(getCreds().identity, getCreds().credential)
-					.getHeaders().get(HttpHeaders.SET_COOKIE);
+			return getApi().formLogin(getCreds().identity, getCreds().credential).getHeaders().get(HttpHeaders.SET_COOKIE);
 		}
 
 	}
@@ -52,8 +50,8 @@ public class FormAuthentication implements HttpRequestFilter {
 
 	// This class holds a cache for keys
 	// username:sesionsId pairs are used
-	final static private Cache<String, Collection<String>> keyCache = CacheBuilder
-			.newBuilder().maximumSize(1000).build();
+	final static private Cache<String, Collection<String>> keyCache = CacheBuilder.newBuilder().maximumSize(1000)
+	      .build();
 
 	public static boolean hasKey(String identity) {
 
@@ -65,8 +63,7 @@ public class FormAuthentication implements HttpRequestFilter {
 	}
 
 	@Inject
-	public FormAuthentication(@Provider Supplier<Credentials> creds,
-			OrionApi api) {
+	public FormAuthentication(@Provider Supplier<Credentials> creds, OrionApi api) {
 		Preconditions.checkNotNull(creds, "creds");
 		this.creds = creds.get();
 		this.api = Preconditions.checkNotNull(api, "creds");
@@ -78,24 +75,17 @@ public class FormAuthentication implements HttpRequestFilter {
 		// The requests with the header ignoreauthentication will not be
 		// validated
 
-		if (request.getHeaders().containsKey(
-				OrionHttpFields.IGNORE_AUTHENTICATION)) {
-			request = request.toBuilder()
-					.removeHeader(OrionHttpFields.IGNORE_AUTHENTICATION)
-					.build();
+		if (request.getHeaders().containsKey(OrionHttpFields.IGNORE_AUTHENTICATION)) {
+			request = request.toBuilder().removeHeader(OrionHttpFields.IGNORE_AUTHENTICATION).build();
 			ignoreAuthentication = true;
 
 		}
 		Collection<String> cachedKey = null;
 		try {
 			if (!ignoreAuthentication) {
-				cachedKey = FormAuthentication.getKeycache().get(
-						getCreds().identity, new SessionKeyRequester());
-				request = request
-						.toBuilder()
-						.replaceHeader(HttpHeaders.COOKIE,
-								cachedKey.toArray(new String[cachedKey.size()]))
-						.build();
+				cachedKey = FormAuthentication.getKeycache().get(getCreds().identity, new SessionKeyRequester());
+				request = request.toBuilder()
+				      .replaceHeader(HttpHeaders.COOKIE, cachedKey.toArray(new String[cachedKey.size()])).build();
 			}
 		} catch (ExecutionException e) {
 			// TODO

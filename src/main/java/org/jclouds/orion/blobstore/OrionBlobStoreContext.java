@@ -22,87 +22,84 @@ import com.google.common.reflect.TypeToken;
 
 public class OrionBlobStoreContext extends BaseView implements BlobStoreContext {
 
-	   private final BlobStore blobStore;
-	   private final ConsistencyModel consistencyModel;
-	   private final Utils utils;
-	   private final BlobRequestSigner blobRequestSigner;
+	private final BlobStore blobStore;
+	private final ConsistencyModel consistencyModel;
+	private final Utils utils;
+	private final BlobRequestSigner blobRequestSigner;
 
-	   @Inject
-	   public OrionBlobStoreContext(@Provider Context backend, @Provider TypeToken<? extends Context> backendType,
-	            Utils utils, ConsistencyModel consistencyModel,
-	            BlobStore blobStore,
-	            BlobRequestSigner blobRequestSigner) {
-		   
-	      super(backend, backendType);
-	      this.consistencyModel = checkNotNull(consistencyModel, "consistencyModel");
-	      this.blobStore = checkNotNull(blobStore, "blobStore");
-	      this.utils = checkNotNull(utils, "utils");
-	      this.blobRequestSigner = checkNotNull(blobRequestSigner, "blobRequestSigner");
-	   }
+	@Inject
+	public OrionBlobStoreContext(@Provider Context backend, @Provider TypeToken<? extends Context> backendType,
+	      Utils utils, ConsistencyModel consistencyModel, BlobStore blobStore, BlobRequestSigner blobRequestSigner) {
 
-	   @Override
-	   public ConsistencyModel getConsistencyModel() {
-	      return consistencyModel;
-	   }
+		super(backend, backendType);
+		this.consistencyModel = checkNotNull(consistencyModel, "consistencyModel");
+		this.blobStore = checkNotNull(blobStore, "blobStore");
+		this.utils = checkNotNull(utils, "utils");
+		this.blobRequestSigner = checkNotNull(blobRequestSigner, "blobRequestSigner");
+	}
 
-	   @Override
-	   public BlobMap createBlobMap(String container, ListContainerOptions options) {
-	      return null;
-	   }
+	@Override
+	public ConsistencyModel getConsistencyModel() {
+		return consistencyModel;
+	}
 
-	   @Override
-	   public BlobMap createBlobMap(String container) {
-	      return null;
-	   }
+	@Override
+	public BlobMap createBlobMap(String container, ListContainerOptions options) {
+		return null;
+	}
 
-	   @Override
-	   public InputStreamMap createInputStreamMap(String container, ListContainerOptions options) {
-	      return null;
-	   }
+	@Override
+	public BlobMap createBlobMap(String container) {
+		return null;
+	}
 
-	   @Override
-	   public InputStreamMap createInputStreamMap(String container) {
-	      return null;
-	   }
+	@Override
+	public InputStreamMap createInputStreamMap(String container, ListContainerOptions options) {
+		return null;
+	}
 
-	   @Override
-	   public BlobStore getBlobStore() {
-	      return blobStore;
-	   }
+	@Override
+	public InputStreamMap createInputStreamMap(String container) {
+		return null;
+	}
 
-	   @Override
-	   public AsyncBlobStore getAsyncBlobStore() {
-	      return null;
-	   }
+	@Override
+	public BlobStore getBlobStore() {
+		return blobStore;
+	}
 
-	   @Override
-	   public Utils utils() {
-	      return utils;
-	   }
+	@Override
+	public AsyncBlobStore getAsyncBlobStore() {
+		return null;
+	}
 
-	   @Override
-	   public BlobRequestSigner getSigner() {
-	      return blobRequestSigner;
-	   }
+	@Override
+	public Utils utils() {
+		return utils;
+	}
 
-	   @Override
-	   public void close() {
-	      Closeables.closeQuietly(delegate());
-	   }
+	@Override
+	public BlobRequestSigner getSigner() {
+		return blobRequestSigner;
+	}
 
-	   public int hashCode() {
-	      return delegate().hashCode();
-	   }
+	@Override
+	public void close() {
+		Closeables.closeQuietly(delegate());
+	}
 
-	   @Override
-	   public String toString() {
-	      return delegate().toString();
-	   }
+	public int hashCode() {
+		return delegate().hashCode();
+	}
 
-	   @Override
-	   public boolean equals(Object obj) {
-	      return delegate().equals(obj);
-	   }
+	@Override
+	public String toString() {
+		return delegate().toString();
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return delegate().equals(obj);
+	}
 
 }

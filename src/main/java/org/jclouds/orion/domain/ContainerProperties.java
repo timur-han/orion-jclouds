@@ -30,13 +30,13 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(ContainerPropertiesImpl.class)
 public interface ContainerProperties extends Comparable<ContainerProperties> {
-    URI getUrl();
+	URI getUrl();
 
-    String getName();
+	String getName();
 
-    Date getLastModified();
+	Date getLastModified();
 
-    String getETag();
+	String getETag();
 
-    Map<String, String> getMetadata();
+	Map<String, String> getMetadata();
 }

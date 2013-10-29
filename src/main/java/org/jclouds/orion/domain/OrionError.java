@@ -31,7 +31,7 @@ public interface OrionError {
 
 	/**
 	 * @param httpCode
-	 *            the httpCode to set
+	 *           the httpCode to set
 	 */
 	public abstract void setHttpCode(String httpCode);
 
@@ -42,7 +42,7 @@ public interface OrionError {
 
 	/**
 	 * @param code
-	 *            the code to set
+	 *           the code to set
 	 */
 	public abstract void setCode(String code);
 
@@ -53,7 +53,7 @@ public interface OrionError {
 
 	/**
 	 * @param severity
-	 *            the severity to set
+	 *           the severity to set
 	 */
 	public abstract void setSeverity(String severity);
 
@@ -64,7 +64,7 @@ public interface OrionError {
 
 	/**
 	 * @param message
-	 *            the message to set
+	 *           the message to set
 	 */
 	public abstract void setMessage(String message);
 
@@ -75,7 +75,7 @@ public interface OrionError {
 
 	/**
 	 * @param detailedMessage
-	 *            the detailedMessage to set
+	 *           the detailedMessage to set
 	 */
 	public abstract void setDetailedMessage(String detailedMessage);
 
@@ -86,7 +86,7 @@ public interface OrionError {
 
 	/**
 	 * @param cause
-	 *            the cause to set
+	 *           the cause to set
 	 */
 	public abstract void setCause(String cause);
 
@@ -97,7 +97,7 @@ public interface OrionError {
 
 	/**
 	 * @param seeAlso
-	 *            the seeAlso to set
+	 *           the seeAlso to set
 	 */
 	public abstract void setSeeAlso(String seeAlso);
 

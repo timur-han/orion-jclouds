@@ -9,8 +9,7 @@ public class BlobMetadataNameParamParser implements Function<Object, String> {
 
 	@Override
 	public String apply(Object blob) {
-		return OrionUtils.getMetadataName(OrionBlob.class.cast(blob)
-				.getProperties().getName());
+		return OrionUtils.getMetadataName(OrionBlob.class.cast(blob).getProperties().getName());
 	}
 
 }

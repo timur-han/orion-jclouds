@@ -57,7 +57,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param name
-	 *            the name to set
+	 *           the name to set
 	 */
 	@Override
 	public void setName(String name) {
@@ -74,7 +74,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param directory
-	 *            the directory to set
+	 *           the directory to set
 	 */
 	@Override
 	public void setDirectory(Boolean directory) {
@@ -91,7 +91,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param eTag
-	 *            the eTag to set
+	 *           the eTag to set
 	 */
 	@Override
 	public void seteTag(String eTag) {
@@ -108,7 +108,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param localTimeStamp
-	 *            the localTimeStamp to set
+	 *           the localTimeStamp to set
 	 */
 	@Override
 	public void setLocalTimeStamp(Long localTimeStamp) {
@@ -125,7 +125,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param location
-	 *            the location to set
+	 *           the location to set
 	 */
 	@Override
 	public void setLocation(String location) {
@@ -142,7 +142,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param childrenLocation
-	 *            the childrenLocation to set
+	 *           the childrenLocation to set
 	 */
 	@Override
 	public void setChildrenLocation(String childrenLocation) {
@@ -159,7 +159,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param attributes
-	 *            the attributes to set
+	 *           the attributes to set
 	 */
 	@Override
 	public void setAttributes(Attributes attributes) {
@@ -176,7 +176,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param charSet
-	 *            the charSet to set
+	 *           the charSet to set
 	 */
 	@Override
 	public void setCharSet(String charSet) {
@@ -193,7 +193,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param contentType
-	 *            the contentType to set
+	 *           the contentType to set
 	 */
 	@Override
 	public void setContentType(String contentType) {
@@ -210,7 +210,7 @@ public class OrionSpecificFileMetadataImpl implements OrionSpecificFileMetadata 
 
 	/**
 	 * @param contentLegth
-	 *            the contentLegth to set
+	 *           the contentLegth to set
 	 */
 	@Override
 	public void setContentLegth(Long contentLegth) {

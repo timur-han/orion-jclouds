@@ -33,28 +33,23 @@ import com.google.common.base.Preconditions;
  */
 @Singleton
 public class OrionBlobToBlob implements Function<OrionBlob, Blob> {
-    private final Factory blobFactory;
-    private final BlobPropertiesToBlobMetadata blobPr2BlobMd;
+	private final Factory blobFactory;
+	private final BlobPropertiesToBlobMetadata blobPr2BlobMd;
 
-    @Inject
-    OrionBlobToBlob(Factory blobFactory,
-	    BlobPropertiesToBlobMetadata blobPr2BlobMd) {
-	this.blobFactory = Preconditions.checkNotNull(blobFactory,
-		"blobFactory");
-	this.blobPr2BlobMd = Preconditions.checkNotNull(blobPr2BlobMd,
-		"blobPr2BlobMd");
-    }
-
-    @Override
-    public Blob apply(OrionBlob from) {
-	if (from == null) {
-	    return null;
+	@Inject
+	OrionBlobToBlob(Factory blobFactory, BlobPropertiesToBlobMetadata blobPr2BlobMd) {
+		this.blobFactory = Preconditions.checkNotNull(blobFactory, "blobFactory");
+		this.blobPr2BlobMd = Preconditions.checkNotNull(blobPr2BlobMd, "blobPr2BlobMd");
 	}
-	Blob blob = blobFactory
-		.create(blobPr2BlobMd.apply(from.getProperties()));
-	blob.setPayload(Preconditions.checkNotNull(from.getPayload(),
-		"payload: " + from));
-	blob.setAllHeaders(from.getAllHeaders());
-	return blob;
-    }
+
+	@Override
+	public Blob apply(OrionBlob from) {
+		if (from == null) {
+			return null;
+		}
+		Blob blob = blobFactory.create(blobPr2BlobMd.apply(from.getProperties()));
+		blob.setPayload(Preconditions.checkNotNull(from.getPayload(), "payload: " + from));
+		blob.setAllHeaders(from.getAllHeaders());
+		return blob;
+	}
 }

@@ -25,7 +25,7 @@ package org.jclouds.orion.config.constans;
 public class OrionErrorExplanations {
 
 	public static final String FORBIDDEN_METADATA_NAME = OrionConstantValues.ORION_METADATA_PATH
-			+ "is not allowed in names";
+	      + "is not allowed in names";
 	public static final String FORBIDDEN_SLASH = " \"/\" is not allowed in names";
 
 }

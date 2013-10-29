@@ -36,8 +36,7 @@ import com.google.common.base.Function;
  * @author timur
  * 
  */
-public class ConvertToFlatList implements
-		Function<JsonNode, List<OrionChildMetadata>> {
+public class ConvertToFlatList implements Function<JsonNode, List<OrionChildMetadata>> {
 
 	private final ObjectMapper mapper;
 
@@ -58,15 +57,12 @@ public class ConvertToFlatList implements
 		List<OrionChildMetadata> arrayList = new ArrayList<OrionChildMetadata>();
 
 		if (parentNode.has(OrionConstantValues.LIST_CHILDREN)
-				&& parentNode.get(OrionConstantValues.LIST_CHILDREN).isArray()) {
-			for (JsonNode childNode : parentNode
-					.get(OrionConstantValues.LIST_CHILDREN)) {
+		      && parentNode.get(OrionConstantValues.LIST_CHILDREN).isArray()) {
+			for (JsonNode childNode : parentNode.get(OrionConstantValues.LIST_CHILDREN)) {
 				try {
-					OrionChildMetadata childData = mapper.readValue(childNode,
-							OrionChildMetadata.class);
+					OrionChildMetadata childData = mapper.readValue(childNode, OrionChildMetadata.class);
 					// do not include metadata in the list
-					if (childData.getName().equals(
-							OrionConstantValues.ORION_METADATA_FILE_NAME)) {
+					if (childData.getName().equals(OrionConstantValues.ORION_METADATA_FILE_NAME)) {
 						continue;
 					}
 					arrayList.add(childData);
@@ -80,8 +76,7 @@ public class ConvertToFlatList implements
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				arrayList
-						.addAll(new ConvertToFlatList(mapper).apply(childNode));
+				arrayList.addAll(new ConvertToFlatList(mapper).apply(childNode));
 			}
 		}
 

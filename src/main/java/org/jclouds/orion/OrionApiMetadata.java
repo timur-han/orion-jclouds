@@ -43,20 +43,21 @@ public class OrionApiMetadata extends BaseHttpApiMetadata<OrionApi> {
 	public static class Builder extends BaseHttpApiMetadata.Builder<OrionApi, Builder> {
 
 		protected Builder() {
-			//super(OrionApi.class);
-			this.id(OrionConstantValues.ORION_ID).
-			name("Orion API").
-			defaultIdentity("Username").
-			identityName("Username").
-			defaultCredential("Password").
-			credentialName("Password").
-			documentation(URI.create("http://wiki.eclipse.org/Orion/Server_API")).
-			version("1.0").
-			defaultEndpoint(OrionConstantValues.END_POINT).
-			defaultProperties(OrionApiMetadata.defaultProperties()).
-			view(Reflection2.typeToken(BlobStoreContext.class)).
-			defaultModules(ImmutableSet.<Class<? extends Module>> of(OrionHttpApiModule.class, OrionBlobStoreModule.class));
-			
+			// super(OrionApi.class);
+			this.id(OrionConstantValues.ORION_ID)
+			      .name("Orion API")
+			      .defaultIdentity("Username")
+			      .identityName("Username")
+			      .defaultCredential("Password")
+			      .credentialName("Password")
+			      .documentation(URI.create("http://wiki.eclipse.org/Orion/Server_API"))
+			      .version("1.0")
+			      .defaultEndpoint(OrionConstantValues.END_POINT)
+			      .defaultProperties(OrionApiMetadata.defaultProperties())
+			      .view(Reflection2.typeToken(BlobStoreContext.class))
+			      .defaultModules(
+			            ImmutableSet.<Class<? extends Module>> of(OrionHttpApiModule.class, OrionBlobStoreModule.class));
+
 		}
 
 		@Override
@@ -90,7 +91,6 @@ public class OrionApiMetadata extends BaseHttpApiMetadata<OrionApi> {
 	protected OrionApiMetadata(Builder builder) {
 		super(builder);
 	}
-
 
 	@Override
 	public Builder toBuilder() {

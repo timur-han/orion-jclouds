@@ -37,8 +37,7 @@ public class OrionResponseException extends HttpResponseException {
 	 * @param response
 	 */
 
-	public OrionResponseException(HttpCommand command, HttpResponse response,
-			OrionError error) {
+	public OrionResponseException(HttpCommand command, HttpResponse response, OrionError error) {
 		super(command, response);
 		orionError = error;
 	}

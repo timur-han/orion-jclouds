@@ -55,18 +55,13 @@ public class OrionCustomModule extends AbstractModule {
 	@Provides
 	public ObjectMapper getObjectMapper() {
 		// configure objectmapper and provide it
-		SimpleModule module = new SimpleModule("SimpleAbstractTypeResolver",
-				Version.unknownVersion());
-		module.addAbstractTypeMapping(MutableBlobProperties.class,
-				MutableBlobPropertiesImpl.class);
-		module.addAbstractTypeMapping(MutableContentMetadata.class,
-				BaseMutableContentMetadata.class);
-		module.addAbstractTypeMapping(OrionSpecificFileMetadata.class,
-				OrionSpecificFileMetadataImpl.class);
+		SimpleModule module = new SimpleModule("SimpleAbstractTypeResolver", Version.unknownVersion());
+		module.addAbstractTypeMapping(MutableBlobProperties.class, MutableBlobPropertiesImpl.class);
+		module.addAbstractTypeMapping(MutableContentMetadata.class, BaseMutableContentMetadata.class);
+		module.addAbstractTypeMapping(OrionSpecificFileMetadata.class, OrionSpecificFileMetadataImpl.class);
 		module.addAbstractTypeMapping(Attributes.class, AttributesImpl.class);
 		module.addAbstractTypeMapping(OrionError.class, OrionErrorImpl.class);
-		module.addAbstractTypeMapping(OrionChildMetadata.class,
-				OrionChildMetadataImpl.class);
+		module.addAbstractTypeMapping(OrionChildMetadata.class, OrionChildMetadataImpl.class);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(module);
 		mapper.setSerializationInclusion(Inclusion.NON_NULL);

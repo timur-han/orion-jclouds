@@ -29,31 +29,30 @@ import com.google.inject.ImplementedBy;
  * @author Adrian Cole
  */
 @ImplementedBy(MutableContainerPropertiesWithMetadataImpl.class)
-public interface MutableContainerPropertiesWithMetadata extends
-	ContainerProperties {
-    /**
-     * @see ListableContainerProperties#setUrl
-     */
-    void setUrl(URI url);
+public interface MutableContainerPropertiesWithMetadata extends ContainerProperties {
+	/**
+	 * @see ListableContainerProperties#setUrl
+	 */
+	void setUrl(URI url);
 
-    /**
-     * @see ListableContainerProperties#setName
-     */
-    void setName(String name);
+	/**
+	 * @see ListableContainerProperties#setName
+	 */
+	void setName(String name);
 
-    /**
-     * @see ListableContainerProperties#setLastModified
-     */
-    void setLastModified(Date lastModified);
+	/**
+	 * @see ListableContainerProperties#setLastModified
+	 */
+	void setLastModified(Date lastModified);
 
-    /**
-     * @see ListableContainerProperties#setETag
-     */
-    void setETag(String eTag);
+	/**
+	 * @see ListableContainerProperties#setETag
+	 */
+	void setETag(String eTag);
 
-    /**
-     * @see ListableContainerProperties#setMetadata
-     */
-    void setMetadata(Map<String, String> metadata);
+	/**
+	 * @see ListableContainerProperties#setMetadata
+	 */
+	void setMetadata(Map<String, String> metadata);
 
 }

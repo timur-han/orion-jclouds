@@ -139,8 +139,7 @@ public class OrionErrorImpl implements OrionError {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.jclouds.orion.domain.internal.OrionError#setDetailedMessage(java.
+	 * @see org.jclouds.orion.domain.internal.OrionError#setDetailedMessage(java.
 	 * lang.String)
 	 */
 	@Override

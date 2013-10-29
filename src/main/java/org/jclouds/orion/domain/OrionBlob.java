@@ -27,17 +27,17 @@ import com.google.common.collect.Multimap;
  */
 public interface OrionBlob extends PayloadEnclosing, Comparable<OrionBlob> {
 
-    public interface Factory {
-	OrionBlob create(@Nullable MutableBlobProperties properties);
-    }
+	public interface Factory {
+		OrionBlob create(@Nullable MutableBlobProperties properties);
+	}
 
-    /**
-     * @return System and User metadata relevant to this object.
-     */
-    MutableBlobProperties getProperties();
+	/**
+	 * @return System and User metadata relevant to this object.
+	 */
+	MutableBlobProperties getProperties();
 
-    Multimap<String, String> getAllHeaders();
+	Multimap<String, String> getAllHeaders();
 
-    void setAllHeaders(Multimap<String, String> allHeaders);
+	void setAllHeaders(Multimap<String, String> allHeaders);
 
 }

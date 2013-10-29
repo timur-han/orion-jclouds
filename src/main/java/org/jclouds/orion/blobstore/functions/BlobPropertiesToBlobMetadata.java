@@ -31,8 +31,7 @@ import com.google.common.base.Function;
  */
 
 @Singleton
-public class BlobPropertiesToBlobMetadata implements
-		Function<BlobProperties, MutableBlobMetadata> {
+public class BlobPropertiesToBlobMetadata implements Function<BlobProperties, MutableBlobMetadata> {
 
 	@Override
 	public MutableBlobMetadata apply(BlobProperties from) {

@@ -21,12 +21,10 @@ public class EmptyRequestFilter implements HttpRequestFilter {
 	private final OrionSpecificObject2JSON orionSpecificObject2JSON;
 
 	@Inject
-	public EmptyRequestFilter(OrionSpecificFileMetadata metadata,
-			OrionSpecificObject2JSON orionSpecificObject2JSON) {
-		this.metadata = Preconditions
-				.checkNotNull(metadata, "metadata is null");
-		this.orionSpecificObject2JSON = Preconditions.checkNotNull(
-				orionSpecificObject2JSON, "orionSpecificObject2JSON is null");
+	public EmptyRequestFilter(OrionSpecificFileMetadata metadata, OrionSpecificObject2JSON orionSpecificObject2JSON) {
+		this.metadata = Preconditions.checkNotNull(metadata, "metadata is null");
+		this.orionSpecificObject2JSON = Preconditions.checkNotNull(orionSpecificObject2JSON,
+		      "orionSpecificObject2JSON is null");
 	}
 
 	/*
@@ -37,8 +35,7 @@ public class EmptyRequestFilter implements HttpRequestFilter {
 	 */
 	@Override
 	public HttpRequest filter(HttpRequest req) throws HttpException {
-		req = req.toBuilder()
-				.payload(this.orionSpecificObject2JSON.apply(metadata)).build();
+		req = req.toBuilder().payload(this.orionSpecificObject2JSON.apply(metadata)).build();
 		return req;
 	}
 

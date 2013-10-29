@@ -23,31 +23,31 @@ package org.jclouds.orion.config.constans;
  * 
  */
 public class OrionHttpFields {
-	
+
 	final static public String ORION_VERSION_FIELD = "Orion-Version";
 	public static final String ORION_XFER_OPTIONS = "X-Xfer-Options";
 	final static public String HEADER_SLUG = "Slug";
-	
+
 	// Form Parameters
-	
+
 	final static public String USERNAME = "login";
 	final static public String PASSWORD = "password";
-	
+
 	// Ignore form authentication header
 	// api methods wtih this header key will not be subject to authentication
 	// check
 	public final static String IGNORE_AUTHENTICATION = "ignoreAuthentication";
-	
+
 	// Orion Specific Fields
-	
+
 	public final static String ORION_NAME = "Name";
 	public final static String ORION_DIRECTORY = "Directory";
 	public final static String ORION_ATTRIBUTES = "Attributes";
 	public final static String ORION_CONTENT_TYPE = "ContentType";
-	
+
 	public static final String QUERY_DEPTH = "depth";
 	public final static String QUERY_PARTS = "parts";
-	
+
 	public static final String ORION_ECLIPSE_WEB_FIELD = "EclipseWeb-Version";
-	
+
 }

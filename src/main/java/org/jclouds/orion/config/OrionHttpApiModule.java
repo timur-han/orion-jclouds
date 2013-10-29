@@ -45,12 +45,9 @@ public class OrionHttpApiModule extends HttpApiModule<OrionApi> {
 
 	@Override
 	protected void bindErrorHandlers() {
-		this.bind(HttpErrorHandler.class).annotatedWith(Redirection.class)
-				.to(OrionErrorHandler.class);
-		this.bind(HttpErrorHandler.class).annotatedWith(ClientError.class)
-				.to(OrionErrorHandler.class);
-		this.bind(HttpErrorHandler.class).annotatedWith(ServerError.class)
-				.to(OrionErrorHandler.class);
+		this.bind(HttpErrorHandler.class).annotatedWith(Redirection.class).to(OrionErrorHandler.class);
+		this.bind(HttpErrorHandler.class).annotatedWith(ClientError.class).to(OrionErrorHandler.class);
+		this.bind(HttpErrorHandler.class).annotatedWith(ServerError.class).to(OrionErrorHandler.class);
 	}
 
 	@Override

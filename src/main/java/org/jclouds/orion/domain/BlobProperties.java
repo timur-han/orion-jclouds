@@ -32,23 +32,23 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(BlobPropertiesImpl.class)
 public interface BlobProperties extends Comparable<BlobProperties> {
 
-    Map<String, String> getMetadata();
+	Map<String, String> getMetadata();
 
-    /**
+	/**
     *  
     */
-    BlobType getType();
+	BlobType getType();
 
-    URI getUrl();
+	URI getUrl();
 
-    String getName();
+	String getName();
 
-    String getContainer();
+	String getContainer();
 
-    Date getLastModified();
+	Date getLastModified();
 
-    String getETag();
+	String getETag();
 
-    ContentMetadata getContentMetadata();
+	ContentMetadata getContentMetadata();
 
 }

@@ -30,15 +30,14 @@ import com.google.inject.Inject;
  * @author timur
  * 
  */
-public class FolderListParser implements
-		Function<HttpResponse, List<OrionChildMetadata>> {
+public class FolderListParser implements Function<HttpResponse, List<OrionChildMetadata>> {
 
 	private final ListMetadataToChildrenList listMetadata2ChildrenList;
 
 	@Inject
 	public FolderListParser(ListMetadataToChildrenList listMetadata2ChildrenList) {
-		this.listMetadata2ChildrenList = Preconditions.checkNotNull(
-				listMetadata2ChildrenList, "listMetadata2ChildrenList is null");
+		this.listMetadata2ChildrenList = Preconditions.checkNotNull(listMetadata2ChildrenList,
+		      "listMetadata2ChildrenList is null");
 
 	}
 

@@ -34,20 +34,17 @@ import com.google.inject.Inject;
  * @author timur
  * 
  */
-public class ListContainersResponseParser implements
-		Function<HttpResponse, PageSet<? extends StorageMetadata>> {
+public class ListContainersResponseParser implements Function<HttpResponse, PageSet<? extends StorageMetadata>> {
 
 	private final FolderListParser folderListParser;
 	private final ChildMetadataToStorageMetadata childMetadataToStorageMetadata;
 
 	@Inject
 	public ListContainersResponseParser(FolderListParser folderListParser,
-			ChildMetadataToStorageMetadata childMetadataToStorageMetadata) {
-		this.folderListParser = Preconditions.checkNotNull(folderListParser,
-				"folderListParser is null");
-		this.childMetadataToStorageMetadata = Preconditions.checkNotNull(
-				childMetadataToStorageMetadata,
-				"childMetadataToStorageMetadata is null");
+	      ChildMetadataToStorageMetadata childMetadataToStorageMetadata) {
+		this.folderListParser = Preconditions.checkNotNull(folderListParser, "folderListParser is null");
+		this.childMetadataToStorageMetadata = Preconditions.checkNotNull(childMetadataToStorageMetadata,
+		      "childMetadataToStorageMetadata is null");
 	}
 
 	/*
@@ -57,9 +54,8 @@ public class ListContainersResponseParser implements
 	 */
 	@Override
 	public PageSet<? extends StorageMetadata> apply(HttpResponse res) {
-		List<OrionStorageMetadata> storageDataList = Lists.transform(
-				this.folderListParser.apply(res),
-				childMetadataToStorageMetadata);
+		List<OrionStorageMetadata> storageDataList = Lists.transform(this.folderListParser.apply(res),
+		      childMetadataToStorageMetadata);
 		return new OrionPageSet(storageDataList);
 
 	}

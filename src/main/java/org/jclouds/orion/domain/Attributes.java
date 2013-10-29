@@ -31,7 +31,7 @@ public interface Attributes {
 
 	/**
 	 * @param readOnly
-	 *            the readOnly to set
+	 *           the readOnly to set
 	 */
 	public abstract void setReadOnly(Boolean readOnly);
 
@@ -42,7 +42,7 @@ public interface Attributes {
 
 	/**
 	 * @param executable
-	 *            the executable to set
+	 *           the executable to set
 	 */
 	public abstract void setExecutable(Boolean executable);
 
@@ -53,7 +53,7 @@ public interface Attributes {
 
 	/**
 	 * @param hidden
-	 *            the hidden to set
+	 *           the hidden to set
 	 */
 	public abstract void setHidden(Boolean hidden);
 
@@ -64,7 +64,7 @@ public interface Attributes {
 
 	/**
 	 * @param archive
-	 *            the archive to set
+	 *           the archive to set
 	 */
 	public abstract void setArchive(Boolean archive);
 
@@ -75,7 +75,7 @@ public interface Attributes {
 
 	/**
 	 * @param symbolicLink
-	 *            the symbolicLink to set
+	 *           the symbolicLink to set
 	 */
 	public abstract void setSymbolicLink(Boolean symbolicLink);
 

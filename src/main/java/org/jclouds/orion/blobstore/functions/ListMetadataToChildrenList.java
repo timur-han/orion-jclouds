@@ -36,8 +36,7 @@ import com.google.inject.Inject;
  * @author timur
  * 
  */
-public class ListMetadataToChildrenList implements
-		Function<HttpResponse, List<OrionChildMetadata>> {
+public class ListMetadataToChildrenList implements Function<HttpResponse, List<OrionChildMetadata>> {
 
 	private final ObjectMapper mapper;
 

@@ -30,8 +30,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 
 @Singleton
-public class ContainerToResourceMetadata implements
-		Function<ContainerProperties, StorageMetadata> {
+public class ContainerToResourceMetadata implements Function<ContainerProperties, StorageMetadata> {
 	private final Supplier<Location> defaultLocation;
 
 	@Inject

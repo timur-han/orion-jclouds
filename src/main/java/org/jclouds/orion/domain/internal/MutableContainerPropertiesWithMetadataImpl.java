@@ -30,8 +30,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Adrian Cole
  */
-public class MutableContainerPropertiesWithMetadataImpl implements
-		MutableContainerPropertiesWithMetadata {
+public class MutableContainerPropertiesWithMetadataImpl implements MutableContainerPropertiesWithMetadata {
 
 	private String name;
 	private URI url;
@@ -130,10 +129,8 @@ public class MutableContainerPropertiesWithMetadataImpl implements
 		final int prime = 31;
 		int result = 1;
 		result = (prime * result) + ((eTag == null) ? 0 : eTag.hashCode());
-		result = (prime * result)
-				+ ((lastModified == null) ? 0 : lastModified.hashCode());
-		result = (prime * result)
-				+ ((metadata == null) ? 0 : metadata.hashCode());
+		result = (prime * result) + ((lastModified == null) ? 0 : lastModified.hashCode());
+		result = (prime * result) + ((metadata == null) ? 0 : metadata.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((url == null) ? 0 : url.hashCode());
 		return result;

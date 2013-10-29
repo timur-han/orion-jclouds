@@ -14,7 +14,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param name
-	 *            the name to set
+	 *           the name to set
 	 */
 	public abstract void setName(String name);
 
@@ -25,7 +25,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param directory
-	 *            the directory to set
+	 *           the directory to set
 	 */
 	public abstract void setDirectory(Boolean directory);
 
@@ -36,7 +36,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param eTag
-	 *            the eTag to set
+	 *           the eTag to set
 	 */
 	public abstract void seteTag(String eTag);
 
@@ -47,7 +47,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param localTimeStamp
-	 *            the localTimeStamp to set
+	 *           the localTimeStamp to set
 	 */
 	public abstract void setLocalTimeStamp(Long localTimeStamp);
 
@@ -58,7 +58,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param location
-	 *            the location to set
+	 *           the location to set
 	 */
 	public abstract void setLocation(String location);
 
@@ -69,7 +69,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param childrenLocation
-	 *            the childrenLocation to set
+	 *           the childrenLocation to set
 	 */
 	public abstract void setChildrenLocation(String childrenLocation);
 
@@ -80,7 +80,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param attributes
-	 *            the attributes to set
+	 *           the attributes to set
 	 */
 	public abstract void setAttributes(Attributes attributes);
 
@@ -91,7 +91,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param charSet
-	 *            the charSet to set
+	 *           the charSet to set
 	 */
 	public abstract void setCharSet(String charSet);
 
@@ -102,7 +102,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param contentType
-	 *            the contentType to set
+	 *           the contentType to set
 	 */
 	public abstract void setContentType(String contentType);
 
@@ -113,7 +113,7 @@ public interface OrionSpecificFileMetadata {
 
 	/**
 	 * @param contentLegth
-	 *            the contentLegth to set
+	 *           the contentLegth to set
 	 */
 	public abstract void setContentLegth(Long contentLegth);
 

@@ -23,12 +23,11 @@ public class CreateFolderFilter implements HttpRequestFilter {
 
 	@Inject
 	public CreateFolderFilter(JSON2OrionSpecificObject json2OrionSpecificObj,
-			OrionSpecificObject2JSON orionSpecificObject2JSON) {
+	      OrionSpecificObject2JSON orionSpecificObject2JSON) {
 
-		this.json2OrionSpecificObj = Preconditions.checkNotNull(
-				json2OrionSpecificObj, "json2OrionSpecificObjis null");
-		this.orionSpecificObject2JSON = Preconditions.checkNotNull(
-				orionSpecificObject2JSON, "orionSpecificObject2JSON is null");
+		this.json2OrionSpecificObj = Preconditions.checkNotNull(json2OrionSpecificObj, "json2OrionSpecificObjis null");
+		this.orionSpecificObject2JSON = Preconditions.checkNotNull(orionSpecificObject2JSON,
+		      "orionSpecificObject2JSON is null");
 	}
 
 	/*
@@ -40,11 +39,9 @@ public class CreateFolderFilter implements HttpRequestFilter {
 	@Override
 	public HttpRequest filter(HttpRequest request) throws HttpException {
 		OrionSpecificFileMetadata metadata;
-		metadata = json2OrionSpecificObj.apply((String) request.getPayload()
-				.getRawContent());
+		metadata = json2OrionSpecificObj.apply((String) request.getPayload().getRawContent());
 		metadata.setDirectory(true);
-		request = request.toBuilder()
-				.payload(orionSpecificObject2JSON.apply(metadata)).build();
+		request = request.toBuilder().payload(orionSpecificObject2JSON.apply(metadata)).build();
 		return request;
 	}
 

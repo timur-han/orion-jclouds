@@ -22,13 +22,11 @@ public class CreateHiddenFileFilter implements HttpRequestFilter {
 	private final OrionSpecificObject2JSON orionSpecificObject2JSON;
 
 	@Inject
-	public CreateHiddenFileFilter(OrionSpecificFileMetadata metadata,
-			JSON2OrionSpecificObject json2OrionSpecificObj,
-			OrionSpecificObject2JSON orionSpecificObject2JSON) {
-		this.json2OrionSpecificObj = Preconditions.checkNotNull(
-				json2OrionSpecificObj, "json2OrionSpecificObjis null");
-		this.orionSpecificObject2JSON = Preconditions.checkNotNull(
-				orionSpecificObject2JSON, "orionSpecificObject2JSON is null");
+	public CreateHiddenFileFilter(OrionSpecificFileMetadata metadata, JSON2OrionSpecificObject json2OrionSpecificObj,
+	      OrionSpecificObject2JSON orionSpecificObject2JSON) {
+		this.json2OrionSpecificObj = Preconditions.checkNotNull(json2OrionSpecificObj, "json2OrionSpecificObjis null");
+		this.orionSpecificObject2JSON = Preconditions.checkNotNull(orionSpecificObject2JSON,
+		      "orionSpecificObject2JSON is null");
 	}
 
 	/*
@@ -40,11 +38,9 @@ public class CreateHiddenFileFilter implements HttpRequestFilter {
 	@Override
 	public HttpRequest filter(HttpRequest request) throws HttpException {
 		OrionSpecificFileMetadata metadata;
-		metadata = this.json2OrionSpecificObj.apply((String) request
-				.getPayload().getRawContent());
+		metadata = this.json2OrionSpecificObj.apply((String) request.getPayload().getRawContent());
 		metadata.getAttributes().setHidden(true);
-		request = request.toBuilder()
-				.payload(this.orionSpecificObject2JSON.apply(metadata)).build();
+		request = request.toBuilder().payload(this.orionSpecificObject2JSON.apply(metadata)).build();
 		return request;
 	}
 

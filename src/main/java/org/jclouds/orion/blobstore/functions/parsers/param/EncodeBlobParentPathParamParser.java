@@ -28,7 +28,7 @@ import com.google.common.base.Function;
  * 
  */
 public class EncodeBlobParentPathParamParser implements Function<Object, String> {
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -36,8 +36,8 @@ public class EncodeBlobParentPathParamParser implements Function<Object, String>
 	 */
 	@Override
 	public String apply(Object parentPath) {
-		
+
 		return OrionUtils.getParentRequestLocation(String.class.cast(parentPath));
 	}
-	
+
 }

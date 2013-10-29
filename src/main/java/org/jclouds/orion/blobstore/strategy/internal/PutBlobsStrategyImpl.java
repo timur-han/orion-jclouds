@@ -47,33 +47,32 @@ import com.google.inject.Inject;
 @Singleton
 public class PutBlobsStrategyImpl implements PutBlobsStrategy {
 
-   private final BlobStore blobstore;
-   private final ListeningExecutorService userExecutor;
-   @Resource
-   @Named(BlobStoreConstants.BLOBSTORE_LOGGER)
-   protected Logger logger = Logger.NULL;
-   /**
-    * maximum duration of an blob Request
-    */
-   @Inject(optional = true)
-   @Named(Constants.PROPERTY_REQUEST_TIMEOUT)
-   protected Long maxTime;
+	private final BlobStore blobstore;
+	private final ListeningExecutorService userExecutor;
+	@Resource
+	@Named(BlobStoreConstants.BLOBSTORE_LOGGER)
+	protected Logger logger = Logger.NULL;
+	/**
+	 * maximum duration of an blob Request
+	 */
+	@Inject(optional = true)
+	@Named(Constants.PROPERTY_REQUEST_TIMEOUT)
+	protected Long maxTime;
 
-   @Inject
-   PutBlobsStrategyImpl(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
-            BlobStore blobstore) {
-      this.userExecutor = userExecutor;
-      this.blobstore = blobstore;
-   }
+	@Inject
+	PutBlobsStrategyImpl(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
+	      BlobStore blobstore) {
+		this.userExecutor = userExecutor;
+		this.blobstore = blobstore;
+	}
 
-   @Override
-   public void execute(String containerName, Iterable<? extends Blob> blobs) {
-     
-      for (Blob blob : blobs) {
-         blobstore.putBlob(containerName, blob);
-      }
+	@Override
+	public void execute(String containerName, Iterable<? extends Blob> blobs) {
 
-     
-   }
+		for (Blob blob : blobs) {
+			blobstore.putBlob(containerName, blob);
+		}
+
+	}
 
 }

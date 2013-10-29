@@ -38,13 +38,10 @@ public class ContainerPropertiesImpl implements ContainerProperties {
 	private final String eTag;
 	private final Map<String, String> metadata = Maps.newLinkedHashMap();
 
-	public ContainerPropertiesImpl(URI url, Date lastModified, String eTag,
-			Map<String, String> metadata) {
+	public ContainerPropertiesImpl(URI url, Date lastModified, String eTag, Map<String, String> metadata) {
 		this.url = Preconditions.checkNotNull(url, "url");
-		this.name = Preconditions.checkNotNull(url.getPath(), "url.getPath()")
-				.replaceFirst("/", "");
-		this.lastModified = Preconditions.checkNotNull(lastModified,
-				"lastModified");
+		this.name = Preconditions.checkNotNull(url.getPath(), "url.getPath()").replaceFirst("/", "");
+		this.lastModified = Preconditions.checkNotNull(lastModified, "lastModified");
 		this.eTag = Preconditions.checkNotNull(eTag, "eTag");
 		this.metadata.putAll(Preconditions.checkNotNull(metadata, "metadata"));
 	}
@@ -102,8 +99,7 @@ public class ContainerPropertiesImpl implements ContainerProperties {
 		final int prime = 31;
 		int result = 1;
 		result = (prime * result) + ((eTag == null) ? 0 : eTag.hashCode());
-		result = (prime * result)
-				+ ((lastModified == null) ? 0 : lastModified.hashCode());
+		result = (prime * result) + ((lastModified == null) ? 0 : lastModified.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((url == null) ? 0 : url.hashCode());
 		return result;

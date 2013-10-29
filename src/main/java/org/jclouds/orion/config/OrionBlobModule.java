@@ -33,23 +33,21 @@ import com.google.inject.Scopes;
  * 
  */
 public class OrionBlobModule extends AbstractModule {
-    @Override
-    protected void configure() {
-	install(new BlobStoreObjectModule());
-	bind(OrionBlob.Factory.class).to(OrionBlobFactory.class).in(
-		Scopes.SINGLETON);
-
-    }
-
-    private static class OrionBlobFactory implements OrionBlob.Factory {
-	@Inject
-	Provider<MutableBlobProperties> metadataProvider;
-
 	@Override
-	public OrionBlob create(MutableBlobProperties metadata) {
-	    return new OrionBlobImpl(metadata != null ? metadata
-		    : metadataProvider.get());
+	protected void configure() {
+		install(new BlobStoreObjectModule());
+		bind(OrionBlob.Factory.class).to(OrionBlobFactory.class).in(Scopes.SINGLETON);
+
 	}
-    }
+
+	private static class OrionBlobFactory implements OrionBlob.Factory {
+		@Inject
+		Provider<MutableBlobProperties> metadataProvider;
+
+		@Override
+		public OrionBlob create(MutableBlobProperties metadata) {
+			return new OrionBlobImpl(metadata != null ? metadata : metadataProvider.get());
+		}
+	}
 
 }

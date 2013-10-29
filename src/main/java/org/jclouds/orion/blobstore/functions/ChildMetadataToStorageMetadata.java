@@ -35,24 +35,18 @@ import com.google.inject.Inject;
  * @author timur
  * 
  */
-public class ChildMetadataToStorageMetadata implements
-		Function<OrionChildMetadata, OrionStorageMetadata> {
+public class ChildMetadataToStorageMetadata implements Function<OrionChildMetadata, OrionStorageMetadata> {
 
 	private final OrionStorageMetadata storageMetadata;
 	private final Location location;
 	private final String userWorkspace;
 
 	@Inject
-	public ChildMetadataToStorageMetadata(
-			@Provider Supplier<Credentials> creds,
-			OrionStorageMetadata storageMetadata,
-			Supplier<Location> defaultLocation) {
-		this.userWorkspace = Preconditions.checkNotNull(creds, "creds is null")
-				.get().identity;
-		this.location = Preconditions.checkNotNull(defaultLocation,
-				"defaultLocation is null").get();
-		this.storageMetadata = Preconditions.checkNotNull(storageMetadata,
-				"storageMetadata is null");
+	public ChildMetadataToStorageMetadata(@Provider Supplier<Credentials> creds, OrionStorageMetadata storageMetadata,
+	      Supplier<Location> defaultLocation) {
+		this.userWorkspace = Preconditions.checkNotNull(creds, "creds is null").get().identity;
+		this.location = Preconditions.checkNotNull(defaultLocation, "defaultLocation is null").get();
+		this.storageMetadata = Preconditions.checkNotNull(storageMetadata, "storageMetadata is null");
 
 	}
 
@@ -64,8 +58,8 @@ public class ChildMetadataToStorageMetadata implements
 	@Override
 	public OrionStorageMetadata apply(OrionChildMetadata childMetadata) {
 		storageMetadata.setLocation(location);
-		storageMetadata.setName(OrionUtils.createOriginalNameFromLocation(
-				getUserWorkspace(), childMetadata.getLocation()));
+		storageMetadata
+		      .setName(OrionUtils.createOriginalNameFromLocation(getUserWorkspace(), childMetadata.getLocation()));
 
 		if (OrionUtils.isContainerFromPath(childMetadata.getLocation())) {
 			storageMetadata.setType(StorageType.CONTAINER);
@@ -75,8 +69,7 @@ public class ChildMetadataToStorageMetadata implements
 			storageMetadata.setType(StorageType.BLOB);
 		}
 
-		storageMetadata.setLastModified(new Date(childMetadata
-				.getLocalTimeStamp()));
+		storageMetadata.setLastModified(new Date(childMetadata.getLocalTimeStamp()));
 
 		return storageMetadata;
 	}

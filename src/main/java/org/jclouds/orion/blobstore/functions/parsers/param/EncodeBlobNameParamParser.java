@@ -28,7 +28,7 @@ import com.google.common.base.Function;
  * 
  */
 public class EncodeBlobNameParamParser implements Function<Object, String> {
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -36,8 +36,8 @@ public class EncodeBlobNameParamParser implements Function<Object, String> {
 	 */
 	@Override
 	public String apply(Object blobNameObject) {
-		
+
 		return OrionUtils.getRequestLocation(String.class.cast(blobNameObject));
 	}
-	
+
 }

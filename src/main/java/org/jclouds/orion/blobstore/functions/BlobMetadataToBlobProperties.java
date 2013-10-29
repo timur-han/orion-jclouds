@@ -34,8 +34,7 @@ import com.google.common.base.Function;
  * @author Adrian Cole, Timur Sungur
  */
 @Singleton
-public class BlobMetadataToBlobProperties implements
-		Function<BlobMetadata, MutableBlobProperties> {
+public class BlobMetadataToBlobProperties implements Function<BlobMetadata, MutableBlobProperties> {
 
 	@Override
 	public MutableBlobProperties apply(BlobMetadata from) {
@@ -51,10 +50,8 @@ public class BlobMetadataToBlobProperties implements
 		to.setLastModified(from.getLastModified());
 
 		if (from.getUserMetadata() != null) {
-			for (Entry<String, String> entry : from.getUserMetadata()
-					.entrySet()) {
-				to.getMetadata().put(entry.getKey().toLowerCase(),
-						entry.getValue());
+			for (Entry<String, String> entry : from.getUserMetadata().entrySet()) {
+				to.getMetadata().put(entry.getKey().toLowerCase(), entry.getValue());
 			}
 		}
 		if (from.getType() == StorageType.FOLDER) {

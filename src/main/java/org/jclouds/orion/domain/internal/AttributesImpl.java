@@ -25,7 +25,7 @@ public class AttributesImpl implements Attributes {
 
 	/**
 	 * @param readOnly
-	 *            the readOnly to set
+	 *           the readOnly to set
 	 */
 	@Override
 	public void setReadOnly(Boolean readOnly) {
@@ -42,7 +42,7 @@ public class AttributesImpl implements Attributes {
 
 	/**
 	 * @param executable
-	 *            the executable to set
+	 *           the executable to set
 	 */
 	@Override
 	public void setExecutable(Boolean executable) {
@@ -59,7 +59,7 @@ public class AttributesImpl implements Attributes {
 
 	/**
 	 * @param hidden
-	 *            the hidden to set
+	 *           the hidden to set
 	 */
 	@Override
 	public void setHidden(Boolean hidden) {
@@ -76,7 +76,7 @@ public class AttributesImpl implements Attributes {
 
 	/**
 	 * @param archive
-	 *            the archive to set
+	 *           the archive to set
 	 */
 	@Override
 	public void setArchive(Boolean archive) {
@@ -93,7 +93,7 @@ public class AttributesImpl implements Attributes {
 
 	/**
 	 * @param symbolicLink
-	 *            the symbolicLink to set
+	 *           the symbolicLink to set
 	 */
 	@Override
 	public void setSymbolicLink(Boolean symbolicLink) {

@@ -16,14 +16,11 @@
  */
 package org.jclouds.orion.blobstore.strategy.internal;
 
-import static org.jclouds.concurrent.FutureIterables.transformParallel;
-
 import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.jclouds.Constants;
-import org.jclouds.blobstore.AsyncBlobStore;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobMetadata;
@@ -34,45 +31,44 @@ import org.jclouds.blobstore.strategy.ListBlobsInContainer;
 import org.jclouds.http.handlers.BackoffLimitedRetryHandler;
 import org.jclouds.logging.Logger;
 
-import com.google.common.base.Function;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 
 /**
- * Retrieves all blobs in the blobstore under the current path, by the most efficient means
- * possible.
+ * Retrieves all blobs in the blobstore under the current path, by the most
+ * efficient means possible.
  * 
  * @author Adrian Cole
  */
 @Singleton
 public class GetAllBlobsInListAndRetryOnFailure implements GetBlobsInListStrategy {
 
-   protected final ListBlobsInContainer getAllBlobMetadata;
-   protected final BackoffLimitedRetryHandler retryHandler;
-   protected final BlobStore blobstore;
-   protected final ListeningExecutorService userExecutor;
-   @Resource
-   @Named(BlobStoreConstants.BLOBSTORE_LOGGER)
-   protected Logger logger = Logger.NULL;
-   /**
-    * maximum duration of an blob Request
-    */
-   @Inject(optional = true)
-   @Named(Constants.PROPERTY_REQUEST_TIMEOUT)
-   protected Long maxTime;
+	protected final ListBlobsInContainer getAllBlobMetadata;
+	protected final BackoffLimitedRetryHandler retryHandler;
+	protected final BlobStore blobstore;
+	protected final ListeningExecutorService userExecutor;
+	@Resource
+	@Named(BlobStoreConstants.BLOBSTORE_LOGGER)
+	protected Logger logger = Logger.NULL;
+	/**
+	 * maximum duration of an blob Request
+	 */
+	@Inject(optional = true)
+	@Named(Constants.PROPERTY_REQUEST_TIMEOUT)
+	protected Long maxTime;
 
-   @Inject
-   GetAllBlobsInListAndRetryOnFailure(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
-            ListBlobsInContainer getAllBlobMetadata, BlobStore blobstore, BackoffLimitedRetryHandler retryHandler) {
-      this.userExecutor = userExecutor;
-      this.blobstore = blobstore;
-      this.getAllBlobMetadata = getAllBlobMetadata;
-      this.retryHandler = retryHandler;
-   }
+	@Inject
+	GetAllBlobsInListAndRetryOnFailure(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
+	      ListBlobsInContainer getAllBlobMetadata, BlobStore blobstore, BackoffLimitedRetryHandler retryHandler) {
+		this.userExecutor = userExecutor;
+		this.blobstore = blobstore;
+		this.getAllBlobMetadata = getAllBlobMetadata;
+		this.retryHandler = retryHandler;
+	}
 
-   public Iterable<Blob> execute(final String container, ListContainerOptions options) {
-      Iterable<? extends BlobMetadata> list = getAllBlobMetadata.execute(container, options);
-      return null;
-   }
+	@Override
+	public Iterable<Blob> execute(final String container, ListContainerOptions options) {
+		Iterable<? extends BlobMetadata> list = this.getAllBlobMetadata.execute(container, options);
+		return null;
+	}
 }

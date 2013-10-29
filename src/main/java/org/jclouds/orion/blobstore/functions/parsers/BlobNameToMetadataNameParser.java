@@ -26,15 +26,15 @@ import com.google.common.base.Function;
  */
 public class BlobNameToMetadataNameParser implements Function<Object, String> {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.google.common.base.Function#apply(java.lang.Object)
-     */
-    @Override
-    public String apply(Object blobName) {
-	return OrionUtils.getMetadataName((String) blobName);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.google.common.base.Function#apply(java.lang.Object)
+	 */
+	@Override
+	public String apply(Object blobName) {
+		return OrionUtils.getMetadataName((String) blobName);
 
-    }
+	}
 
 }

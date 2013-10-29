@@ -36,208 +36,207 @@ import com.google.common.collect.Maps;
  */
 public class MutableBlobPropertiesImpl implements MutableBlobProperties {
 
-    private BlobType type = BlobType.FILE_BLOB;
+	private BlobType type = BlobType.FILE_BLOB;
 
-    private String name;
-    private String container;
-    private URI url;
-    private Date lastModified;
-    private String eTag;
-    private MutableContentMetadata contentMetadata;
-    private String parentPath;
-    private Map<String, String> metadata = Maps.newHashMap();
+	private String name;
+	private String container;
+	private URI url;
+	private Date lastModified;
+	private String eTag;
+	private MutableContentMetadata contentMetadata;
+	private String parentPath;
+	private Map<String, String> metadata = Maps.newHashMap();
 
-    public MutableBlobPropertiesImpl() {
-	super();
-	this.contentMetadata = new BaseMutableContentMetadata();
-    }
-
-    public MutableBlobPropertiesImpl(BlobProperties from) {
-	this.contentMetadata = new BaseMutableContentMetadata();
-	this.name = from.getName();
-	this.container = from.getContainer();
-	this.url = from.getUrl();
-	this.lastModified = from.getLastModified();
-	this.eTag = from.getETag();
-	this.metadata.putAll(from.getMetadata());
-	HttpUtils.copy(from.getContentMetadata(), this.contentMetadata);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public BlobType getType() {
-	return type;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setType(BlobType type) {
-	this.type = type;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getName() {
-	return name;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Date getLastModified() {
-	return lastModified;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getETag() {
-	return eTag;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int compareTo(BlobProperties o) {
-	return (this == o) ? 0 : getName().compareTo(o.getName());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, String> getMetadata() {
-	return metadata;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setETag(String eTag) {
-	this.eTag = eTag;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setName(String name) {
-	this.name = name;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setLastModified(Date lastModified) {
-	this.lastModified = lastModified;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setMetadata(Map<String, String> metadata) {
-	this.metadata = metadata;
-    }
-
-    @Override
-    public void setUrl(URI url) {
-	this.url = url;
-    }
-
-    @Override
-    public URI getUrl() {
-	return url;
-    }
-
-    @Override
-    public int hashCode() {
-	final int prime = 31;
-	int result = 1;
-	result = (prime * result) + ((url == null) ? 0 : url.hashCode());
-	return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
+	public MutableBlobPropertiesImpl() {
+		super();
+		this.contentMetadata = new BaseMutableContentMetadata();
 	}
-	if (obj == null) {
-	    return false;
+
+	public MutableBlobPropertiesImpl(BlobProperties from) {
+		this.contentMetadata = new BaseMutableContentMetadata();
+		this.name = from.getName();
+		this.container = from.getContainer();
+		this.url = from.getUrl();
+		this.lastModified = from.getLastModified();
+		this.eTag = from.getETag();
+		this.metadata.putAll(from.getMetadata());
+		HttpUtils.copy(from.getContentMetadata(), this.contentMetadata);
 	}
-	if (getClass() != obj.getClass()) {
-	    return false;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BlobType getType() {
+		return type;
 	}
-	MutableBlobPropertiesImpl other = (MutableBlobPropertiesImpl) obj;
-	if (url == null) {
-	    if (other.url != null) {
-		return false;
-	    }
-	} else if (!url.equals(other.url)) {
-	    return false;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setType(BlobType type) {
+		this.type = type;
 	}
-	return true;
-    }
 
-    @Override
-    public String toString() {
-	return String
-		.format("[name=%s, container=%s, url=%s, contentMetadata=%s, eTag=%s, lastModified=%s, metadata=%s, type=%s]",
-			name, container, url, contentMetadata, eTag,
-			lastModified, metadata, type);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MutableContentMetadata getContentMetadata() {
-	return contentMetadata;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Date getLastModified() {
+		return lastModified;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setContentMetadata(MutableContentMetadata contentMetadata) {
-	this.contentMetadata = contentMetadata;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getETag() {
+		return eTag;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getContainer() {
-	return container;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compareTo(BlobProperties o) {
+		return (this == o) ? 0 : getName().compareTo(o.getName());
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setContainer(String container) {
-	this.container = container;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, String> getMetadata() {
+		return metadata;
+	}
 
-    @Override
-    public String getParentPath() {
-	return this.parentPath;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setETag(String eTag) {
+		this.eTag = eTag;
+	}
 
-    @Override
-    public void setParentPath(String parentPath) {
-	this.parentPath = parentPath;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setLastModified(Date lastModified) {
+		this.lastModified = lastModified;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setMetadata(Map<String, String> metadata) {
+		this.metadata = metadata;
+	}
+
+	@Override
+	public void setUrl(URI url) {
+		this.url = url;
+	}
+
+	@Override
+	public URI getUrl() {
+		return url;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		MutableBlobPropertiesImpl other = (MutableBlobPropertiesImpl) obj;
+		if (url == null) {
+			if (other.url != null) {
+				return false;
+			}
+		} else if (!url.equals(other.url)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return String.format(
+		      "[name=%s, container=%s, url=%s, contentMetadata=%s, eTag=%s, lastModified=%s, metadata=%s, type=%s]",
+		      name, container, url, contentMetadata, eTag, lastModified, metadata, type);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public MutableContentMetadata getContentMetadata() {
+		return contentMetadata;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setContentMetadata(MutableContentMetadata contentMetadata) {
+		this.contentMetadata = contentMetadata;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getContainer() {
+		return container;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setContainer(String container) {
+		this.container = container;
+	}
+
+	@Override
+	public String getParentPath() {
+		return this.parentPath;
+	}
+
+	@Override
+	public void setParentPath(String parentPath) {
+		this.parentPath = parentPath;
+	}
 
 }

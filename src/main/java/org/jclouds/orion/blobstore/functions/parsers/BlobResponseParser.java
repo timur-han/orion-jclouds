@@ -51,17 +51,13 @@ public class BlobResponseParser implements Function<HttpResponse, Blob> {
 	private final OrionBlobToBlob orionBlob2Blob;
 
 	@Inject
-	public BlobResponseParser(ObjectMapper mapper, OrionApi api,
-			@Provider Supplier<Credentials> creds,
-			OrionBlob.Factory orionBlobProvider, OrionBlobToBlob orionBlob2Blob) {
+	public BlobResponseParser(ObjectMapper mapper, OrionApi api, @Provider Supplier<Credentials> creds,
+	      OrionBlob.Factory orionBlobProvider, OrionBlobToBlob orionBlob2Blob) {
 		this.mapper = Preconditions.checkNotNull(mapper, "mapper is null");
 		this.api = Preconditions.checkNotNull(api, "api is null");
-		this.userWorkspace = Preconditions.checkNotNull(creds, "creds is null")
-				.get().identity;
-		this.orionBlobProvider = Preconditions.checkNotNull(orionBlobProvider,
-				"orionBlobProvider is null");
-		this.orionBlob2Blob = Preconditions.checkNotNull(orionBlob2Blob,
-				"orionBlob2Blob is null");
+		this.userWorkspace = Preconditions.checkNotNull(creds, "creds is null").get().identity;
+		this.orionBlobProvider = Preconditions.checkNotNull(orionBlobProvider, "orionBlobProvider is null");
+		this.orionBlob2Blob = Preconditions.checkNotNull(orionBlob2Blob, "orionBlob2Blob is null");
 
 	}
 
@@ -73,13 +69,11 @@ public class BlobResponseParser implements Function<HttpResponse, Blob> {
 		try {
 			IOUtils.copy(response.getPayload().getInput(), writer);
 			String theString = writer.toString();
-			properties = mapper.readValue(theString,
-					MutableBlobProperties.class);
+			properties = mapper.readValue(theString, MutableBlobProperties.class);
 			OrionBlob orionBlob = orionBlobProvider.create(properties);
 			if (properties.getType() == BlobType.FILE_BLOB) {
-				HttpResponse payloadRes = api.getBlobContents(
-						getUserWorkspace(), properties.getContainer(),
-						properties.getParentPath(), properties.getName());
+				HttpResponse payloadRes = api.getBlobContents(getUserWorkspace(), properties.getContainer(),
+				      properties.getParentPath(), properties.getName());
 				orionBlob.setPayload(payloadRes.getPayload());
 			}
 			return orionBlob2Blob.apply(orionBlob);

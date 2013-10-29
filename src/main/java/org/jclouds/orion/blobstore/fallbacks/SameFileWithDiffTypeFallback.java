@@ -33,17 +33,16 @@ import com.google.inject.Inject;
  * 
  */
 public class SameFileWithDiffTypeFallback implements Fallback<Boolean> {
-	
+
 	private final OrionApi api;
 	private final HttpCommandExecutorService commandExecutor;
-	
-	
+
 	@Inject
 	public SameFileWithDiffTypeFallback(OrionApi api, HttpCommandExecutorService commandExecutor) {
 		this.api = Preconditions.checkNotNull(api, "api is null");
 		this.commandExecutor = Preconditions.checkNotNull(commandExecutor, "HttpCommandExecutorService");
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -56,7 +55,7 @@ public class SameFileWithDiffTypeFallback implements Fallback<Boolean> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -64,7 +63,7 @@ public class SameFileWithDiffTypeFallback implements Fallback<Boolean> {
 	 */
 	@Override
 	public Boolean createOrPropagate(Throwable t) throws Exception {
-		
+
 		if (t instanceof OrionResponseException) {
 			OrionResponseException exception = (OrionResponseException) t;
 			if (exception.getError().getHttpCode().equals("500")) {
@@ -76,12 +75,13 @@ public class SameFileWithDiffTypeFallback implements Fallback<Boolean> {
 				while (path.startsWith(OrionConstantValues.PATH_DELIMITER)) {
 					path = path.replaceFirst(OrionConstantValues.PATH_DELIMITER, "");
 				}
-				path = path + exception.getCommand().getCurrentRequest().getHeaders().get(OrionHttpFields.HEADER_SLUG).toArray()[0];
+				path = path
+				      + exception.getCommand().getCurrentRequest().getHeaders().get(OrionHttpFields.HEADER_SLUG).toArray()[0];
 				// in case it was a file creation attemp change it to the file
 				// api
 				path = path.replaceFirst(OrionConstantValues.ORION_IMPORT_PATH, OrionConstantValues.ORION_FILE_PATH);
 				boolean result = this.api.deleteGivenPath(path);
-				
+
 				if (result) {
 					exception.getCommand().setException(null);
 					if (String.valueOf(this.commandExecutor.invoke(exception.getCommand()).getStatusCode()).startsWith("2")) {

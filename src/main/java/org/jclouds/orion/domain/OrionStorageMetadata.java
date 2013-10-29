@@ -115,7 +115,7 @@ public interface OrionStorageMetadata extends StorageMetadata {
 
 	/**
 	 * @param type
-	 *            the type to set
+	 *           the type to set
 	 */
 	public abstract void setType(StorageType type);
 
@@ -126,43 +126,43 @@ public interface OrionStorageMetadata extends StorageMetadata {
 
 	/**
 	 * @param eTag
-	 *            the eTag to set
+	 *           the eTag to set
 	 */
 	public abstract void setETag(String eTag);
 
 	/**
 	 * @param name
-	 *            the name to set
+	 *           the name to set
 	 */
 	public abstract void setName(String name);
 
 	/**
 	 * @param uri
-	 *            the uri to set
+	 *           the uri to set
 	 */
 	public abstract void setUri(URI uri);
 
 	/**
 	 * @param userMetadata
-	 *            the userMetadata to set
+	 *           the userMetadata to set
 	 */
 	public abstract void setUserMetadata(Map<String, String> userMetadata);
 
 	/**
 	 * @param creationDate
-	 *            the creationDate to set
+	 *           the creationDate to set
 	 */
 	public abstract void setCreationDate(Date creationDate);
 
 	/**
 	 * @param lastModified
-	 *            the lastModified to set
+	 *           the lastModified to set
 	 */
 	public abstract void setLastModified(Date lastModified);
 
 	/**
 	 * @param location
-	 *            the location to set
+	 *           the location to set
 	 */
 	public abstract void setLocation(Location location);
 

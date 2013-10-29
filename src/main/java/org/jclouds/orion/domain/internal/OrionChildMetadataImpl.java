@@ -56,8 +56,7 @@ public class OrionChildMetadataImpl implements OrionChildMetadata {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.jclouds.orion.domain.internal.Child#setChildrenLocation(java.lang
+	 * @see org.jclouds.orion.domain.internal.Child#setChildrenLocation(java.lang
 	 * .String)
 	 */
 	@Override
@@ -141,8 +140,7 @@ public class OrionChildMetadataImpl implements OrionChildMetadata {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.jclouds.orion.domain.internal.Child#setLocation(java.lang.String)
+	 * @see org.jclouds.orion.domain.internal.Child#setLocation(java.lang.String)
 	 */
 	@Override
 	public void setLocation(String location) {

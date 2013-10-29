@@ -42,20 +42,23 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 
 /**
- * Key-value implementations of BlobStore, such as S3, do not have directories. In following the
- * rackspace cloud files project, we use an empty object '#{dirpath}' with content type set to
- * 'application/directory'.
+ * Key-value implementations of BlobStore, such as S3, do not have directories.
+ * In following the rackspace cloud files project, we use an empty object
+ * '#{dirpath}' with content type set to 'application/directory'.
  * 
  * <p/>
- * To interoperate with other S3 tools, we accept the following ways to tell if the directory
- * exists:
+ * To interoperate with other S3 tools, we accept the following ways to tell if
+ * the directory exists:
  * <ul>
- * <li>an object named '#{dirpath}_$folder$' or '#{dirpath}/' denoting a directory marker</li>
- * <li>an object with content type set to 'application/directory' denoting a directory marker</li>
- * <li>if there exists any objects with the prefix "#{dirpath}/", then the directory is said to
- * exist</li>
- * <li>if both a file with the name of a directory and a marker for that directory exists, then the
- * *file masks the directory*, and the directory is never returned.</li>
+ * <li>an object named '#{dirpath}_$folder$' or '#{dirpath}/' denoting a
+ * directory marker</li>
+ * <li>an object with content type set to 'application/directory' denoting a
+ * directory marker</li>
+ * <li>if there exists any objects with the prefix "#{dirpath}/", then the
+ * directory is said to exist</li>
+ * <li>if both a file with the name of a directory and a marker for that
+ * directory exists, then the *file masks the directory*, and the directory is
+ * never returned.</li>
  * </ul>
  * 
  * @see MarkerFileMkdirStrategy
@@ -64,38 +67,36 @@ import com.google.inject.Inject;
 @Singleton
 public class MarkersDeleteDirectoryStrategy implements DeleteDirectoryStrategy {
 
-   
-   private final BlobStore blobstore;
-   private final ListeningExecutorService userExecutor;
-   @Resource
-   @Named(BlobStoreConstants.BLOBSTORE_LOGGER)
-   protected Logger logger = Logger.NULL;
-   /**
-    * maximum duration of an blob Request
-    */
-   @Inject(optional = true)
-   @Named(Constants.PROPERTY_REQUEST_TIMEOUT)
-   protected Long maxTime;
+	private final BlobStore blobstore;
+	private final ListeningExecutorService userExecutor;
+	@Resource
+	@Named(BlobStoreConstants.BLOBSTORE_LOGGER)
+	protected Logger logger = Logger.NULL;
+	/**
+	 * maximum duration of an blob Request
+	 */
+	@Inject(optional = true)
+	@Named(Constants.PROPERTY_REQUEST_TIMEOUT)
+	protected Long maxTime;
 
-   @Inject
-   MarkersDeleteDirectoryStrategy(
-            @Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
-             BlobStore blobstore) {
-      this.userExecutor = userExecutor;
-    
-      this.blobstore = blobstore;
-   }
+	@Inject
+	MarkersDeleteDirectoryStrategy(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
+	      BlobStore blobstore) {
+		this.userExecutor = userExecutor;
 
-   public void execute(String containerName, String directory) {
-      Set<String> names = Sets.newHashSet();
-      names.add(directory);
-      for (String suffix : BlobStoreConstants.DIRECTORY_SUFFIXES) {
-         names.add(directory + suffix);
-      }
-      Map<String, ListenableFuture<?>> responses = Maps.newHashMap();
-      for (String name : names) {
-         blobstore.removeBlob(containerName, name);
-      }
-  
-   }
+		this.blobstore = blobstore;
+	}
+
+	public void execute(String containerName, String directory) {
+		Set<String> names = Sets.newHashSet();
+		names.add(directory);
+		for (String suffix : BlobStoreConstants.DIRECTORY_SUFFIXES) {
+			names.add(directory + suffix);
+		}
+		Map<String, ListenableFuture<?>> responses = Maps.newHashMap();
+		for (String name : names) {
+			blobstore.removeBlob(containerName, name);
+		}
+
+	}
 }

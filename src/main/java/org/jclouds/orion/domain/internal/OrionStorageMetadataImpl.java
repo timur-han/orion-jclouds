@@ -143,7 +143,7 @@ public class OrionStorageMetadataImpl implements OrionStorageMetadata {
 
 	/**
 	 * @param type
-	 *            the type to set
+	 *           the type to set
 	 */
 	@Override
 	public void setType(StorageType type) {
@@ -160,7 +160,7 @@ public class OrionStorageMetadataImpl implements OrionStorageMetadata {
 
 	/**
 	 * @param eTag
-	 *            the eTag to set
+	 *           the eTag to set
 	 */
 	@Override
 	public void setETag(String eTag) {
@@ -169,7 +169,7 @@ public class OrionStorageMetadataImpl implements OrionStorageMetadata {
 
 	/**
 	 * @param name
-	 *            the name to set
+	 *           the name to set
 	 */
 	@Override
 	public void setName(String name) {
@@ -178,7 +178,7 @@ public class OrionStorageMetadataImpl implements OrionStorageMetadata {
 
 	/**
 	 * @param uri
-	 *            the uri to set
+	 *           the uri to set
 	 */
 	@Override
 	public void setUri(URI uri) {
@@ -187,7 +187,7 @@ public class OrionStorageMetadataImpl implements OrionStorageMetadata {
 
 	/**
 	 * @param userMetadata
-	 *            the userMetadata to set
+	 *           the userMetadata to set
 	 */
 	@Override
 	public void setUserMetadata(Map<String, String> userMetadata) {
@@ -196,7 +196,7 @@ public class OrionStorageMetadataImpl implements OrionStorageMetadata {
 
 	/**
 	 * @param creationDate
-	 *            the creationDate to set
+	 *           the creationDate to set
 	 */
 	@Override
 	public void setCreationDate(Date creationDate) {
@@ -205,7 +205,7 @@ public class OrionStorageMetadataImpl implements OrionStorageMetadata {
 
 	/**
 	 * @param lastModified
-	 *            the lastModified to set
+	 *           the lastModified to set
 	 */
 	@Override
 	public void setLastModified(Date lastModified) {
@@ -214,7 +214,7 @@ public class OrionStorageMetadataImpl implements OrionStorageMetadata {
 
 	/**
 	 * @param location
-	 *            the location to set
+	 *           the location to set
 	 */
 	@Override
 	public void setLocation(Location location) {

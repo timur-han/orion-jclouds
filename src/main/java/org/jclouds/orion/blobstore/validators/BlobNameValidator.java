@@ -37,10 +37,8 @@ public class BlobNameValidator extends Validator<OrionBlob> {
 	 */
 	@Override
 	public void validate(OrionBlob t) throws IllegalArgumentException {
-		if (t.getProperties().getName()
-				.contains(OrionConstantValues.ORION_METADATA_PATH)) {
-			throw new IllegalArgumentException(
-					OrionErrorExplanations.FORBIDDEN_METADATA_NAME);
+		if (t.getProperties().getName().contains(OrionConstantValues.ORION_METADATA_PATH)) {
+			throw new IllegalArgumentException(OrionErrorExplanations.FORBIDDEN_METADATA_NAME);
 		}
 	}
 

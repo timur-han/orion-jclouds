@@ -26,19 +26,13 @@ public class OrionBlobStoreModule extends AbstractModule {
 
 		install(new BlobStoreMapModule());
 		bind(ConsistencyModel.class).toInstance(ConsistencyModel.STRICT);
-		bind(BlobStoreContext.class).to(OrionBlobStoreContext.class).in(
-				Scopes.SINGLETON);
-		bind(GetBlobsInListStrategy.class).to(
-				GetAllBlobsInListAndRetryOnFailure.class).in(Scopes.SINGLETON);
-		bind(DeleteDirectoryStrategy.class)
-				.to(org.jclouds.orion.blobstore.strategy.internal.MarkersDeleteDirectoryStrategy.class)
-				.in(Scopes.SINGLETON);
-		bind(PutBlobsStrategy.class).to(PutBlobsStrategyImpl.class).in(
-				Scopes.SINGLETON);
-		bind(ClearContainerStrategy.class).to(ClearFilesInContainer.class)
-				.in(Scopes.SINGLETON);
-		bind(ClearListStrategy.class).to(DeleteAllKeysInList.class).in(
-				Scopes.SINGLETON);
+		bind(BlobStoreContext.class).to(OrionBlobStoreContext.class).in(Scopes.SINGLETON);
+		bind(GetBlobsInListStrategy.class).to(GetAllBlobsInListAndRetryOnFailure.class).in(Scopes.SINGLETON);
+		bind(DeleteDirectoryStrategy.class).to(
+		      org.jclouds.orion.blobstore.strategy.internal.MarkersDeleteDirectoryStrategy.class).in(Scopes.SINGLETON);
+		bind(PutBlobsStrategy.class).to(PutBlobsStrategyImpl.class).in(Scopes.SINGLETON);
+		bind(ClearContainerStrategy.class).to(ClearFilesInContainer.class).in(Scopes.SINGLETON);
+		bind(ClearListStrategy.class).to(DeleteAllKeysInList.class).in(Scopes.SINGLETON);
 		bind(BlobStore.class).to(OrionBlobStore.class).in(Scopes.SINGLETON);
 
 	}
