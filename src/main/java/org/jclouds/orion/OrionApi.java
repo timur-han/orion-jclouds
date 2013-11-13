@@ -61,6 +61,7 @@ import org.jclouds.orion.domain.MutableBlobProperties;
 import org.jclouds.orion.domain.OrionBlob;
 import org.jclouds.orion.domain.OrionChildMetadata;
 import org.jclouds.orion.http.filters.FormAuthentication;
+import org.jclouds.orion.http.filters.create.CreateFileNameFilter;
 import org.jclouds.orion.http.filters.create.CreateFolderFilter;
 import org.jclouds.orion.http.filters.create.CreateHiddenFileFilter;
 import org.jclouds.orion.http.filters.create.CreateReadonlyFileFilter;
@@ -240,6 +241,7 @@ public interface OrionApi extends Closeable {
 	 * @param blob
 	 * @return
 	 */
+	// TODO creation should be removed from SLUG header to json
 	@POST
 	@Path(OrionConstantValues.ORION_IMPORT_PATH + "{userWorkspace}/{containerName}/{parentPath}")
 	@Fallback(SameFileWithDiffTypeFallback.class)
@@ -258,10 +260,11 @@ public interface OrionApi extends Closeable {
 	 * @param parentPath
 	 * @return
 	 */
+	// TODO creation should be removed from SLUG header to json
 	@POST
 	@Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/{containerName}/{parentPath}")
 	@RequestFilters({ EmptyRequestFilter.class, CreateFolderFilter.class, CreateHiddenFileFilter.class,
-	      CreateReadonlyFileFilter.class })
+	      CreateReadonlyFileFilter.class, CreateFileNameFilter.class })
 	@Produces(MediaType.APPLICATION_JSON)
 	@Headers(keys = { OrionHttpFields.ORION_VERSION_FIELD }, values = { OrionConstantValues.ORION_VERSION })
 	@ResponseParser(CreationResponseParser.class)
@@ -318,6 +321,7 @@ public interface OrionApi extends Closeable {
 	 * @param parentPath
 	 * @return
 	 */
+	// TODO creation should be removed from SLUG header to json
 	@POST
 	@Path(OrionConstantValues.ORION_FILE_PATH + "{userWorkspace}/{containerName}/{parentPath}")
 	@RequestFilters({ EmptyRequestFilter.class, CreateFolderFilter.class, CreateHiddenFileFilter.class,
@@ -339,6 +343,7 @@ public interface OrionApi extends Closeable {
 	 * @param fileName
 	 * @return
 	 */
+	// TODO creation should be removed from SLUG header to json
 	@POST
 	@Path(OrionConstantValues.ORION_IMPORT_PATH + "{userWorkspace}/{containerName}/{parentPath}"
 	      + OrionConstantValues.ORION_METADATA_PATH)

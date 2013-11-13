@@ -177,7 +177,7 @@ public class OrionUtils {
 	private static String encodeName(String createdName) {
 
 		try {
-			return URLEncoder.encode(createdName, "UTF-8");
+			return URLEncoder.encode(URLEncoder.encode(createdName, "UTF-8"), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

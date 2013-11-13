@@ -16,6 +16,9 @@
  */
 package org.jclouds.orion.config.constans;
 
+import java.io.IOException;
+import java.util.Properties;
+
 /**
  * Orion related constants
  * 
@@ -24,11 +27,31 @@ package org.jclouds.orion.config.constans;
  */
 public class OrionConstantValues {
 
+	private static final String PROPS_FILE_NAME = "orion.properties";
+	public final static String END_POINT;
+	public final static boolean DEBUG_MODE;
+
+	static {
+		Properties props = new Properties();
+		try {
+			props.load(ClassLoader.getSystemResourceAsStream(OrionConstantValues.PROPS_FILE_NAME));
+		} catch (IOException e) {
+			System.err.println("Property file could not be loaded");
+			e.printStackTrace();
+		}
+
+		if (props != null) {
+			END_POINT = props.getProperty("hostaddress");
+			DEBUG_MODE = Boolean.parseBoolean(props.getProperty("debug"));
+		} else {
+			END_POINT = "https://orionhub.org";
+			DEBUG_MODE = false;
+		}
+
+	}
 	// Orion Blob Store Properties
 	public final static String ORION_ID = "orionblob";
-	public final static String END_POINT = "https://orionhub.org/";
 	public final static String ORION_VERSION = "1.0";
-
 	// Orion Paths
 	public final static String ORION_IMPORT_PATH = "xfer/import/";
 	public final static String ORION_EXPORT_PATH = "xfer/export/";

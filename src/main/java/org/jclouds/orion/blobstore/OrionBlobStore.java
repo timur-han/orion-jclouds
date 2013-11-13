@@ -185,10 +185,16 @@ public class OrionBlobStore extends BaseBlobStore {
 
 	private boolean createMetadata(String container, OrionBlob blob) {
 
+		if (OrionConstantValues.DEBUG_MODE) {
+			boolean res1 = this.api.createMetadataFolder(this.getUserWorkspace(), container, blob.getProperties()
+			      .getParentPath());
+			boolean res2 = this.api.createMetadata(this.getUserWorkspace(), container, blob.getProperties()
+			      .getParentPath(), blob);
+			return res1 && res2;
+		}
 		return this.api.createMetadataFolder(this.getUserWorkspace(), container, blob.getProperties().getParentPath()) &&
 		// Create metadata file
 		      this.api.createMetadata(this.getUserWorkspace(), container, blob.getProperties().getParentPath(), blob);
-
 	}
 
 	/**
