@@ -192,9 +192,10 @@ public class OrionBlobStoreLiveTests {
 		this.blobStore.putBlob(this.container, blob);
 
 		PageSet<? extends StorageMetadata> resultSet = this.blobStore.list();
-		for (StorageMetadata data : resultSet) {
-			System.out.println(data.getName());
+		for (int index = 0 ; index < resultSet.size() ; index ++) {
+			System.out.println(((StorageMetadata) resultSet.toArray()[index]).getName());
 		}
+
 
 	}
 
@@ -210,8 +211,8 @@ public class OrionBlobStoreLiveTests {
 
 		PageSet<? extends StorageMetadata> resultSet = this.blobStore.list(this.container,
 		      ListContainerOptions.Builder.recursive());
-		for (StorageMetadata data : resultSet) {
-			System.out.println(data.getName());
+		for (int index = 0 ; index < resultSet.size() ; index ++) {
+			System.out.println(((StorageMetadata) resultSet.toArray()[index]).getName());
 		}
 
 	}

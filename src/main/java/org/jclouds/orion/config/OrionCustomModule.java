@@ -17,6 +17,7 @@
 package org.jclouds.orion.config;
 
 import org.codehaus.jackson.Version;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.codehaus.jackson.map.module.SimpleModule;
@@ -65,6 +66,7 @@ public class OrionCustomModule extends AbstractModule {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(module);
 		mapper.setSerializationInclusion(Inclusion.NON_NULL);
+		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		return mapper;
 	}
 

@@ -52,6 +52,11 @@ public class OrionConstantValues {
 	// Orion Blob Store Properties
 	public final static String ORION_ID = "orionblob";
 	public final static String ORION_VERSION = "1.0";
+	
+	
+	
+	// usernames are appended with this text and each workspace is reached using this address
+	public final static String ORION_USER_CONTENT_ENDING = "-OrionContent";
 	// Orion Paths
 	public final static String ORION_IMPORT_PATH = "xfer/import/";
 	public final static String ORION_EXPORT_PATH = "xfer/export/";

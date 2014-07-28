@@ -8,8 +8,8 @@ public class CreateFileNameFilter implements HttpRequestFilter {
 
 	@Override
 	public HttpRequest filter(HttpRequest req) throws HttpException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return req;
 	}
 
 }

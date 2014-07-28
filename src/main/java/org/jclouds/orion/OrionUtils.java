@@ -7,12 +7,22 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.jclouds.domain.Credentials;
+import org.jclouds.location.Provider;
 import org.jclouds.orion.config.constans.OrionConstantValues;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+import com.google.inject.Inject;
 
 public class OrionUtils {
 
+	private Supplier<Credentials> credsSupplier;
+
+	@Inject
+	public OrionUtils(@Provider Supplier<Credentials> creds) {
+		credsSupplier = creds;
+	}
 	/**
 	 * Removes the last element which is the name of the blob for instance
 	 * /path1/path2/blobname/ -> path1/path2/ The first slash is removed since
@@ -66,7 +76,7 @@ public class OrionUtils {
 	 */
 	public static String getName(String originalName) {
 		String parentPath = OrionUtils.getParentPath(originalName);
-		return originalName.replaceFirst(parentPath, "").replaceAll(OrionConstantValues.PATH_DELIMITER, "");
+		return encodeName(originalName.replaceFirst(parentPath, "").replaceAll(OrionConstantValues.PATH_DELIMITER, ""));
 	}
 
 	/**
@@ -196,5 +206,14 @@ public class OrionUtils {
 		return path;
 
 	}
+	public Credentials getCredsSupplier() {
+		return credsSupplier.get();
+	}
 
+	/**
+	 * @return userworkspace
+	 */
+	public String getUserWorkspace() {
+		return credsSupplier.get().identity + OrionConstantValues.ORION_USER_CONTENT_ENDING;
+	}
 }

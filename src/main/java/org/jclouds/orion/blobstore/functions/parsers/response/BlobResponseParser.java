@@ -31,6 +31,7 @@ import org.jclouds.domain.Credentials;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.location.Provider;
 import org.jclouds.orion.OrionApi;
+import org.jclouds.orion.OrionUtils;
 import org.jclouds.orion.blobstore.functions.converters.OrionBlobToBlob;
 import org.jclouds.orion.domain.BlobType;
 import org.jclouds.orion.domain.MutableBlobProperties;
@@ -46,18 +47,18 @@ public class BlobResponseParser implements Function<HttpResponse, Blob> {
 
 	private final ObjectMapper mapper;
 	private final OrionApi api;
-	private final String userWorkspace;
 	private final Factory orionBlobProvider;
 	private final OrionBlobToBlob orionBlob2Blob;
+	private final OrionUtils orionUtils;
 
 	@Inject
-	public BlobResponseParser(ObjectMapper mapper, OrionApi api, @Provider Supplier<Credentials> creds,
+	public BlobResponseParser(ObjectMapper mapper, OrionApi api, OrionUtils orionUtils,
 	      OrionBlob.Factory orionBlobProvider, OrionBlobToBlob orionBlob2Blob) {
 		this.mapper = Preconditions.checkNotNull(mapper, "mapper is null");
 		this.api = Preconditions.checkNotNull(api, "api is null");
-		this.userWorkspace = Preconditions.checkNotNull(creds, "creds is null").get().identity;
 		this.orionBlobProvider = Preconditions.checkNotNull(orionBlobProvider, "orionBlobProvider is null");
 		this.orionBlob2Blob = Preconditions.checkNotNull(orionBlob2Blob, "orionBlob2Blob is null");
+		this.orionUtils = orionUtils;
 
 	}
 
@@ -72,7 +73,7 @@ public class BlobResponseParser implements Function<HttpResponse, Blob> {
 			properties = mapper.readValue(theString, MutableBlobProperties.class);
 			OrionBlob orionBlob = orionBlobProvider.create(properties);
 			if (properties.getType() == BlobType.FILE_BLOB) {
-				HttpResponse payloadRes = api.getBlobContents(getUserWorkspace(), properties.getContainer(),
+				HttpResponse payloadRes = api.getBlobContents(getOrionUtils().getUserWorkspace(), properties.getContainer(),
 				      properties.getParentPath(), properties.getName());
 				orionBlob.setPayload(payloadRes.getPayload());
 			}
@@ -86,11 +87,10 @@ public class BlobResponseParser implements Function<HttpResponse, Blob> {
 		return null;
 	}
 
-	/**
-	 * @return
-	 */
-	private String getUserWorkspace() {
-		// TODO Auto-generated method stub
-		return userWorkspace;
+	private OrionUtils getOrionUtils() {
+		return orionUtils;
 	}
+
+
+
 }

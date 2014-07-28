@@ -5,6 +5,8 @@ import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpRequestFilter;
 import org.jclouds.orion.blobstore.functions.converters.JSONToOrionSpecificObject;
 import org.jclouds.orion.blobstore.functions.converters.OrionSpecificObjectToJSON;
+import org.jclouds.orion.config.constans.OrionConstantValues;
+import org.jclouds.orion.config.constans.OrionHttpFields;
 import org.jclouds.orion.domain.OrionSpecificFileMetadata;
 
 import com.google.common.base.Preconditions;
@@ -41,6 +43,7 @@ public class CreateFolderFilter implements HttpRequestFilter {
 		OrionSpecificFileMetadata metadata;
 		metadata = json2OrionSpecificObj.apply((String) request.getPayload().getRawContent());
 		metadata.setDirectory(true);
+		metadata.setName((String) request.getHeaders().get(OrionHttpFields.HEADER_SLUG).toArray()[0]);
 		request = request.toBuilder().payload(orionSpecificObject2JSON.apply(metadata)).build();
 		return request;
 	}

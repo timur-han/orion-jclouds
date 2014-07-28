@@ -65,7 +65,7 @@ public class OrionErrorHandler implements HttpErrorHandler {
 	public void handleError(HttpCommand command, HttpResponse response) {
 		// it is important to always read fully and close streams
 		byte[] data = HttpUtils.closeClientButKeepContentStream(response);
-		String message = data != null ? new String(data) : null;
+		String message = data != null ? new String(data) : null; 
 
 		Exception exception = message != null ? new HttpResponseException(command, response, message)
 		      : new HttpResponseException(command, response);

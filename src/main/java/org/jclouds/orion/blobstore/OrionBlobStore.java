@@ -110,7 +110,7 @@ public class OrionBlobStore extends BaseBlobStore {
 	}
 
 	private String getUserWorkspace() {
-		return this.userWorkspace;
+		return this.userWorkspace + OrionConstantValues.ORION_USER_CONTENT_ENDING;
 	}
 
 	@Override
