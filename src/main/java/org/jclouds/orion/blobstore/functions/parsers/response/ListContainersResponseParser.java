@@ -32,7 +32,7 @@ import com.google.inject.Inject;
 
 /**
  * @author timur
- * 
+ *
  */
 public class ListContainersResponseParser implements Function<HttpResponse, PageSet<? extends StorageMetadata>> {
 
@@ -41,21 +41,21 @@ public class ListContainersResponseParser implements Function<HttpResponse, Page
 
 	@Inject
 	public ListContainersResponseParser(FolderListResposeParser folderListParser,
-	      ChildMetadataToStorageMetadata childMetadataToStorageMetadata) {
+			ChildMetadataToStorageMetadata childMetadataToStorageMetadata) {
 		this.folderListParser = Preconditions.checkNotNull(folderListParser, "folderListParser is null");
 		this.childMetadataToStorageMetadata = Preconditions.checkNotNull(childMetadataToStorageMetadata,
-		      "childMetadataToStorageMetadata is null");
+				"childMetadataToStorageMetadata is null");
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.google.common.base.Function#apply(java.lang.Object)
 	 */
 	@Override
 	public PageSet<? extends StorageMetadata> apply(HttpResponse res) {
-		List<OrionStorageMetadata> storageDataList = Lists.transform(this.folderListParser.apply(res),
-		      childMetadataToStorageMetadata);
+		final List<OrionStorageMetadata> storageDataList = Lists.transform(this.folderListParser.apply(res),
+				this.childMetadataToStorageMetadata);
 		return new OrionPageSet(storageDataList);
 
 	}

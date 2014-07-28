@@ -25,9 +25,9 @@ import org.jclouds.orion.domain.OrionStorageMetadata;
 
 /**
  * PageSet implementation of Orion
- * 
+ *
  * @author timur
- * 
+ *
  */
 public class OrionPageSet implements PageSet<OrionStorageMetadata> {
 	List<OrionStorageMetadata> orionStorageMetadataList;
@@ -35,144 +35,145 @@ public class OrionPageSet implements PageSet<OrionStorageMetadata> {
 	/**
 	 * @param storageDataList
 	 */
-	public OrionPageSet(List<OrionStorageMetadata> orionStorageMetadataList) {
-		this.orionStorageMetadataList = orionStorageMetadataList;
+	public OrionPageSet(List<OrionStorageMetadata> immutableList) {
+		this.orionStorageMetadataList = immutableList;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#size()
 	 */
 	@Override
 	public int size() {
-		return orionStorageMetadataList.size();
+		return this.orionStorageMetadataList.size();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#isEmpty()
 	 */
 	@Override
 	public boolean isEmpty() {
-		return orionStorageMetadataList.isEmpty();
+		return this.orionStorageMetadataList.isEmpty();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#contains(java.lang.Object)
 	 */
 	@Override
 	public boolean contains(Object o) {
-		return orionStorageMetadataList.contains(o);
+		return this.orionStorageMetadataList.contains(o);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#iterator()
 	 */
 	@Override
 	public Iterator<OrionStorageMetadata> iterator() {
-		return orionStorageMetadataList.iterator();
+		return this.orionStorageMetadataList.iterator();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#toArray()
 	 */
 	@Override
 	public Object[] toArray() {
-		return orionStorageMetadataList.toArray();
+		return this.orionStorageMetadataList.toArray();
 	}
+
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#toArray(java.lang.Object[])
 	 */
 	@Override
 	public <T> T[] toArray(T[] a) {
-		return orionStorageMetadataList.toArray(a);
+		return this.orionStorageMetadataList.toArray(a);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#add(java.lang.Object)
 	 */
 	@Override
 	public boolean add(OrionStorageMetadata e) {
 
-		return orionStorageMetadataList.add(e);
+		return this.orionStorageMetadataList.add(e);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#remove(java.lang.Object)
 	 */
 	@Override
 	public boolean remove(Object o) {
-		return orionStorageMetadataList.remove(o);
+		return this.orionStorageMetadataList.remove(o);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#containsAll(java.util.Collection)
 	 */
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		return orionStorageMetadataList.containsAll(c);
+		return this.orionStorageMetadataList.containsAll(c);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#addAll(java.util.Collection)
 	 */
 	@Override
 	public boolean addAll(Collection<? extends OrionStorageMetadata> c) {
-		return orionStorageMetadataList.addAll(c);
+		return this.orionStorageMetadataList.addAll(c);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#retainAll(java.util.Collection)
 	 */
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		return orionStorageMetadataList.retainAll(c);
+		return this.orionStorageMetadataList.retainAll(c);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#removeAll(java.util.Collection)
 	 */
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		return orionStorageMetadataList.removeAll(c);
+		return this.orionStorageMetadataList.removeAll(c);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Set#clear()
 	 */
 	@Override
 	public void clear() {
-		orionStorageMetadataList.clear();
+		this.orionStorageMetadataList.clear();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.jclouds.blobstore.domain.PageSet#getNextMarker()
 	 */
 	@Override

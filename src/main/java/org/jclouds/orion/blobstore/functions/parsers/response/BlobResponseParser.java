@@ -27,9 +27,7 @@ import java.io.StringWriter;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jclouds.blobstore.domain.Blob;
-import org.jclouds.domain.Credentials;
 import org.jclouds.http.HttpResponse;
-import org.jclouds.location.Provider;
 import org.jclouds.orion.OrionApi;
 import org.jclouds.orion.OrionUtils;
 import org.jclouds.orion.blobstore.functions.converters.OrionBlobToBlob;
@@ -40,57 +38,56 @@ import org.jclouds.orion.domain.OrionBlob.Factory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 
 public class BlobResponseParser implements Function<HttpResponse, Blob> {
-
+	
 	private final ObjectMapper mapper;
 	private final OrionApi api;
 	private final Factory orionBlobProvider;
 	private final OrionBlobToBlob orionBlob2Blob;
 	private final OrionUtils orionUtils;
-
+	
 	@Inject
 	public BlobResponseParser(ObjectMapper mapper, OrionApi api, OrionUtils orionUtils,
-	      OrionBlob.Factory orionBlobProvider, OrionBlobToBlob orionBlob2Blob) {
+			OrionBlob.Factory orionBlobProvider, OrionBlobToBlob orionBlob2Blob) {
 		this.mapper = Preconditions.checkNotNull(mapper, "mapper is null");
 		this.api = Preconditions.checkNotNull(api, "api is null");
 		this.orionBlobProvider = Preconditions.checkNotNull(orionBlobProvider, "orionBlobProvider is null");
 		this.orionBlob2Blob = Preconditions.checkNotNull(orionBlob2Blob, "orionBlob2Blob is null");
 		this.orionUtils = orionUtils;
-
+		
 	}
-
+	
 	@Override
 	public Blob apply(HttpResponse response) {
-
-		StringWriter writer = new StringWriter();
+		
+		final StringWriter writer = new StringWriter();
 		MutableBlobProperties properties = null;
 		try {
 			IOUtils.copy(response.getPayload().getInput(), writer);
-			String theString = writer.toString();
-			properties = mapper.readValue(theString, MutableBlobProperties.class);
-			OrionBlob orionBlob = orionBlobProvider.create(properties);
+			final String theString = writer.toString();
+			properties = this.mapper.readValue(theString, MutableBlobProperties.class);
+			final OrionBlob orionBlob = this.orionBlobProvider.create(properties);
 			if (properties.getType() == BlobType.FILE_BLOB) {
-				HttpResponse payloadRes = api.getBlobContents(getOrionUtils().getUserWorkspace(), properties.getContainer(),
-				      properties.getParentPath(), properties.getName());
+				final HttpResponse payloadRes = this.api.getBlobContents(getOrionUtils().getUserWorkspace(), properties.getContainer(),
+						properties.getParentPath(), properties.getName());
 				orionBlob.setPayload(payloadRes.getPayload());
 			}
-			return orionBlob2Blob.apply(orionBlob);
-
-		} catch (IOException e) {
+			return this.orionBlob2Blob.apply(orionBlob);
+			
+		} catch (final IOException e) {
 			System.out.println(response.getMessage());
 			e.printStackTrace();
 		}
-
+		
 		return null;
 	}
-
+	
 	private OrionUtils getOrionUtils() {
-		return orionUtils;
+		return this.orionUtils;
 	}
-
-
-
+	
+	
+	
 }
